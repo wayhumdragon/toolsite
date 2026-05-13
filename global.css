@@ -1,0 +1,205 @@
+/* ===== 全局变量（品牌色、字体） ===== */
+:root {
+    font-size: 16px;
+    --font-sans: 'Inter', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    --color-bg: #f8fafc;
+    --color-surface: #ffffff;
+    --color-text: #1e293b;
+    --color-text-secondary: #64748b;
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-border: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+
+/* ===== 重置与基础 ===== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family: var(--font-sans);
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+iframe {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+a {
+    color: inherit;
+}
+
+/* ===== 导航栏 ===== */
+header {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0 16px;
+    box-shadow: var(--shadow);
+}
+
+.header-inner {
+    width: min(1100px, 70%);
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    min-height: 60px;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+}
+
+nav a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+nav a:hover,
+nav a:focus-visible {
+    color: var(--color-primary);
+}
+
+/* ===== 主容器 ===== */
+main {
+    width: min(1100px, 70%);
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
+/* ===== 卡片 ===== */
+.card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+@media (hover: hover) {
+    .card:hover {
+        box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+        transform: translateY(-2px);
+    }
+}
+
+/* ===== 按钮 ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.85rem 1.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    background: var(--color-primary);
+    color: white;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn:hover,
+.btn:focus-visible {
+    background: var(--color-primary-hover);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+/* ===== 页脚 ===== */
+footer {
+    text-align: center;
+    padding: 20px 16px;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--color-border);
+    margin-top: 60px;
+}
+
+/* ===== 响应式适配 ===== */
+@media (max-width: 900px) {
+    .header-inner,
+    main {
+        padding-inline: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        padding-block: 16px;
+    }
+
+    nav {
+        justify-content: flex-start;
+    }
+
+    main {
+        margin: 24px auto;
+        padding: 0 14px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding-inline: 12px;
+    }
+
+    .header-inner {
+        min-height: auto;
+        gap: 12px;
+    }
+
+    nav {
+        gap: 14px;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

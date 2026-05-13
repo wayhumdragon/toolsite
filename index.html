@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Toolbox - Free Online Tools</title>
+    <meta name="description" content="Free online marketing tools: image converter, UTM builder, QR code generator, text counter, JSON formatter and more.">
+    <link rel="stylesheet" href="/global.css">
+    <style>
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .tool-card {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .tool-card h3 {
+            margin-bottom: 8px;
+        }
+        .tool-card p {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+        }
+        section {
+            margin-top: 2.5rem;
+        }
+        section h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <h1>All Tools</h1>
+
+        <!-- Image Tools -->
+        <section>
+            <h2>📷 Image Tools</h2>
+            <div class="tool-grid">
+                <a href="tools/jpg2webp.html" class="card tool-card">
+                    <h3>JPG → WebP Converter</h3>
+                    <p>Compress and convert images locally. Fast and private.</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Marketing Tools -->
+        <section>
+            <h2>🚀 Marketing Tools</h2>
+            <div class="tool-grid">
+                <a href="tools/utm.html" class="card tool-card">
+                    <h3>UTM Parameter Builder</h3>
+                    <p>Create trackable campaign links in seconds.</p>
+                </a>
+                <a href="tools/qrcode.html" class="card tool-card">
+                    <h3>QR Code Generator</h3>
+                    <p>Generate customizable QR codes online.</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Text & Data Tools -->
+        <section>
+            <h2>📊 Text & Data Tools</h2>
+            <div class="tool-grid">
+                <a href="tools/count.html" class="card tool-card">
+                    <h3>Word & Keyword Density Counter</h3>
+                    <p>Analyze text length and keyword distribution.</p>
+                </a>
+                <a href="tools/extract.html" class="card tool-card">
+                    <h3>Email & Phone Extractor</h3>
+                    <p>Extract contact details from any text automatically.</p>
+                </a>
+                <a href="tools/json.html" class="card tool-card">
+                    <h3>JSON Formatter & Validator</h3>
+                    <p>Beautify and validate your JSON data.</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Design & CSS Tools -->
+        <section>
+            <h2>🎨 Design & CSS Tools</h2>
+            <div class="tool-grid">
+                <a href="tools/gradient.html" class="card tool-card">
+                    <h3>CSS Gradient Generator</h3>
+                    <p>Visually create beautiful CSS gradients.</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/header-footer.js"></script>
+</body>
+</html>
