@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Converter - Convert JPG, PNG, WebP Online</title>
+  <meta name="description" content="Convert images between JPG, PNG and WebP formats directly in your browser. Batch processing, quality control, no upload required.">
+  <meta property="og:title" content="Image Converter - Convert JPG, PNG, WebP">
+  <meta property="og:description" content="Convert images between JPG, PNG and WebP formats directly in your browser. 100% private, no uploads.">
+  <link rel="stylesheet" href="../global.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>Image Converter</h1>
+      <p>Convert between JPG, PNG, and WebP. All processing is local — your files never leave your device.</p>
+    </div>
+
+    <div class="card">
+
+      <!-- Upload zone -->
+      <div class="upload-zone" id="dropZone">
+        <div class="icon">&#x1F4C2;</div>
+        <h3>Drop images here or click to browse</h3>
+        <p>Supports JPG, PNG, WebP &middot; Multiple files supported &middot; Max 30MB each</p>
+        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" multiple hidden>
+      </div>
+
+      <!-- Controls (hidden until files added) -->
+      <div id="controls" class="hidden mt-3">
+        <div class="bar">
+          <label>Output&#8239;format
+            <select id="formatSelect">
+              <option value="webp">WebP</option>
+              <option value="jpg">JPEG</option>
+              <option value="png">PNG</option>
+            </select>
+          </label>
+          <label class="q-group">Quality
+            <input type="range" id="qualityRange" min="5" max="100" value="85" step="5">
+            <span class="q-val" id="qualityVal">85%</span>
+          </label>
+          <button class="btn btn-outline btn-sm" id="btnDownloadAll">&#x2B07; Download All</button>
+          <button class="btn btn-outline btn-sm" id="btnClear">&#x1F5D1; Clear</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="results" class="result-list hidden"></div>
+
+      <div class="info-note">
+        &#x1F4A1; <strong>WebP</strong> offers the best compression for web use.
+        <strong>PNG</strong> is lossless (quality slider has no effect).
+        <strong>JPEG</strong> is universally compatible but larger than WebP.
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var dropZone = document.getElementById('dropZone');
+  var fileInput = document.getElementById('fileInput');
+  var controls = document.getElementById('controls');
+  var results = document.getElementById('results');
+  var formatSelect = document.getElementById('formatSelect');
+  var qualityRange = document.getElementById('qualityRange');
+  var qualityVal = document.getElementById('qualityVal');
+  var btnDownloadAll = document.getElementById('btnDownloadAll');
+  var btnClear = document.getElementById('btnClear');
+
+  var files = [];
+  var resultsData = [];
+
+  function fmt(bytes) {
+    if (!bytes) return '0 B';
+    var u = ['B','KB','MB','GB'];
+    var i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return parseFloat((bytes / Math.pow(1024, i)).toFixed(1)) + ' ' + u[i];
+  }
+
+  function reduction(orig, conv) {
+    if (!orig) return 0;
+    return Math.round((1 - conv / orig) * 100);
+  }
+
+  function convert(file, fmtName, q) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var c = document.createElement('canvas');
+          c.width = img.naturalWidth;
+          c.height = img.naturalHeight;
+          var ctx = c.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          var mimeMap = { jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
+          var mime = mimeMap[fmtName];
+          c.toBlob(function(blob) {
+            if (blob) {
+              resolve({ blob: blob, dataUrl: c.toDataURL(mime, q / 100) });
+            } else {
+              reject(new Error('Browser does not support ' + fmtName.toUpperCase() + ' encoding.'));
+            }
+          }, mime, q / 100);
+        };
+        img.onerror = function() { reject(new Error('Failed to load image.')); };
+        img.src = e.target.result;
+      };
+      reader.onerror = function() { reject(new Error('Failed to read file.')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function getOutputExt() {
+    return formatSelect.value;
+  }
+
+  function getQuality() {
+    return parseInt(qualityRange.value);
+  }
+
+  async function processFile(file, idx) {
+    var ext = getOutputExt();
+    var q = getQuality();
+    try {
+      var result = await convert(file, ext, q);
+      resultsData[idx] = {
+        file: file,
+        blob: result.blob,
+        dataUrl: result.dataUrl,
+        format: ext,
+        originalSize: file.size,
+        convertedSize: result.blob.size,
+        name: file.name
+      };
+    } catch (err) {
+      resultsData[idx] = {
+        file: file,
+        error: err.message,
+        name: file.name,
+        originalSize: file.size
+      };
+    }
+    renderResults();
+  }
+
+  async function processAll() {
+    if (!files.length) {
+      controls.classList.add('hidden');
+      results.classList.add('hidden');
+      return;
+    }
+    controls.classList.remove('hidden');
+    results.classList.remove('hidden');
+    resultsData = new Array(files.length);
+    renderResults();
+    var tasks = files.map(function(f, i) { return processFile(f, i); });
+    await Promise.all(tasks);
+  }
+
+  function renderResults() {
+    var html = '';
+    for (var i = 0; i < files.length; i++) {
+      var d = resultsData[i];
+      var f = files[i];
+      html += '<div class="result-item fade-in">';
+
+      // Thumbnail
+      if (d && d.dataUrl) {
+        html += '<img src="' + d.dataUrl + '" alt="">';
+      } else if (d && d.error) {
+        html += '<div style="width:58px;height:58px;display:flex;align-items:center;justify-content:center;background:#fef2f2;border-radius:4px;font-size:1.5rem;">&#x26A0;</div>';
+      } else {
+        html += '<div style="width:58px;height:58px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:4px;font-size:1.5rem;">&#x23F3;</div>';
+      }
+
+      html += '<div class="result-meta">';
+      html += '<div class="name">' + f.name.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+
+      if (d && !d.error) {
+        var red = reduction(d.originalSize, d.convertedSize);
+        html += '<div class="sizes">' + fmt(d.originalSize) + ' &rarr; <strong>' + fmt(d.convertedSize) + '</strong> (.'
+          + d.format + ')';
+        if (red > 0) {
+          html += ' <span class="badge badge-success">-' + red + '%</span>';
+        } else if (red < 0) {
+          html += ' <span class="badge badge-warning">+' + Math.abs(red) + '%</span>';
+        }
+        html += '</div>';
+      } else if (d && d.error) {
+        html += '<div class="sizes" style="color:var(--error)">' + d.error + '</div>';
+      } else {
+        html += '<div class="sizes text-muted">Converting...</div>';
+      }
+
+      html += '</div>';
+
+      if (d && d.blob) {
+        html += '<button class="btn btn-primary btn-sm download-btn" data-idx="' + i + '">&#x2B07; Save</button>';
+      }
+
+      html += '</div>';
+    }
+    results.innerHTML = html || '<p class="text-center text-muted">No files yet.</p>';
+
+    // Bind download buttons
+    var btns = results.querySelectorAll('.download-btn');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].addEventListener('click', function() {
+        var idx = parseInt(this.getAttribute('data-idx'));
+        downloadOne(idx);
+      });
+    }
+
+    // Update Download All
+    var allReady = resultsData.length === files.length && resultsData.every(function(d) { return d && !d.error; });
+    btnDownloadAll.disabled = !allReady || files.length === 0;
+  }
+
+  function downloadOne(idx) {
+    var d = resultsData[idx];
+    if (!d || !d.blob) return;
+    var origName = d.name.replace(/\.(jpe?g|png|webp)$/i, '');
+    var url = URL.createObjectURL(d.blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = origName + '.' + d.format;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function downloadAll() {
+    for (var i = 0; i < resultsData.length; i++) {
+      if (resultsData[i] && resultsData[i].blob) {
+        (function(idx) {
+          setTimeout(function() { downloadOne(idx); }, idx * 300);
+        })(i);
+      }
+    }
+  }
+
+  function addFiles(fileList) {
+    for (var i = 0; i < fileList.length; i++) {
+      var f = fileList[i];
+      if (!f.type.match(/image\/(jpeg|png|webp)/)) continue;
+      if (f.size > 30 * 1024 * 1024) {
+        alert('"' + f.name + '" exceeds 30MB limit.');
+        continue;
+      }
+      files.push(f);
+    }
+    if (files.length > 0) processAll();
+  }
+
+  function clearAll() {
+    files = [];
+    resultsData = [];
+    results.innerHTML = '';
+    controls.classList.add('hidden');
+    results.classList.add('hidden');
+    fileInput.value = '';
+    btnDownloadAll.disabled = true;
+  }
+
+  // Events
+  dropZone.addEventListener('click', function() { fileInput.click(); });
+  fileInput.addEventListener('change', function(e) {
+    if (e.target.files.length) addFiles(e.target.files);
+  });
+
+  dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('drag-over'); });
+  dropZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+  });
+
+  qualityRange.addEventListener('input', function() {
+    qualityVal.textContent = qualityRange.value + '%';
+  });
+  qualityRange.addEventListener('change', function() {
+    qualityVal.textContent = qualityRange.value + '%';
+    if (files.length) processAll();
+  });
+
+  formatSelect.addEventListener('change', function() {
+    if (files.length) processAll();
+  });
+
+  btnDownloadAll.addEventListener('click', downloadAll);
+  btnClear.addEventListener('click', clearAll);
+})();
+</script>
+
+</body>
+</html>

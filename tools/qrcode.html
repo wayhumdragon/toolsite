@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator - Create QR Codes Online</title>
+  <meta name="description" content="Generate QR codes from any text or URL instantly. Download as PNG. 100% private, generated locally in your browser.">
+  <meta property="og:title" content="QR Code Generator - Free Online Tool">
+  <meta property="og:description" content="Generate QR codes from any text or URL instantly. Download as PNG. 100% private.">
+  <link rel="stylesheet" href="../global.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>QR Code Generator</h1>
+      <p>Enter text or a URL — get a QR code instantly. Generated locally, nothing leaves your browser.</p>
+    </div>
+
+    <div class="card">
+      <label for="qrInput">Text or URL</label>
+      <input type="text" id="qrInput" placeholder="https://example.com or any text..." autofocus>
+
+      <div class="bar mt-2">
+        <label>Size
+          <select id="sizeSelect">
+            <option value="200">200px</option>
+            <option value="300" selected>300px</option>
+            <option value="400">400px</option>
+            <option value="500">500px</option>
+          </select>
+        </label>
+        <label>Error correction
+          <select id="ecSelect">
+            <option value="L">Low (7%)</option>
+            <option value="M" selected>Medium (15%)</option>
+            <option value="Q">High (25%)</option>
+            <option value="H">Highest (30%)</option>
+          </select>
+        </label>
+        <button class="btn btn-outline btn-sm" id="btnDownload" disabled>&#x2B07; Download PNG</button>
+      </div>
+
+      <div class="qr-preview" id="qrContainer" style="min-height:200px;align-items:center;">
+        <p class="text-muted">Enter text above to generate a QR code.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script id="lib1" src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" onerror="this.remove();(function(){var s=document.createElement('script');s.src='https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js';s.onerror=function(){this.remove();var s2=document.createElement('script');s2.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';document.head.appendChild(s2);};document.head.appendChild(s);})()"></script>
+<script>
+(function() {
+  var input = document.getElementById('qrInput');
+  var container = document.getElementById('qrContainer');
+  var sizeSelect = document.getElementById('sizeSelect');
+  var ecSelect = document.getElementById('ecSelect');
+  var btnDownload = document.getElementById('btnDownload');
+
+  var canvas = null;
+  var qrInstance = null;
+  var debounceTimer = null;
+  var maxRetries = 20;
+  var retries = 0;
+
+  function hasQrLib() {
+    // qrcode (npm) library: has QRCode.toCanvas
+    // qrcodejs library: has QRCode constructor but no toCanvas
+    return typeof QRCode !== 'undefined';
+  }
+
+  function isNpmLib() {
+    return hasQrLib() && typeof QRCode.toCanvas === 'function';
+  }
+
+  function generate() {
+    var text = input.value.trim();
+    if (!text) {
+      container.innerHTML = '<p class="text-muted" style="width:100%;text-align:center;">Enter text above to generate a QR code.</p>';
+      btnDownload.disabled = true;
+      canvas = null;
+      qrInstance = null;
+      return;
+    }
+
+    if (!hasQrLib()) {
+      if (++retries < maxRetries) {
+        container.innerHTML = '<p class="text-muted" style="width:100%;text-align:center;">Loading QR library...</p>';
+        btnDownload.disabled = true;
+        setTimeout(generate, 600);
+        return;
+      }
+      container.innerHTML = '<p style="color:var(--error);width:100%;text-align:center;">Failed to load QR library. Please check your network.</p>';
+      btnDownload.disabled = true;
+      return;
+    }
+
+    retries = 0;
+    container.innerHTML = '';
+    var size = parseInt(sizeSelect.value);
+
+    if (isNpmLib()) {
+      // qrcode library (npm)
+      var c = document.createElement('canvas');
+      container.appendChild(c);
+      canvas = c;
+      QRCode.toCanvas(c, text, {
+        width: size,
+        margin: 2,
+        errorCorrectionLevel: ecSelect.value,
+        color: { dark: '#000000', light: '#ffffff' }
+      }, function(err) {
+        if (err) {
+          container.innerHTML = '<p style="color:var(--error);">' + err.message + '</p>';
+          btnDownload.disabled = true;
+          canvas = null;
+        } else {
+          btnDownload.disabled = false;
+        }
+      });
+    } else {
+      // qrcodejs library
+      var div = document.createElement('div');
+      container.appendChild(div);
+      qrInstance = new QRCode(div, {
+        text: text,
+        width: size,
+        height: size,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel[ecSelect.value]
+      });
+      // Get canvas from the generated output
+      setTimeout(function() {
+        canvas = div.querySelector('canvas');
+        btnDownload.disabled = !canvas;
+      }, 100);
+    }
+  }
+
+  function debouncedGenerate() {
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(generate, 300);
+  }
+
+  function download() {
+    if (!canvas) return;
+    var link = document.createElement('a');
+    link.download = 'qrcode.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  input.addEventListener('input', debouncedGenerate);
+  sizeSelect.addEventListener('change', generate);
+  ecSelect.addEventListener('change', generate);
+  btnDownload.addEventListener('click', download);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+.playwright-mcp/
+settings.local.json
+*.png
+*.jpg
+*.webp
+.DS_Store
+Thumbs.db
