@@ -44,7 +44,8 @@
             <input type="range" id="qualityRange" min="5" max="100" value="85" step="5">
             <span class="q-val" id="qualityVal">85%</span>
           </label>
-          <button class="btn btn-outline btn-sm" id="btnDownloadAll">&#x2B07; Download All</button>
+          <button class="btn btn-primary btn-sm" id="btnConvert">&#x2699; Convert</button>
+          <button class="btn btn-outline btn-sm" id="btnDownloadAll" disabled>&#x2B07; Download All</button>
           <button class="btn btn-outline btn-sm" id="btnClear">&#x1F5D1; Clear</button>
         </div>
       </div>
@@ -73,11 +74,13 @@
   var formatSelect = document.getElementById('formatSelect');
   var qualityRange = document.getElementById('qualityRange');
   var qualityVal = document.getElementById('qualityVal');
+  var btnConvert = document.getElementById('btnConvert');
   var btnDownloadAll = document.getElementById('btnDownloadAll');
   var btnClear = document.getElementById('btnClear');
 
   var files = [];
   var resultsData = [];
+  var converted = false;
 
   function fmt(bytes) {
     if (!bytes) return '0 B';
@@ -120,17 +123,9 @@
     });
   }
 
-  function getOutputExt() {
-    return formatSelect.value;
-  }
-
-  function getQuality() {
-    return parseInt(qualityRange.value);
-  }
-
   async function processFile(file, idx) {
-    var ext = getOutputExt();
-    var q = getQuality();
+    var ext = formatSelect.value;
+    var q = parseInt(qualityRange.value);
     try {
       var result = await convert(file, ext, q);
       resultsData[idx] = {
@@ -153,22 +148,21 @@
     renderResults();
   }
 
-  async function processAll() {
-    if (!files.length) {
-      controls.classList.add('hidden');
-      results.classList.add('hidden');
-      return;
-    }
-    controls.classList.remove('hidden');
-    results.classList.remove('hidden');
+  async function convertAll() {
+    if (!files.length) return;
+    btnConvert.disabled = true;
     resultsData = new Array(files.length);
     renderResults();
     var tasks = files.map(function(f, i) { return processFile(f, i); });
     await Promise.all(tasks);
+    converted = true;
+    btnConvert.disabled = false;
   }
 
   function renderResults() {
     var html = '';
+    var pending = resultsData.length === 0 || resultsData.some(function(d) { return !d; });
+
     for (var i = 0; i < files.length; i++) {
       var d = resultsData[i];
       var f = files[i];
@@ -179,6 +173,8 @@
         html += '<img src="' + d.dataUrl + '" alt="">';
       } else if (d && d.error) {
         html += '<div style="width:58px;height:58px;display:flex;align-items:center;justify-content:center;background:#fef2f2;border-radius:4px;font-size:1.5rem;">&#x26A0;</div>';
+      } else if (pending) {
+        html += '<div style="width:58px;height:58px;display:flex;align-items:center;justify-content:center;background:var(--primary-light);border-radius:4px;font-size:1.2rem;color:var(--primary);">' + (i + 1) + '</div>';
       } else {
         html += '<div style="width:58px;height:58px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:4px;font-size:1.5rem;">&#x23F3;</div>';
       }
@@ -198,6 +194,8 @@
         html += '</div>';
       } else if (d && d.error) {
         html += '<div class="sizes" style="color:var(--error)">' + d.error + '</div>';
+      } else if (pending) {
+        html += '<div class="sizes text-muted">' + fmt(f.size) + ' &middot; Ready to convert</div>';
       } else {
         html += '<div class="sizes text-muted">Converting...</div>';
       }
@@ -222,7 +220,7 @@
     }
 
     // Update Download All
-    var allReady = resultsData.length === files.length && resultsData.every(function(d) { return d && !d.error; });
+    var allReady = !pending && resultsData.length === files.length && resultsData.every(function(d) { return d && !d.error; });
     btnDownloadAll.disabled = !allReady || files.length === 0;
   }
 
@@ -260,17 +258,28 @@
       }
       files.push(f);
     }
-    if (files.length > 0) processAll();
+    if (files.length > 0) showFiles();
+  }
+
+  function showFiles() {
+    controls.classList.remove('hidden');
+    results.classList.remove('hidden');
+    resultsData = [];
+    converted = false;
+    btnDownloadAll.disabled = true;
+    renderResults();
   }
 
   function clearAll() {
     files = [];
     resultsData = [];
+    converted = false;
     results.innerHTML = '';
     controls.classList.add('hidden');
     results.classList.add('hidden');
     fileInput.value = '';
     btnDownloadAll.disabled = true;
+    btnConvert.disabled = false;
   }
 
   // Events
@@ -290,15 +299,16 @@
   qualityRange.addEventListener('input', function() {
     qualityVal.textContent = qualityRange.value + '%';
   });
-  qualityRange.addEventListener('change', function() {
-    qualityVal.textContent = qualityRange.value + '%';
-    if (files.length) processAll();
-  });
 
   formatSelect.addEventListener('change', function() {
-    if (files.length) processAll();
+    if (converted) convertAll();
   });
 
+  qualityRange.addEventListener('change', function() {
+    if (converted) convertAll();
+  });
+
+  btnConvert.addEventListener('click', convertAll);
   btnDownloadAll.addEventListener('click', downloadAll);
   btnClear.addEventListener('click', clearAll);
 })();
