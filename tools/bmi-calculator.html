@@ -89,6 +89,19 @@
     }
     .bmi-labels span { flex: 1; text-align: center; }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "BMI Calculator",
+    "url": "https://REPLACE_WITH_YOUR_DOMAIN/tools/bmi-calculator.html",
+    "description": "Free online BMI calculator. Check your body mass index with metric or imperial units. Visual scale with underweight, normal, overweight, and obese categories. 100% client-side.",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "browserRequirements": "Requires JavaScript"
+  }
+  </script>
 </head>
 <body>
 
@@ -158,6 +171,77 @@
         <span>Obese 30+</span>
       </div>
     </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The BMI Calculator computes your Body Mass Index using standard formulas, with support for both <strong>metric</strong> (centimeters and kilograms) and <strong>imperial</strong> (feet, inches, and pounds) units. BMI is a widely used screening tool that estimates whether your weight is in a healthy range for your height.</p>
+        <p>The tool displays your BMI number, classification category (Underweight, Normal weight, Overweight, or Obese), and a visual scale showing where your result falls. All calculations happen instantly in your browser — no data is stored or sent anywhere.</p>
+        <p>BMI is a useful population-level health indicator, but it has limitations. It does not distinguish between muscle and fat, and it does not account for body composition, age, sex, or ethnicity. Use this as a general guideline, not a medical diagnosis.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Select unit system.</strong> Choose Metric (cm / kg) or Imperial (ft/in / lbs) using the toggle buttons.</li>
+          <li><strong>Enter your measurements.</strong> Input your height and weight. The calculator updates instantly as you type — no need to click a button.</li>
+          <li><strong>Read your result.</strong> Your BMI number appears along with a category (Underweight &lt;18.5, Normal 18.5–24.9, Overweight 25–29.9, Obese 30+) and a visual marker on the color-coded scale.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>Is my height and weight data stored?</summary>
+        <div class="faq-answer">
+          <p>No. All calculations happen in your browser using JavaScript. Your measurements never leave your device. Nothing is stored, logged, or transmitted to any server.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Is BMI accurate for everyone?</summary>
+        <div class="faq-answer">
+          <p>BMI has known limitations. It does not distinguish between muscle and fat — athletes with high muscle mass may be classified as overweight or obese despite being healthy. It also does not account for age, sex, ethnicity, or body fat distribution. BMI is best used as a general screening tool, not a definitive health assessment. Consult a healthcare professional for personalized advice.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>How is BMI calculated?</summary>
+        <div class="faq-answer">
+          <p><strong>Metric:</strong> BMI = weight (kg) / height (m)&sup2;. For example, 70 kg / (1.75 m)&sup2; = 22.9.<br><strong>Imperial:</strong> BMI = (weight (lbs) / height (in)&sup2;) &times; 703. For example, (154 lbs / 69&sup2;) &times; 703 = 22.8.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this work on mobile?</summary>
+        <div class="faq-answer">
+          <p>Yes. The BMI Calculator is fully responsive and works on all modern browsers including iOS Safari and Android Chrome.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="percentage-calculator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4CA;</span> Percentage Calculator
+        </a>
+        <a href="cbm-calculator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4E6;</span> CBM Calculator
+        </a>
+        <a href="engagement-rate-calculator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4CA;</span> Engagement Rate Calc
+        </a>
+        <a href="password-generator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F511;</span> Password Generator
+        </a>
+      </div>
+    </section>
+
   </div>
 </main>
 

@@ -68,6 +68,19 @@
     }
     .stats span { white-space: nowrap; }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JSON Formatter",
+    "url": "https://REPLACE_WITH_YOUR_DOMAIN/tools/json-formatter.html",
+    "description": "Free online JSON formatter, validator, and minifier. Pretty-print, validate syntax, and compress JSON data. 100% client-side processing.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "browserRequirements": "Requires JavaScript"
+  }
+  </script>
 </head>
 <body>
 
@@ -106,6 +119,77 @@
 
       <div class="stats" id="stats"></div>
     </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The JSON Formatter makes working with JSON data effortless. Paste compressed or messy JSON and instantly get a <strong>pretty-printed, syntax-highlighted</strong> version you can actually read. It also validates your JSON and pinpoints syntax errors, and can minify JSON to the smallest possible size for production use.</p>
+        <p>All processing is done client-side using the browser's native <code>JSON.parse()</code> and <code>JSON.stringify()</code> APIs. Your data never touches a server. This is particularly important when working with API responses that contain sensitive information, configuration files with keys, or proprietary data structures.</p>
+        <p>Developers use this tool daily for debugging API responses, inspecting configuration files, validating JSON before committing to a repository, and minifying payloads before deploying to production.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Paste your JSON.</strong> Drop any JSON string into the input area — it can be minified, malformed, or already formatted.</li>
+          <li><strong>Choose an action.</strong> Click <strong>Format</strong> to pretty-print with syntax highlighting (choose 2 or 4 space indent), <strong>Validate</strong> to check for syntax errors with exact line numbers, or <strong>Minify</strong> to compress the JSON to a single line.</li>
+          <li><strong>Copy the result.</strong> Use the Copy button to copy the output to your clipboard. The character count updates automatically to show input and output sizes.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>Is my JSON data sent to a server?</summary>
+        <div class="faq-answer">
+          <p>No. All formatting, validation, and minification run entirely in your browser via JavaScript. Your data stays on your device at all times. You can verify this by disconnecting from the internet — the tool works fully offline after the page loads.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>What JSON errors does the validator catch?</summary>
+        <div class="faq-answer">
+          <p>The validator catches all standard JSON syntax errors: trailing commas, missing quotes around keys, unescaped characters, single quotes (JSON requires double quotes), incomplete objects or arrays, and invalid values like <code>undefined</code> or <code>NaN</code>. The exact error position is highlighted to help you fix it quickly.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this support JSON5 or JSON with comments?</summary>
+        <div class="faq-answer">
+          <p>This tool validates against the strict JSON specification (RFC 8259). JSON5 (which allows comments, trailing commas, and unquoted keys) is not supported by the validator. If you paste JSON5, the validator will flag it as invalid. For standard JSON, it works perfectly.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does the formatter work on mobile?</summary>
+        <div class="faq-answer">
+          <p>Yes. The JSON Formatter is fully responsive and works on all modern browsers including iOS Safari and Android Chrome. The text area and buttons adapt to smaller screens.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="diff-checker.html" class="related-tool-link">
+          <span class="rt-icon">&#x2696;</span> Diff Checker
+        </a>
+        <a href="base64-encoder.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4E6;</span> Base64 Encoder
+        </a>
+        <a href="url-encoder.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F517;</span> URL Encoder
+        </a>
+        <a href="markdown-preview.html" class="related-tool-link">
+          <span class="rt-icon">&#x2B50;</span> Markdown Preview
+        </a>
+      </div>
+    </section>
+
   </div>
 </main>
 

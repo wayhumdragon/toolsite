@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Create a QR Code for WiFi, URLs, and More - ToolBox Blog</title>
+  <meta name="description" content="Create QR codes for WiFi access, URLs, contact cards, and more — all generated client-side without sending data to any server. Step-by-step guide with format examples.">
+  <meta property="og:title" content="How to Create a QR Code for WiFi, URLs, and More">
+  <meta property="og:description" content="Create QR codes for WiFi access, URLs, contact cards, and more — all generated client-side without sending data to any server.">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="../../global.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "How to Create a QR Code for WiFi, URLs, and More",
+    "description": "Create QR codes for WiFi access, URLs, contact cards, and more — all generated client-side without sending data to any server.",
+    "datePublished": "2026-05-05",
+    "dateModified": "2026-05-05",
+    "author": { "@type": "Organization", "name": "ToolBox" },
+    "url": "https://REPLACE_WITH_YOUR_DOMAIN/blog/posts/create-qr-code-wifi-url.html"
+  }
+  </script>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="container">
+    <article>
+      <div class="blog-post-header">
+        <h1>How to Create a QR Code for WiFi, URLs, and More</h1>
+        <div class="bp-meta">
+          <time datetime="2026-05-05">May 5, 2026</time>
+          <span>&middot;</span>
+          4 min read
+        </div>
+      </div>
+
+      <div class="blog-post-body">
+        <div class="card">
+          <div class="prose">
+            <p>QR codes have made a massive comeback. From restaurant menus and contactless payments to event check-ins and WiFi sharing, these little squares of data are everywhere. The best part? You can generate them yourself, instantly, without any app install or server upload.</p>
+
+            <p>In this guide, you will learn how to create QR codes for <strong>WiFi credentials, URLs, contact cards, and plain text</strong> — all generated client-side in your browser using the <a href="../../tools/qrcode.html">ToolBox QR Code Generator</a>.</p>
+
+            <h2>QR code basics</h2>
+
+            <p>A QR code is a two-dimensional barcode that encodes text, URLs, or other data into a grid of black and white squares (called modules). When scanned by a smartphone camera, the pattern is decoded back into the original data. QR codes can store up to 4,296 alphanumeric characters or 7,089 numeric digits.</p>
+
+            <p>Every QR code contains <strong>error correction</strong> — redundant data that allows the code to be read even if partially damaged or obscured. The more error correction you add, the more resilient the code, but the physically larger it becomes for the same amount of data.</p>
+
+            <h2>Create a QR code for a URL</h2>
+
+            <p>This is the simplest use case. To create a QR code that opens a website when scanned:</p>
+
+            <ol>
+              <li>Open the <a href="../../tools/qrcode.html">QR Code Generator</a>.</li>
+              <li>Type or paste a full URL (e.g., <code>https://example.com</code>) into the text field.</li>
+              <li>Choose a size — 256px is a good default for web use; go larger (512px or 1024px) for print.</li>
+              <li>Select an error correction level. For URLs on screens, Low (L) or Medium (M) is fine. For print, choose High (H).</li>
+              <li>Click <strong>Generate</strong> to see a preview, then <strong>Download PNG</strong> to save the image.</li>
+            </ol>
+
+            <h2>Create a QR code for WiFi</h2>
+
+            <p>A WiFi QR code lets guests connect to your network just by scanning — no need to type out a long password. The format is:</p>
+
+            <pre><code>WIFI:S:&lt;NetworkName&gt;;T:&lt;EncryptionType&gt;;P:&lt;Password&gt;;;</code></pre>
+
+            <p>For example, if your WiFi network is named "HomeWifi" with WPA2 encryption and password "mypassword123":</p>
+
+            <pre><code>WIFI:S:HomeWifi;T:WPA;P:mypassword123;;</code></pre>
+
+            <p>The encryption type can be <code>WPA</code>, <code>WEP</code>, or <code>nopass</code> (for open networks). Paste this string into the QR Code Generator, generate the code, and print it out for guests or display it at your office entrance.</p>
+
+            <blockquote>
+              <strong>Privacy note:</strong> The WiFi string is processed entirely in your browser. Your network password never leaves your device. This is especially important for QR codes containing credentials.
+            </blockquote>
+
+            <h2>Other QR code use cases</h2>
+
+            <p>Beyond URLs and WiFi, QR codes can encode many types of data:</p>
+
+            <ul>
+              <li><strong>Contact cards (vCard).</strong> Generate a QR code containing your name, phone, email, and company. When scanned, the contact is added directly to the phone's address book.</li>
+              <li><strong>Email.</strong> Use <code>mailto:email@example.com?subject=Hello</code> to create a QR code that opens the default email client with a pre-filled subject.</li>
+              <li><strong>Plain text.</strong> Encode any message — great for scavenger hunts, event clues, or sharing a short note.</li>
+              <li><strong>Geolocation.</strong> Use <code>geo:latitude,longitude</code> to open the device's map app at a specific location.</li>
+              <li><strong>Calendar events.</strong> Encode an iCalendar string to let users add an event to their calendar with one scan.</li>
+            </ul>
+
+            <h2>Understanding error correction levels</h2>
+
+            <p>The <a href="../../tools/qrcode.html">ToolBox QR Code Generator</a> offers four error correction levels:</p>
+
+            <ul>
+              <li><strong>Low (L)</strong> — Recovers up to 7% of data loss. Good for on-screen QR codes where damage is unlikely.</li>
+              <li><strong>Medium (M)</strong> — Recovers up to 15%. A balanced default for most uses.</li>
+              <li><strong>High (Q)</strong> — Recovers up to 25%. Use for printed codes that might get slightly worn.</li>
+              <li><strong>Highest (H)</strong> — Recovers up to 30%. Best for outdoor signage, packaging, or anything that might get dirty or scratched.</li>
+            </ul>
+
+            <p>For a typical WiFi QR code printed and kept indoors, Medium is a good choice. For a sticker on a restaurant table, choose High.</p>
+
+            <p>Ready to make your own? Open the <a href="../../tools/qrcode.html">QR Code Generator</a> — free, instant, and completely private.</p>
+          </div>
+        </div>
+
+        <a href="../index.html" class="blog-back">&#x2190; Back to all posts</a>
+      </div>
+    </article>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../../layout.js"></script>
+</body>
+</html>

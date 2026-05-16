@@ -15,7 +15,10 @@
   var h =
     '<header class="site-header">' +
     '<div class="container">' +
-    '<a href="' + (location.pathname.includes('/tools/') ? '../index.html' : 'index.html') + '" class="logo"><span class="logo-icon">&#x1F6E0;</span>ToolBox</a>' +
+    '<a href="' + (function() { var p = location.pathname; if (p.includes('/blog/posts/')) return '../../index.html'; if (p.includes('/tools/') || p.includes('/blog/')) return '../index.html'; return 'index.html'; })() + '" class="logo"><span class="logo-icon">&#x1F6E0;</span>ToolBox</a>' +
+    '<nav class="header-nav">' +
+      '<a href="' + (function() { var p = location.pathname; if (p.includes('/blog/posts/')) return '../index.html'; if (p.includes('/tools/')) return '../blog/index.html'; if (p.includes('/blog/')) return 'index.html'; return 'blog/index.html'; })() + '">Blog</a>' +
+    '</nav>' +
     '<span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>' +
     '</div>' +
     '</header>';

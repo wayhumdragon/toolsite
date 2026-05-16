@@ -61,6 +61,19 @@
     .mode-tabs button:last-child { border-right: none; }
     .mode-tabs button.active { background: var(--primary); color: #fff; }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Percentage Calculator",
+    "url": "https://REPLACE_WITH_YOUR_DOMAIN/tools/percentage-calculator.html",
+    "description": "Free online percentage calculator. Find percentage of a number, calculate percentage change, and determine what percent one number is of another. 100% client-side.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "browserRequirements": "Requires JavaScript"
+  }
+  </script>
 </head>
 <body>
 
@@ -120,6 +133,77 @@
         </div>
       </div>
     </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The Percentage Calculator handles common percentage computations instantly in your browser. It offers three modes: <strong>find a percentage of a number</strong> (e.g., what is 15% of 80?), <strong>find what percent one number is of another</strong> (e.g., 50 is what percent of 200?), and <strong>percentage change</strong> (e.g., the increase from 100 to 150).</p>
+        <p>All calculations update in real time as you type — no submit button needed. This is useful for quick mental math checks: calculating tips at a restaurant, figuring out discounts while shopping, computing tax amounts, or analyzing business metrics like revenue growth and margin changes.</p>
+        <p>Every calculation runs locally in your browser. Your numbers never leave your device.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Choose a mode.</strong> Select "Find % of a number," "X is what % of Y," or "% Change" from the tab bar at the top of the calculator.</li>
+          <li><strong>Enter your values.</strong> Type numbers into the input fields. The result updates instantly — no button to click.</li>
+          <li><strong>Read the result.</strong> The calculated value appears in the result box below the inputs, with a full sentence explanation (e.g., "10% of 200 = 20").</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>How do I calculate a tip?</summary>
+        <div class="faq-answer">
+          <p>Use the "Find % of a number" mode. Enter your tip percentage (e.g., 15 for 15%) and the bill total as the number. For example, "What is 15% of 48?" = $7.20 tip. For a quick estimate, calculate 10% (move the decimal one place) and then add half of that for 15%.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>What is percentage change and how is it calculated?</summary>
+        <div class="faq-answer">
+          <p>Percentage change measures the relative difference between two values. Formula: <code>((New - Old) / |Old|) &times; 100</code>. A positive result means an increase, negative means a decrease. For example, going from 100 to 150 is a +50% change. Use this for tracking revenue growth, weight loss progress, or price changes.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Is my data stored or shared?</summary>
+        <div class="faq-answer">
+          <p>No. All calculations happen locally in your browser via JavaScript. The numbers you enter never leave your device and are never stored or transmitted to any server.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this work on mobile?</summary>
+        <div class="faq-answer">
+          <p>Yes. The Percentage Calculator is fully responsive and works on all modern browsers including iOS Safari and Android Chrome.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="bmi-calculator.html" class="related-tool-link">
+          <span class="rt-icon">&#x2695;</span> BMI Calculator
+        </a>
+        <a href="cbm-calculator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4E6;</span> CBM Calculator
+        </a>
+        <a href="engagement-rate-calculator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4CA;</span> Engagement Rate Calc
+        </a>
+        <a href="word-counter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4CA;</span> Word Counter
+        </a>
+      </div>
+    </section>
+
   </div>
 </main>
 
