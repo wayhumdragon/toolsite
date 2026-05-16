@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Preview - Live Markdown Editor & Preview Online</title>
+  <meta name="description" content="Live Markdown editor with instant preview. 100% client-side — your text never leaves your browser. Supports GitHub Flavored Markdown.">
+  <meta property="og:title" content="Markdown Preview - Free Online Tool">
+  <meta property="og:description" content="Write and preview Markdown with live rendering. 100% private, processed in your browser.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .md-toolbar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .md-toolbar button {
+      padding: 0.35rem 0.85rem;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      cursor: pointer;
+      color: var(--text);
+    }
+    .md-toolbar button.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .md-panels {
+      display: grid;
+      gap: 1rem;
+    }
+    .md-panels.split { grid-template-columns: 1fr 1fr; }
+    .md-panels.edit-only .md-preview-wrap,
+    .md-panels.preview-only .md-editor-wrap { display: none; }
+    .md-panels textarea {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      min-height: 420px;
+      resize: vertical;
+      tab-size: 2;
+    }
+    .md-panels.preview-only textarea { display: none; }
+    .md-preview {
+      min-height: 420px;
+      max-height: 800px;
+      overflow: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    @media (max-width: 640px) {
+      .md-panels.split { grid-template-columns: 1fr; }
+      .md-preview { padding: 1rem; }
+    }
+    .md-preview h1 { font-size: 1.6rem; margin-top: 0; }
+    .md-preview h2 { font-size: 1.3rem; }
+    .md-preview h3 { font-size: 1.1rem; }
+    .md-preview code {
+      background: #f0f0f0;
+      padding: 0.15em 0.4em;
+      border-radius: 3px;
+      font-size: 0.85em;
+    }
+    .md-preview pre {
+      background: #f6f8fa;
+      border-radius: 6px;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+    .md-preview pre code { background: none; padding: 0; }
+    .md-preview blockquote {
+      border-left: 3px solid var(--border);
+      padding-left: 1rem;
+      color: var(--text-muted);
+      margin-left: 0;
+    }
+    .md-preview table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .md-preview th, .md-preview td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .md-preview th { background: #f6f8fa; }
+    .md-preview img { max-width: 100%; }
+    .md-preview hr { border: none; border-top: 2px solid var(--border); }
+    .md-preview.empty {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>Markdown Preview</h1>
+      <p>Write Markdown on the left, see rendered HTML on the right. GitHub Flavored Markdown style. All rendering is local.</p>
+    </div>
+
+    <div class="card">
+      <div class="md-toolbar">
+        <button id="btnEdit" class="active">Edit</button>
+        <button id="btnPreview">Preview</button>
+        <button id="btnSplit">Split</button>
+      </div>
+      <div class="md-panels edit-only" id="mdPanels">
+        <div class="md-editor-wrap">
+          <label>Markdown</label>
+          <textarea id="input" placeholder="## Hello Markdown&#010;&#010;**bold** *italic* `code`&#010;&#010;- list item 1&#010;- list item 2&#010;&#010;[link text](https://example.com)" autofocus></textarea>
+        </div>
+        <div class="md-preview-wrap">
+          <label>Preview</label>
+          <div id="preview" class="md-preview empty">Preview will appear here...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var input = document.getElementById('input');
+  var preview = document.getElementById('preview');
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function renderInline(text) {
+    // Images [alt](url)
+    text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+    // Links [text](url)
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    // Bold **text** or __text__
+    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/__(.+?)__/g, '<strong>$1</strong>');
+    // Italic *text* or _text_
+    text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    text = text.replace(/_(.+?)_/g, '<em>$1</em>');
+    // Inline code `code`
+    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // Strikethrough ~~text~~
+    text = text.replace(/~~(.+?)~~/g, '<del>$1</del>');
+    return text;
+  }
+
+  function render(md) {
+    if (!md.trim()) {
+      preview.className = 'md-preview empty';
+      preview.textContent = 'Preview will appear here...';
+      return;
+    }
+
+    var lines = md.split('\n');
+    var html = '';
+    var inCodeBlock = false;
+    var codeBlock = '';
+    var codeLang = '';
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+
+      // Fenced code blocks
+      if (/^```/.test(line)) {
+        if (inCodeBlock) {
+          html += '<pre><code>' + escapeHtml(codeBlock.trimEnd()) + '</code></pre>\n';
+          codeBlock = '';
+          inCodeBlock = false;
+        } else {
+          inCodeBlock = true;
+          codeLang = line.slice(3).trim();
+        }
+        continue;
+      }
+
+      if (inCodeBlock) {
+        codeBlock += line + '\n';
+        continue;
+      }
+
+      // Headings
+      var headingMatch = line.match(/^(#{1,6})\s+(.+)/);
+      if (headingMatch) {
+        var level = headingMatch[1].length;
+        html += '<h' + level + '>' + renderInline(headingMatch[2]) + '</h' + level + '>\n';
+        continue;
+      }
+
+      // Horizontal rule
+      if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line)) {
+        html += '<hr>\n';
+        continue;
+      }
+
+      // Blockquote
+      if (/^>\s?(.*)/.test(line) && !/^>\s*$/.test(line)) {
+        var quoteContent = line.replace(/^>\s?/, '');
+        html += '<blockquote><p>' + renderInline(quoteContent) + '</p></blockquote>\n';
+        continue;
+      }
+
+      // Unordered list
+      var ulMatch = line.match(/^(\s*)[-*+]\s+(.+)/);
+      if (ulMatch) {
+        html += '<ul><li>' + renderInline(ulMatch[2]) + '</li></ul>\n';
+        continue;
+      }
+
+      // Ordered list
+      var olMatch = line.match(/^(\s*)\d+\.\s+(.+)/);
+      if (olMatch) {
+        html += '<ol><li>' + renderInline(olMatch[2]) + '</li></ol>\n';
+        continue;
+      }
+
+      // Table
+      if (/^\|.+\|$/.test(line)) {
+        var cells = line.split('|').filter(function(c) { return c.trim(); });
+        if (lines[i + 1] && /^\|[\s\-:|]+\|$/.test(lines[i + 1])) {
+          html += '<table>\n<thead>\n<tr>\n';
+          for (var c = 0; c < cells.length; c++) {
+            html += '<th>' + renderInline(cells[c].trim()) + '</th>\n';
+          }
+          html += '</tr>\n</thead>\n<tbody>\n';
+          i++; // skip separator
+          while (i + 1 < lines.length && /^\|.+\|$/.test(lines[i + 1])) {
+            i++;
+            var rowCells = lines[i].split('|').filter(function(c) { return c.trim(); });
+            html += '<tr>\n';
+            for (var r = 0; r < rowCells.length; r++) {
+              html += '<td>' + renderInline(rowCells[r].trim()) + '</td>\n';
+            }
+            html += '</tr>\n';
+          }
+          html += '</tbody>\n</table>\n';
+          continue;
+        }
+      }
+
+      // Empty line = paragraph break
+      if (line.trim() === '') {
+        html += '\n';
+        continue;
+      }
+
+      // Paragraph
+      html += '<p>' + renderInline(line) + '</p>\n';
+    }
+
+    // Close unclosed code block
+    if (inCodeBlock) {
+      html += '<pre><code>' + escapeHtml(codeBlock.trimEnd()) + '</code></pre>\n';
+    }
+
+    preview.className = 'md-preview';
+    preview.innerHTML = html;
+  }
+
+  var mdPanels = document.getElementById('mdPanels');
+  var btnEdit = document.getElementById('btnEdit');
+  var btnPreview = document.getElementById('btnPreview');
+  var btnSplit = document.getElementById('btnSplit');
+
+  function setMode(mode, activeBtn) {
+    mdPanels.className = 'md-panels ' + mode;
+    [btnEdit, btnPreview, btnSplit].forEach(function(b) { b.classList.remove('active'); });
+    activeBtn.classList.add('active');
+  }
+
+  btnEdit.addEventListener('click', function() { setMode('edit-only', btnEdit); });
+  btnPreview.addEventListener('click', function() { setMode('preview-only', btnPreview); });
+  btnSplit.addEventListener('click', function() { setMode('split', btnSplit); });
+
+  input.addEventListener('input', function() {
+    render(input.value);
+  });
+
+  // Load sample
+  input.value = '# Welcome to Markdown\n\n**Markdown** is a lightweight markup language.\n\n## Features\n\n- **Bold** and *italic* text\n- `inline code`\n- [Links](https://example.com)\n\n## Code Block\n\n```javascript\nconsole.log("Hello, world!");\n```\n\n## Blockquote\n\n> This is a quote.\n\n## Table\n\n| Name | Value |\n|------|-------|\n| Foo  | 42    |\n| Bar  | 100   |\n';
+  render(input.value);
+})();
+</script>
+
+</body>
+</html>

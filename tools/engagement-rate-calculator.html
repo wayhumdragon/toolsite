@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engagement Rate Calculator - Social Media Engagement Metrics</title>
+  <meta name="description" content="Calculate your social media engagement rate. Supports followers-based, reach-based, and impressions-based formulas. 100% client-side.">
+  <meta property="og:title" content="Engagement Rate Calculator - Free Online Tool">
+  <meta property="og:description" content="Calculate social media engagement rates with multiple industry formulas. 100% private.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .er-result {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      margin-top: 1rem;
+    }
+    .er-result .er-num {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .er-result .er-label {
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+    .benchmark-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: #e2e8f0;
+      margin-top: 0.75rem;
+      position: relative;
+    }
+    .benchmark-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+    .bench-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>Engagement Rate Calculator</h1>
+      <p>Calculate your social media engagement rate. Compare against industry benchmarks. All local processing.</p>
+    </div>
+
+    <div class="card">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+        <div>
+          <label>Followers / Fans</label>
+          <input type="number" id="followers" placeholder="10000" value="10000" min="1">
+        </div>
+        <div>
+          <label>Likes / Reactions</label>
+          <input type="number" id="likes" placeholder="250" value="250" min="0">
+        </div>
+        <div>
+          <label>Comments</label>
+          <input type="number" id="comments" placeholder="30" value="30" min="0">
+        </div>
+        <div>
+          <label>Shares / Retweets</label>
+          <input type="number" id="shares" placeholder="15" value="15" min="0">
+        </div>
+        <div>
+          <label>Saves / Bookmarks</label>
+          <input type="number" id="saves" placeholder="10" value="10" min="0">
+        </div>
+        <div>
+          <label>Reach (optional)</label>
+          <input type="number" id="reach" placeholder="5000" min="0">
+        </div>
+      </div>
+
+      <div class="er-result" id="erResult" style="background:#f0f9ff;">
+        <div class="er-num" id="erValue" style="color:#0369a1;">3.05%</div>
+        <div class="er-label" id="erLabel">Engagement Rate by Followers</div>
+      </div>
+
+      <div class="bar mt-2" style="justify-content:center;">
+        <button class="btn btn-outline btn-sm active" id="btnByFollowers">By Followers</button>
+        <button class="btn btn-outline btn-sm" id="btnByReach">By Reach</button>
+      </div>
+
+      <div style="margin-top:1rem;">
+        <label>Benchmark Reference</label>
+        <div class="benchmark-bar">
+          <div class="benchmark-fill" id="benchFill" style="width:50%;background:var(--primary);"></div>
+        </div>
+        <div class="bench-info">
+          <span>Low: 0.5%</span><span>Avg: 1-3%</span><span>High: 6%+</span>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;">
+          <strong>Instagram avg:</strong> 0.5-1% &nbsp;|&nbsp;
+          <strong>TikTok avg:</strong> 3-5% &nbsp;|&nbsp;
+          <strong>Facebook avg:</strong> 0.1-0.3% &nbsp;|&nbsp;
+          <strong>Twitter/X avg:</strong> 0.02-0.09%
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var followers = document.getElementById('followers');
+  var likes = document.getElementById('likes');
+  var comments = document.getElementById('comments');
+  var shares = document.getElementById('shares');
+  var saves = document.getElementById('saves');
+  var reach = document.getElementById('reach');
+  var erValue = document.getElementById('erValue');
+  var erLabel = document.getElementById('erLabel');
+  var erResult = document.getElementById('erResult');
+  var benchFill = document.getElementById('benchFill');
+  var btnByFollowers = document.getElementById('btnByFollowers');
+  var btnByReach = document.getElementById('btnByReach');
+
+  var mode = 'followers';
+
+  function calc() {
+    var total = (parseInt(likes.value) || 0) + (parseInt(comments.value) || 0) + (parseInt(shares.value) || 0) + (parseInt(saves.value) || 0);
+    var base = mode === 'followers' ? (parseInt(followers.value) || 1) : (parseInt(reach.value) || 1);
+    var er = (total / base) * 100;
+
+    erValue.textContent = er.toFixed(2) + '%';
+
+    if (mode === 'followers') {
+      erLabel.textContent = 'Engagement Rate by Followers';
+      if (er < 0.5) {
+        erResult.style.background = '#fef2f2';
+        erValue.style.color = '#dc2626';
+      } else if (er < 3) {
+        erResult.style.background = '#fffbeb';
+        erValue.style.color = '#d97706';
+      } else if (er < 6) {
+        erResult.style.background = '#f0f9ff';
+        erValue.style.color = '#0369a1';
+      } else {
+        erResult.style.background = '#ecfdf5';
+        erValue.style.color = '#059669';
+      }
+    } else {
+      erLabel.textContent = 'Engagement Rate by Reach';
+      if (er < 1) {
+        erResult.style.background = '#fef2f2';
+        erValue.style.color = '#dc2626';
+      } else if (er < 5) {
+        erResult.style.background = '#fffbeb';
+        erValue.style.color = '#d97706';
+      } else if (er < 10) {
+        erResult.style.background = '#f0f9ff';
+        erValue.style.color = '#0369a1';
+      } else {
+        erResult.style.background = '#ecfdf5';
+        erValue.style.color = '#059669';
+      }
+    }
+
+    var benchPct = Math.min(100, (er / 6) * 100);
+    benchFill.style.width = benchPct + '%';
+  }
+
+  btnByFollowers.addEventListener('click', function() {
+    mode = 'followers';
+    btnByFollowers.classList.add('active');
+    btnByReach.classList.remove('active');
+    calc();
+  });
+
+  btnByReach.addEventListener('click', function() {
+    mode = 'reach';
+    btnByReach.classList.add('active');
+    btnByFollowers.classList.remove('active');
+    calc();
+  });
+
+  [followers, likes, comments, shares, saves, reach].forEach(function(el) {
+    el.addEventListener('input', calc);
+  });
+
+  calc();
+})();
+</script>
+
+</body>
+</html>

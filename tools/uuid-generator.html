@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UUID Generator - Generate UUID v4 Identifiers Online</title>
+  <meta name="description" content="Generate UUID v4 identifiers in bulk. 100% client-side, generated locally in your browser. Supports single or batch generation.">
+  <meta property="og:title" content="UUID Generator - Free Online Tool">
+  <meta property="og:description" content="Generate UUID v4 identifiers instantly. Batch mode, multiple formats. 100% private.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .uuid-output {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.9rem;
+      min-height: 200px;
+      max-height: 400px;
+      overflow: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.8;
+    }
+    .uuid-output.empty {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>UUID Generator</h1>
+      <p>Generate random UUID v4 identifiers. Use singly or in bulk. All generation happens locally.</p>
+    </div>
+
+    <div class="card">
+      <div class="bar">
+        <label>Format
+          <select id="formatSelect">
+            <option value="dash">Standard (550e8400-e29b-41d4-a716-446655440000)</option>
+            <option value="nodash">No dashes (550e8400e29b41d4a716446655440000)</option>
+            <option value="upper">Uppercase (550E8400-E29B-41D4-A716-446655440000)</option>
+          </select>
+        </label>
+        <label>Count
+          <select id="countSelect">
+            <option value="1">1</option>
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </label>
+        <button class="btn" id="btnGenerate">Generate</button>
+        <button class="btn btn-outline btn-sm" id="btnCopy" disabled>Copy All</button>
+      </div>
+      <div id="output" class="uuid-output empty">Click Generate to create UUIDs.</div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var output = document.getElementById('output');
+  var formatSelect = document.getElementById('formatSelect');
+  var countSelect = document.getElementById('countSelect');
+  var btnGenerate = document.getElementById('btnGenerate');
+  var btnCopy = document.getElementById('btnCopy');
+
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = (crypto.getRandomValues(new Uint32Array(1))[0] % 16);
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
+
+  function formatUUID(uuid, fmt) {
+    if (fmt === 'nodash') return uuid.replace(/-/g, '');
+    if (fmt === 'upper') return uuid.toUpperCase();
+    return uuid;
+  }
+
+  function generate() {
+    var count = parseInt(countSelect.value);
+    var fmt = formatSelect.value;
+    var uuids = [];
+    for (var i = 0; i < count; i++) {
+      uuids.push(formatUUID(uuidv4(), fmt));
+    }
+    output.className = 'uuid-output';
+    output.textContent = uuids.join('\n');
+    btnCopy.disabled = false;
+  }
+
+  btnGenerate.addEventListener('click', generate);
+
+  btnCopy.addEventListener('click', function() {
+    if (!output.textContent) return;
+    navigator.clipboard.writeText(output.textContent).then(function() {
+      var orig = btnCopy.textContent;
+      btnCopy.textContent = 'Copied!';
+      setTimeout(function() { btnCopy.textContent = orig; }, 1500);
+    }).catch(function() {
+      var ta = document.createElement('textarea');
+      ta.value = output.textContent;
+      ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      var orig = btnCopy.textContent;
+      btnCopy.textContent = 'Copied!';
+      setTimeout(function() { btnCopy.textContent = orig; }, 1500);
+    });
+  });
+
+  generate();
+})();
+</script>
+
+</body>
+</html>

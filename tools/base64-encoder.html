@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base64 Encoder & Decoder - Encode/Decode Text Online</title>
+  <meta name="description" content="Encode or decode Base64 text instantly. 100% client-side — your data never leaves your browser. Supports UTF-8 and ASCII.">
+  <meta property="og:title" content="Base64 Encoder & Decoder - Free Online Tool">
+  <meta property="og:description" content="Encode and decode Base64 text instantly. 100% private, processed in your browser.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .io-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 640px) {
+      .io-panel { grid-template-columns: 1fr; }
+    }
+    .io-panel textarea {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      min-height: 300px;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>Base64 Encoder / Decoder</h1>
+      <p>Encode text to Base64 or decode Base64 back to text. Works with UTF-8. Everything processed locally.</p>
+    </div>
+
+    <div class="card">
+      <div class="bar">
+        <button class="btn" id="btnEncode">Encode</button>
+        <button class="btn btn-outline" id="btnDecode">Decode</button>
+        <button class="btn btn-outline btn-sm" id="btnCopyTop" disabled>Copy Result</button>
+        <button class="btn btn-outline btn-sm" id="btnSwap">Swap</button>
+        <button class="btn btn-outline btn-sm" id="btnClear">Clear</button>
+      </div>
+
+      <div id="errorBanner" class="error-banner" style="background:#fff1f0;border:1px solid #ffa39e;border-radius:var(--radius);padding:0.75rem 1rem;color:#cf1322;font-size:0.875rem;display:none;margin-top:0.75rem;"></div>
+
+      <div class="io-panel mt-2">
+        <div>
+          <label>Input</label>
+          <textarea id="input" placeholder="Enter text to encode or Base64 to decode..." autofocus></textarea>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;" id="inputStats"></div>
+        </div>
+        <div>
+          <label>Output</label>
+          <textarea id="output" readonly placeholder="Result will appear here..."></textarea>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;" id="outputStats"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var input = document.getElementById('input');
+  var output = document.getElementById('output');
+  var errorBanner = document.getElementById('errorBanner');
+  var inputStats = document.getElementById('inputStats');
+  var outputStats = document.getElementById('outputStats');
+  var btnEncode = document.getElementById('btnEncode');
+  var btnDecode = document.getElementById('btnDecode');
+  var btnCopyTop = document.getElementById('btnCopyTop');
+  var btnSwap = document.getElementById('btnSwap');
+  var btnClear = document.getElementById('btnClear');
+
+  function updateStats() {
+    inputStats.textContent = input.value.length.toLocaleString() + ' chars';
+    outputStats.textContent = output.value.length.toLocaleString() + ' chars';
+    btnCopyTop.disabled = !output.value;
+  }
+
+  function showError(msg) {
+    errorBanner.textContent = msg;
+    errorBanner.style.display = 'block';
+  }
+
+  function hideError() {
+    errorBanner.style.display = 'none';
+  }
+
+  function encode() {
+    hideError();
+    try {
+      output.value = btoa(unescape(encodeURIComponent(input.value)));
+    } catch (e) {
+      // Fallback: try plain ASCII
+      try {
+        output.value = btoa(input.value);
+      } catch (e2) {
+        showError('Encoding failed: input contains invalid characters.');
+        output.value = '';
+      }
+    }
+    updateStats();
+  }
+
+  function decode() {
+    hideError();
+    try {
+      output.value = decodeURIComponent(escape(atob(input.value.trim())));
+    } catch (e) {
+      try {
+        output.value = atob(input.value.trim());
+      } catch (e2) {
+        showError('Decoding failed: input is not valid Base64.');
+        output.value = '';
+      }
+    }
+    updateStats();
+  }
+
+  btnEncode.addEventListener('click', encode);
+  btnDecode.addEventListener('click', decode);
+
+  btnSwap.addEventListener('click', function() {
+    var tmp = input.value;
+    input.value = output.value;
+    output.value = tmp;
+    updateStats();
+    hideError();
+  });
+
+  btnClear.addEventListener('click', function() {
+    input.value = '';
+    output.value = '';
+    hideError();
+    updateStats();
+  });
+
+  btnCopyTop.addEventListener('click', function() {
+    if (!output.value) return;
+    navigator.clipboard.writeText(output.value).then(function() {
+      var orig = btnCopyTop.textContent;
+      btnCopyTop.textContent = 'Copied!';
+      setTimeout(function() { btnCopyTop.textContent = orig; }, 1500);
+    }).catch(function() {
+      var ta = document.createElement('textarea');
+      ta.value = output.value;
+      ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      var orig = btnCopyTop.textContent;
+      btnCopyTop.textContent = 'Copied!';
+      setTimeout(function() { btnCopyTop.textContent = orig; }, 1500);
+    });
+  });
+
+  input.addEventListener('input', updateStats);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diff Checker - Compare Text Online</title>
+  <meta name="description" content="Compare two texts and find differences instantly. Line-by-line diff with color highlighting. 100% client-side.">
+  <meta property="og:title" content="Diff Checker - Free Online Tool">
+  <meta property="og:description" content="Compare two texts side-by-side and find differences. 100% private, processed in your browser.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .diff-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 640px) {
+      .diff-panels { grid-template-columns: 1fr; }
+    }
+    .diff-panels textarea {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      min-height: 260px;
+      resize: vertical;
+    }
+    .diff-output {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      min-height: 200px;
+      max-height: 500px;
+      overflow: auto;
+      background: #fafafa;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0;
+      line-height: 1.6;
+    }
+    .diff-output .diff-line {
+      padding: 0 0.75rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .diff-output .diff-add {
+      background: #dafbe1;
+      color: #1a7f37;
+    }
+    .diff-output .diff-rem {
+      background: #ffebe9;
+      color: #cf222e;
+    }
+    .diff-output .diff-same {
+      color: var(--text-muted);
+    }
+    .diff-output.empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>Diff Checker</h1>
+      <p>Compare two text blocks and see the differences highlighted line-by-line. All comparison runs locally.</p>
+    </div>
+
+    <div class="card">
+      <div class="diff-panels">
+        <div>
+          <label>Original Text</label>
+          <textarea id="inputA" placeholder="Paste original text here..." autofocus></textarea>
+        </div>
+        <div>
+          <label>New Text</label>
+          <textarea id="inputB" placeholder="Paste new text here..."></textarea>
+        </div>
+      </div>
+
+      <button class="btn mt-2" id="btnCompare">Compare</button>
+
+      <div class="bar mt-2" style="gap:1rem;font-size:0.8rem;">
+        <span><span style="background:#dafbe1;padding:1px 8px;border-radius:3px;">+ Added</span></span>
+        <span><span style="background:#ffebe9;padding:1px 8px;border-radius:3px;">- Removed</span></span>
+      </div>
+
+      <div id="diffOutput" class="diff-output empty mt-2">Differences will appear here.</div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var inputA = document.getElementById('inputA');
+  var inputB = document.getElementById('inputB');
+  var diffOutput = document.getElementById('diffOutput');
+  var btnCompare = document.getElementById('btnCompare');
+
+  function lcs(a, b) {
+    var m = a.length, n = b.length;
+    var dp = [];
+    for (var i = 0; i <= m; i++) {
+      dp[i] = [];
+      for (var j = 0; j <= n; j++) {
+        if (i === 0 || j === 0) dp[i][j] = 0;
+        else if (a[i - 1] === b[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
+        else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+    return dp;
+  }
+
+  function backtrack(dp, a, b, i, j) {
+    if (i === 0 && j === 0) return [];
+    if (i > 0 && j > 0 && a[i - 1] === b[j - 1]) {
+      var prev = backtrack(dp, a, b, i - 1, j - 1);
+      prev.push({ type: 'same', text: a[i - 1] });
+      return prev;
+    }
+    if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+      var p = backtrack(dp, a, b, i, j - 1);
+      p.push({ type: 'add', text: b[j - 1] });
+      return p;
+    }
+    var p2 = backtrack(dp, a, b, i - 1, j);
+    p2.push({ type: 'rem', text: a[i - 1] });
+    return p2;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function compare() {
+    var linesA = inputA.value.split('\n');
+    var linesB = inputB.value.split('\n');
+
+    if (!inputA.value.trim() && !inputB.value.trim()) {
+      diffOutput.className = 'diff-output empty';
+      diffOutput.textContent = 'Differences will appear here.';
+      return;
+    }
+
+    var dp = lcs(linesA, linesB);
+    var ops = backtrack(dp, linesA, linesB, linesA.length, linesB.length);
+
+    var html = '';
+    var curr = '';
+    var currType = null;
+
+    for (var i = 0; i <= ops.length; i++) {
+      var op = i < ops.length ? ops[i] : { type: 'end' };
+      if (op.type !== currType || currType === null) {
+        if (curr && currType !== 'end') {
+          html += '<div class="diff-line diff-' + currType + '">' + (currType === 'add' ? '+' : currType === 'rem' ? '-' : ' ') + ' ' + escapeHtml(curr) + '</div>';
+        }
+        curr = op.text || '';
+        currType = op.type;
+      } else {
+        curr += '\n' + (op.text || '');
+      }
+    }
+
+    diffOutput.className = 'diff-output';
+    diffOutput.innerHTML = html || '<div class="diff-same" style="padding:0.75rem;">No differences found.</div>';
+  }
+
+  btnCompare.addEventListener('click', compare);
+})();
+</script>
+
+</body>
+</html>

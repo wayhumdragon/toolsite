@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Encoder & Decoder - Encode/Decode URLs Online</title>
+  <meta name="description" content="URL encode or decode text instantly. 100% client-side — your data never leaves your browser. Supports encodeURIComponent and full URL encoding.">
+  <meta property="og:title" content="URL Encoder & Decoder - Free Online Tool">
+  <meta property="og:description" content="URL encode and decode text instantly. 100% private, processed in your browser.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .io-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 640px) {
+      .io-panel { grid-template-columns: 1fr; }
+    }
+    .io-panel textarea {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      min-height: 300px;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>URL Encoder / Decoder</h1>
+      <p>Encode or decode URL-encoded strings. Works with full URLs or individual components. All processing is local.</p>
+    </div>
+
+    <div class="card">
+      <div class="bar">
+        <button class="btn" id="btnEncode">Encode</button>
+        <button class="btn btn-outline" id="btnDecode">Decode</button>
+        <button class="btn btn-outline btn-sm" id="btnCopyTop" disabled>Copy Result</button>
+        <button class="btn btn-outline btn-sm" id="btnSwap">Swap</button>
+        <button class="btn btn-outline btn-sm" id="btnClear">Clear</button>
+      </div>
+
+      <div class="io-panel mt-2">
+        <div>
+          <label>Input</label>
+          <textarea id="input" placeholder="Enter text or URL to encode / decode..." autofocus></textarea>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;" id="inputStats"></div>
+        </div>
+        <div>
+          <label>Output</label>
+          <textarea id="output" readonly placeholder="Result will appear here..."></textarea>
+          <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;" id="outputStats"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var input = document.getElementById('input');
+  var output = document.getElementById('output');
+  var inputStats = document.getElementById('inputStats');
+  var outputStats = document.getElementById('outputStats');
+  var btnEncode = document.getElementById('btnEncode');
+  var btnDecode = document.getElementById('btnDecode');
+  var btnCopyTop = document.getElementById('btnCopyTop');
+  var btnSwap = document.getElementById('btnSwap');
+  var btnClear = document.getElementById('btnClear');
+
+  function updateStats() {
+    inputStats.textContent = input.value.length.toLocaleString() + ' chars';
+    outputStats.textContent = output.value.length.toLocaleString() + ' chars';
+    btnCopyTop.disabled = !output.value;
+  }
+
+  function encode() {
+    output.value = encodeURIComponent(input.value);
+    updateStats();
+  }
+
+  function decode() {
+    try {
+      output.value = decodeURIComponent(input.value.trim());
+    } catch (e) {
+      output.value = 'Error: invalid URL-encoded string.';
+    }
+    updateStats();
+  }
+
+  btnEncode.addEventListener('click', encode);
+  btnDecode.addEventListener('click', decode);
+
+  btnSwap.addEventListener('click', function() {
+    var tmp = input.value;
+    input.value = output.value;
+    output.value = tmp;
+    updateStats();
+  });
+
+  btnClear.addEventListener('click', function() {
+    input.value = '';
+    output.value = '';
+    updateStats();
+  });
+
+  btnCopyTop.addEventListener('click', function() {
+    if (!output.value) return;
+    navigator.clipboard.writeText(output.value).then(function() {
+      var orig = btnCopyTop.textContent;
+      btnCopyTop.textContent = 'Copied!';
+      setTimeout(function() { btnCopyTop.textContent = orig; }, 1500);
+    }).catch(function() {
+      var ta = document.createElement('textarea');
+      ta.value = output.value;
+      ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      var orig = btnCopyTop.textContent;
+      btnCopyTop.textContent = 'Copied!';
+      setTimeout(function() { btnCopyTop.textContent = orig; }, 1500);
+    });
+  });
+
+  input.addEventListener('input', updateStats);
+})();
+</script>
+
+</body>
+</html>

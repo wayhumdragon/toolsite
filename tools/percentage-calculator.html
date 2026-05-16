@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Percentage Calculator - Calculate Percentages Online</title>
+  <meta name="description" content="Free online percentage calculator. Find percentage of a number, calculate percentage change, and more. 100% client-side.">
+  <meta property="og:title" content="Percentage Calculator - Free Online Tool">
+  <meta property="og:description" content="Calculate percentages instantly. Find % of a number, percentage change, and more. 100% private.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .calc-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .calc-row input {
+      width: 130px;
+      text-align: center;
+      font-size: 1rem;
+    }
+    .calc-row span { font-size: 0.95rem; color: var(--text-muted); white-space: nowrap; }
+    .result-box {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--primary-light);
+      border-radius: var(--radius);
+      margin-top: 1rem;
+    }
+    .result-box .result-num {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .result-box .result-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+    .mode-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 1.25rem;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .mode-tabs button {
+      flex: 1;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: none;
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+      border-right: 1px solid var(--border);
+    }
+    .mode-tabs button:last-child { border-right: none; }
+    .mode-tabs button.active { background: var(--primary); color: #fff; }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>Percentage Calculator</h1>
+      <p>Quick percentage calculations. All processing is local — nothing leaves your browser.</p>
+    </div>
+
+    <div class="card">
+      <div class="mode-tabs" id="modeTabs">
+        <button data-mode="find" class="active">Find % of a number</button>
+        <button data-mode="what">X is what % of Y</button>
+        <button data-mode="change">% Change</button>
+      </div>
+
+      <div id="panelFind">
+        <div class="calc-row">
+          <span>What is</span>
+          <input type="number" id="findPct" placeholder="10" value="10">
+          <span>% of</span>
+          <input type="number" id="findOf" placeholder="200" value="200">
+          <span>?</span>
+        </div>
+        <div class="result-box" id="resultFind">
+          <div class="result-num">= 20</div>
+          <div class="result-label">10% of 200 = 20</div>
+        </div>
+      </div>
+
+      <div id="panelWhat" style="display:none;">
+        <div class="calc-row">
+          <input type="number" id="whatX" placeholder="50" value="50">
+          <span>is what % of</span>
+          <input type="number" id="whatY" placeholder="200" value="200">
+          <span>?</span>
+        </div>
+        <div class="result-box" id="resultWhat">
+          <div class="result-num">= 25%</div>
+          <div class="result-label">50 is 25% of 200</div>
+        </div>
+      </div>
+
+      <div id="panelChange" style="display:none;">
+        <div class="calc-row">
+          <span>From</span>
+          <input type="number" id="changeFrom" placeholder="100" value="100">
+          <span>to</span>
+          <input type="number" id="changeTo" placeholder="150" value="150">
+        </div>
+        <div class="result-box" id="resultChange">
+          <div class="result-num">= +50%</div>
+          <div class="result-label">Increase from 100 to 150</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var modeTabs = document.getElementById('modeTabs');
+  var panels = {
+    find: document.getElementById('panelFind'),
+    what: document.getElementById('panelWhat'),
+    change: document.getElementById('panelChange')
+  };
+
+  // Mode switching
+  modeTabs.addEventListener('click', function(e) {
+    if (e.target.tagName !== 'BUTTON') return;
+    var mode = e.target.dataset.mode;
+    modeTabs.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
+    e.target.classList.add('active');
+    Object.keys(panels).forEach(function(k) { panels[k].style.display = 'none'; });
+    panels[mode].style.display = 'block';
+  });
+
+  // Find % of number
+  var findPct = document.getElementById('findPct');
+  var findOf = document.getElementById('findOf');
+  var resultFind = document.getElementById('resultFind');
+
+  function updateFind() {
+    var pct = parseFloat(findPct.value) || 0;
+    var of = parseFloat(findOf.value) || 0;
+    var result = (pct / 100) * of;
+    resultFind.querySelector('.result-num').textContent = '= ' + (Math.round(result * 100) / 100).toLocaleString();
+    resultFind.querySelector('.result-label').textContent = pct + '% of ' + of.toLocaleString() + ' = ' + (Math.round(result * 100) / 100).toLocaleString();
+  }
+
+  findPct.addEventListener('input', updateFind);
+  findOf.addEventListener('input', updateFind);
+
+  // X is what % of Y
+  var whatX = document.getElementById('whatX');
+  var whatY = document.getElementById('whatY');
+  var resultWhat = document.getElementById('resultWhat');
+
+  function updateWhat() {
+    var x = parseFloat(whatX.value) || 0;
+    var y = parseFloat(whatY.value) || 1;
+    var result = (x / y) * 100;
+    resultWhat.querySelector('.result-num').textContent = '= ' + (Math.round(result * 100) / 100).toLocaleString() + '%';
+    resultWhat.querySelector('.result-label').textContent = x.toLocaleString() + ' is ' + (Math.round(result * 100) / 100).toLocaleString() + '% of ' + y.toLocaleString();
+  }
+
+  whatX.addEventListener('input', updateWhat);
+  whatY.addEventListener('input', updateWhat);
+
+  // % change
+  var changeFrom = document.getElementById('changeFrom');
+  var changeTo = document.getElementById('changeTo');
+  var resultChange = document.getElementById('resultChange');
+
+  function updateChange() {
+    var from = parseFloat(changeFrom.value) || 0;
+    var to = parseFloat(changeTo.value) || 0;
+    var result = from === 0 ? 0 : ((to - from) / Math.abs(from)) * 100;
+    var sign = result >= 0 ? '+' : '';
+    resultChange.querySelector('.result-num').textContent = '= ' + sign + (Math.round(result * 100) / 100).toLocaleString() + '%';
+    var label = result >= 0 ? 'Increase from ' : 'Decrease from ';
+    resultChange.querySelector('.result-label').textContent = label + from.toLocaleString() + ' to ' + to.toLocaleString();
+  }
+
+  changeFrom.addEventListener('input', updateChange);
+  changeTo.addEventListener('input', updateChange);
+
+  updateFind();
+  updateWhat();
+  updateChange();
+})();
+</script>
+
+</body>
+</html>

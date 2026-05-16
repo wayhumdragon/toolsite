@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Counter - Count Words, Characters & Sentences Online</title>
+  <meta name="description" content="Count words, characters, sentences, paragraphs, and estimate reading time. 100% client-side — your text never leaves your browser.">
+  <meta property="og:title" content="Word Counter - Free Online Tool">
+  <meta property="og:description" content="Count words, characters, sentences and more. 100% private, processed in your browser.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    textarea {
+      font-family: inherit;
+      font-size: 0.95rem;
+      min-height: 280px;
+      resize: vertical;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      text-align: center;
+    }
+    .stat-card .stat-num {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .stat-card .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>Word Counter</h1>
+      <p>Paste your text to get instant word count, character count, reading time, and more. All processing is local.</p>
+    </div>
+
+    <div class="card">
+      <textarea id="input" placeholder="Paste or type your text here..." autofocus></textarea>
+
+      <div class="stat-grid" id="stats"></div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var input = document.getElementById('input');
+  var stats = document.getElementById('stats');
+
+  function countWords(text) {
+    var trimmed = text.trim();
+    if (!trimmed) return 0;
+    return trimmed.split(/\s+/).length;
+  }
+
+  function countSentences(text) {
+    if (!text.trim()) return 0;
+    var matches = text.match(/[.!?]+/g);
+    return matches ? matches.length : 0;
+  }
+
+  function countParagraphs(text) {
+    if (!text.trim()) return 0;
+    return text.split(/\n\s*\n/).filter(function(p) { return p.trim(); }).length;
+  }
+
+  function readingTime(words) {
+    var min = Math.max(1, Math.ceil(words / 200));
+    return min;
+  }
+
+  function update() {
+    var text = input.value;
+    var chars = text.length;
+    var charsNoSpaces = text.replace(/\s/g, '').length;
+    var words = countWords(text);
+    var sentences = countSentences(text);
+    var paragraphs = countParagraphs(text);
+    var readMin = readingTime(words);
+    var lines = text ? text.split('\n').length : 0;
+
+    stats.innerHTML =
+      '<div class="stat-card"><div class="stat-num">' + words.toLocaleString() + '</div><div class="stat-label">Words</div></div>' +
+      '<div class="stat-card"><div class="stat-num">' + chars.toLocaleString() + '</div><div class="stat-label">Characters</div></div>' +
+      '<div class="stat-card"><div class="stat-num">' + charsNoSpaces.toLocaleString() + '</div><div class="stat-label">Chars (no spaces)</div></div>' +
+      '<div class="stat-card"><div class="stat-num">' + sentences.toLocaleString() + '</div><div class="stat-label">Sentences</div></div>' +
+      '<div class="stat-card"><div class="stat-num">' + paragraphs.toLocaleString() + '</div><div class="stat-label">Paragraphs</div></div>' +
+      '<div class="stat-card"><div class="stat-num">' + readMin + ' min</div><div class="stat-label">Reading time</div></div>' +
+      '<div class="stat-card"><div class="stat-num">' + lines.toLocaleString() + '</div><div class="stat-label">Lines</div></div>';
+  }
+
+  input.addEventListener('input', update);
+  update();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lorem Ipsum Generator - Generate Placeholder Text Online</title>
+  <meta name="description" content="Generate Lorem Ipsum placeholder text for your designs. Customize paragraphs, sentences, or words. 100% client-side.">
+  <meta property="og:title" content="Lorem Ipsum Generator - Free Online Tool">
+  <meta property="og:description" content="Generate Lorem Ipsum placeholder text with custom length. 100% private, generated in your browser.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .lorem-output {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 0.95rem;
+      min-height: 200px;
+      max-height: 450px;
+      overflow: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+    .lorem-output.empty {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>Lorem Ipsum Generator</h1>
+      <p>Generate Lorem Ipsum placeholder text. Choose paragraphs, sentences, or words. Everything generated locally.</p>
+    </div>
+
+    <div class="card">
+      <div class="bar">
+        <label>Format
+          <select id="formatSelect">
+            <option value="paragraphs">Paragraphs</option>
+            <option value="sentences">Sentences</option>
+            <option value="words">Words</option>
+          </select>
+        </label>
+        <label>Count
+          <input type="number" id="countInput" value="3" min="1" max="100" style="width:80px;">
+        </label>
+        <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+          <input type="checkbox" id="chkStart" checked> Start with "Lorem ipsum dolor sit amet..."
+        </label>
+        <button class="btn" id="btnGenerate">Generate</button>
+        <button class="btn btn-outline btn-sm" id="btnCopy" disabled>Copy</button>
+      </div>
+
+      <div id="output" class="lorem-output empty mt-2">Click Generate to create placeholder text.</div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var output = document.getElementById('output');
+  var formatSelect = document.getElementById('formatSelect');
+  var countInput = document.getElementById('countInput');
+  var chkStart = document.getElementById('chkStart');
+  var btnGenerate = document.getElementById('btnGenerate');
+  var btnCopy = document.getElementById('btnCopy');
+
+  var WORDS = [
+    'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
+    'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore',
+    'magna', 'aliqua', 'ut', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud',
+    'exercitation', 'ullamco', 'laboris', 'nisi', 'ut', 'aliquip', 'ex', 'ea',
+    'commodo', 'consequat', 'duis', 'aute', 'irure', 'dolor', 'in', 'reprehenderit',
+    'in', 'voluptate', 'velit', 'esse', 'cillum', 'dolore', 'eu', 'fugiat', 'nulla',
+    'pariatur', 'excepteur', 'sint', 'occaecat', 'cupidatat', 'non', 'proident',
+    'sunt', 'in', 'culpa', 'qui', 'officia', 'deserunt', 'mollit', 'anim', 'id',
+    'est', 'laborum', 'praesent', 'sapien', 'massa', 'convallis', 'a', 'pellentesque',
+    'nec', 'egestas', 'non', 'nisi', 'cras', 'ultricies', 'ligula', 'sed', 'magna',
+    'dictum', 'porta', 'quisque', 'vel', 'est', 'tempor', 'quam', 'elementum',
+    'pulvinar', 'etiam', 'non', 'quam', 'lacus', 'suspendisse', 'faucibus',
+    'interdum', 'posuere', 'lorem', 'aliquet', 'sagittis', 'id', 'consectetur',
+    'purus', 'faucibus', 'pulvinar', 'elementum', 'integer', 'enim', 'neque'
+  ];
+
+  function capitalizeFirst(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  function randomWord() {
+    return WORDS[Math.floor(Math.random() * WORDS.length)];
+  }
+
+  function buildSentence(minWords, maxWords) {
+    var len = minWords + Math.floor(Math.random() * (maxWords - minWords + 1));
+    var words = [];
+    for (var i = 0; i < len; i++) {
+      words.push(randomWord());
+    }
+    return capitalizeFirst(words.join(' ')) + '.';
+  }
+
+  function buildParagraph(sentences) {
+    var s = [];
+    for (var i = 0; i < sentences; i++) {
+      s.push(buildSentence(6, 16));
+    }
+    return s.join(' ');
+  }
+
+  function generate() {
+    var format = formatSelect.value;
+    var count = parseInt(countInput.value) || 1;
+    count = Math.max(1, Math.min(100, count));
+
+    var result = '';
+
+    if (format === 'paragraphs') {
+      var paragraphs = [];
+      for (var i = 0; i < count; i++) {
+        paragraphs.push(buildParagraph(3 + Math.floor(Math.random() * 5)));
+      }
+      if (chkStart.checked && paragraphs.length > 0) {
+        paragraphs[0] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' + buildSentence(6, 14) + ' ' + buildSentence(4, 10);
+      }
+      result = paragraphs.join('\n\n');
+    } else if (format === 'sentences') {
+      var sentences = [];
+      for (var i = 0; i < count; i++) {
+        sentences.push(buildSentence(5, 15));
+      }
+      if (chkStart.checked && sentences.length > 0) {
+        sentences[0] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+      }
+      result = sentences.join(' ');
+    } else {
+      var words = [];
+      for (var i = 0; i < count; i++) {
+        words.push(randomWord());
+      }
+      if (chkStart.checked && words.length >= 5) {
+        words[0] = 'lorem';
+        words[1] = 'ipsum';
+        words[2] = 'dolor';
+        words[3] = 'sit';
+        words[4] = 'amet';
+      }
+      result = words.join(' ');
+    }
+
+    output.className = 'lorem-output';
+    output.textContent = result;
+    btnCopy.disabled = false;
+  }
+
+  btnGenerate.addEventListener('click', generate);
+
+  btnCopy.addEventListener('click', function() {
+    if (!output.textContent) return;
+    navigator.clipboard.writeText(output.textContent).then(function() {
+      var orig = btnCopy.textContent;
+      btnCopy.textContent = 'Copied!';
+      setTimeout(function() { btnCopy.textContent = orig; }, 1500);
+    }).catch(function() {
+      var ta = document.createElement('textarea');
+      ta.value = output.textContent;
+      ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      var orig = btnCopy.textContent;
+      btnCopy.textContent = 'Copied!';
+      setTimeout(function() { btnCopy.textContent = orig; }, 1500);
+    });
+  });
+
+  generate();
+})();
+</script>
+
+</body>
+</html>

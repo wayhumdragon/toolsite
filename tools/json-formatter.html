@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Formatter - Pretty Print, Validate & Minify JSON Online</title>
+  <meta name="description" content="Free online JSON formatter to pretty-print, validate, and minify JSON. 100% client-side — your data never leaves your browser.">
+  <meta property="og:title" content="JSON Formatter - Free Online Tool">
+  <meta property="og:description" content="Pretty-print, validate, and minify JSON instantly. 100% private, processed in your browser.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .json-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 640px) {
+      .json-panel { grid-template-columns: 1fr; }
+    }
+    .json-panel textarea {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      min-height: 380px;
+      resize: vertical;
+      tab-size: 2;
+    }
+    .json-output {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      min-height: 380px;
+      max-height: 600px;
+      overflow: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      position: relative;
+    }
+    .json-output.empty {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .json-key   { color: #0550ae; }
+    .json-str   { color: #0a3069; }
+    .json-num   { color: #0550ae; }
+    .json-bool  { color: #cf222e; }
+    .json-null  { color: #6e7781; }
+    .error-banner {
+      background: #fff1f0;
+      border: 1px solid #ffa39e;
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      color: #cf1322;
+      font-size: 0.875rem;
+      display: none;
+      margin-bottom: 1rem;
+    }
+    .stats {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+    .stats span { white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>JSON Formatter</h1>
+      <p>Pretty-print, validate, or minify JSON. Everything runs locally — your data never leaves your browser.</p>
+    </div>
+
+    <div class="card">
+      <div class="bar">
+        <label>Indent
+          <select id="indentSelect">
+            <option value="2">2 spaces</option>
+            <option value="4" selected>4 spaces</option>
+            <option value="0">Tab</option>
+          </select>
+        </label>
+        <div class="bar" style="gap:0.5rem;">
+          <button class="btn" id="btnFormat">Format</button>
+          <button class="btn btn-outline" id="btnMinify">Minify</button>
+          <button class="btn btn-outline btn-sm" id="btnCopy" disabled>Copy</button>
+          <button class="btn btn-outline btn-sm" id="btnClear">Clear</button>
+        </div>
+      </div>
+
+      <div id="errorBanner" class="error-banner"></div>
+
+      <div class="json-panel">
+        <textarea id="input" placeholder='Paste JSON here... e.g. &#010;{"name":"John","age":30}' autofocus></textarea>
+        <div id="output" class="json-output empty">Formatted JSON will appear here.</div>
+      </div>
+
+      <div class="stats" id="stats"></div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var input = document.getElementById('input');
+  var output = document.getElementById('output');
+  var errorBanner = document.getElementById('errorBanner');
+  var stats = document.getElementById('stats');
+  var indentSelect = document.getElementById('indentSelect');
+  var btnFormat = document.getElementById('btnFormat');
+  var btnMinify = document.getElementById('btnMinify');
+  var btnCopy = document.getElementById('btnCopy');
+  var btnClear = document.getElementById('btnClear');
+
+  var lastResult = '';
+  var lastError = null;
+
+  function getIndent() {
+    var v = indentSelect.value;
+    if (v === '0') return '\t';
+    return parseInt(v);
+  }
+
+  function showError(msg) {
+    errorBanner.textContent = msg;
+    errorBanner.style.display = 'block';
+    lastError = msg;
+  }
+
+  function hideError() {
+    errorBanner.style.display = 'none';
+    lastError = null;
+  }
+
+  function highlightJSON(json) {
+    return json.replace(
+      /("(?:\\.|[^"\\])*")\s*:/g,
+      '<span class="json-key">$1</span>:'
+    ).replace(
+      /:\s*("(?:\\.|[^"\\])*")/g,
+      ': <span class="json-str">$1</span>'
+    ).replace(
+      /:\s*(\d+\.?\d*(?:[eE][+-]?\d+)?)/g,
+      ': <span class="json-num">$1</span>'
+    ).replace(
+      /:\s*(true|false)/g,
+      ': <span class="json-bool">$1</span>'
+    ).replace(
+      /:\s*(null)/g,
+      ': <span class="json-null">$1</span>'
+    );
+  }
+
+  function updateStats(text) {
+    var chars = text.length;
+    var lines = text ? text.split('\n').length : 0;
+    stats.innerHTML = '<span>' + chars.toLocaleString() + ' chars</span><span>' + lines.toLocaleString() + ' lines</span>';
+  }
+
+  function setOutput(str) {
+    if (!str) {
+      output.className = 'json-output empty';
+      output.textContent = 'Formatted JSON will appear here.';
+      btnCopy.disabled = true;
+      stats.innerHTML = '';
+      return;
+    }
+    output.className = 'json-output';
+    output.innerHTML = highlightJSON(str);
+    lastResult = str;
+    btnCopy.disabled = false;
+    updateStats(str);
+  }
+
+  function format() {
+    var raw = input.value.trim();
+    if (!raw) {
+      output.className = 'json-output empty';
+      output.textContent = 'Formatted JSON will appear here.';
+      btnCopy.disabled = true;
+      stats.innerHTML = '';
+      hideError();
+      return;
+    }
+    try {
+      var parsed = JSON.parse(raw);
+      var pretty = JSON.stringify(parsed, null, getIndent());
+      setOutput(pretty);
+      hideError();
+    } catch (e) {
+      showError(e.message);
+      output.className = 'json-output empty';
+      output.textContent = 'Invalid JSON — fix the errors above.';
+      btnCopy.disabled = true;
+      stats.innerHTML = '';
+      lastResult = '';
+    }
+  }
+
+  function minify() {
+    var raw = input.value.trim();
+    if (!raw) {
+      format();
+      return;
+    }
+    try {
+      var parsed = JSON.parse(raw);
+      var mini = JSON.stringify(parsed);
+      setOutput(mini);
+      hideError();
+    } catch (e) {
+      showError(e.message);
+      output.className = 'json-output empty';
+      output.textContent = 'Invalid JSON — fix the errors above.';
+      btnCopy.disabled = true;
+      stats.innerHTML = '';
+      lastResult = '';
+    }
+  }
+
+  function copy() {
+    if (!lastResult) return;
+    navigator.clipboard.writeText(lastResult).then(function() {
+      var orig = btnCopy.textContent;
+      btnCopy.textContent = 'Copied!';
+      setTimeout(function() { btnCopy.textContent = orig; }, 1500);
+    }).catch(function() {
+      // Fallback
+      var ta = document.createElement('textarea');
+      ta.value = lastResult;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      var orig = btnCopy.textContent;
+      btnCopy.textContent = 'Copied!';
+      setTimeout(function() { btnCopy.textContent = orig; }, 1500);
+    });
+  }
+
+  function clearAll() {
+    input.value = '';
+    output.className = 'json-output empty';
+    output.textContent = 'Formatted JSON will appear here.';
+    btnCopy.disabled = true;
+    stats.innerHTML = '';
+    hideError();
+    lastResult = '';
+  }
+
+  btnFormat.addEventListener('click', format);
+  btnMinify.addEventListener('click', minify);
+  btnCopy.addEventListener('click', copy);
+  btnClear.addEventListener('click', clearAll);
+  indentSelect.addEventListener('change', format);
+})();
+</script>
+
+</body>
+</html>

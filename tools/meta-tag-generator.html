@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta Tag Generator - Generate SEO Meta Tags & Open Graph Tags</title>
+  <meta name="description" content="Generate complete SEO meta tags and Open Graph tags for your website. Preview how your page will look on Google, Facebook, and Twitter.">
+  <meta property="og:title" content="Meta Tag Generator - Free Online Tool">
+  <meta property="og:description" content="Generate SEO meta tags and social media preview cards. Preview Google, Facebook, and Twitter snippets.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .meta-output {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.8rem;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: var(--radius);
+      padding: 1rem;
+      max-height: 350px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+    .preview-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .preview-google {
+      padding: 1rem;
+    }
+    .preview-google .g-title {
+      color: #1a0dab;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    .preview-google .g-url {
+      color: #006621;
+      font-size: 0.8rem;
+    }
+    .preview-google .g-desc {
+      color: #545454;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    .preview-fb {
+      border: 1px solid #dadde1;
+      background: #f2f3f5;
+    }
+    .preview-fb .fb-img {
+      height: 160px;
+      background: #e4e6eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #65676b;
+      font-size: 0.8rem;
+    }
+    .preview-fb .fb-body {
+      padding: 0.6rem 0.75rem;
+    }
+    .preview-fb .fb-url {
+      color: #65676b;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+    .preview-fb .fb-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-top: 2px;
+    }
+    .preview-fb .fb-desc {
+      color: #65676b;
+      font-size: 0.8rem;
+      margin-top: 2px;
+    }
+    .preview-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+      margin-bottom: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>Meta Tag Generator</h1>
+      <p>Fill in the fields below to generate complete SEO meta tags. See live previews for Google, Facebook, and Twitter.</p>
+    </div>
+
+    <div class="card">
+      <div style="display:grid; gap:0.75rem;">
+        <div>
+          <label for="inTitle">Page Title</label>
+          <input type="text" id="inTitle" placeholder="My Awesome Page" autofocus>
+        </div>
+        <div>
+          <label for="inDesc">Description</label>
+          <input type="text" id="inDesc" placeholder="A short description of this page (under 160 chars).">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+          <div>
+            <label for="inUrl">Canonical URL</label>
+            <input type="text" id="inUrl" placeholder="https://example.com/page">
+          </div>
+          <div>
+            <label for="inImage">OG Image URL</label>
+            <input type="text" id="inImage" placeholder="https://example.com/og-image.png">
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+          <div>
+            <label for="inSite">Site Name</label>
+            <input type="text" id="inSite" placeholder="My Website">
+          </div>
+          <div>
+            <label for="inTwitter">Twitter Handle</label>
+            <input type="text" id="inTwitter" placeholder="@handle">
+          </div>
+        </div>
+      </div>
+
+      <div class="bar mt-2">
+        <button class="btn" id="btnGenerate">Generate Tags</button>
+        <button class="btn btn-outline btn-sm" id="btnCopy" disabled>Copy Tags</button>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.25rem;">
+        <div>
+          <div class="preview-label">Google Preview</div>
+          <div class="preview-card preview-google" id="googlePreview">
+            <div class="g-title">Page Title</div>
+            <div class="g-url">https://example.com/</div>
+            <div class="g-desc">Page description will appear here.</div>
+          </div>
+
+          <div class="preview-label" style="margin-top:1rem;">Facebook / LinkedIn</div>
+          <div class="preview-card preview-fb" id="fbPreview">
+            <div class="fb-img" id="fbImg">OG Image Preview</div>
+            <div class="fb-body">
+              <div class="fb-url" id="fbUrl">example.com</div>
+              <div class="fb-title" id="fbTitle">Page Title</div>
+              <div class="fb-desc" id="fbDesc">Description preview.</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="preview-label">Generated HTML</div>
+          <div class="meta-output" id="metaOutput"><span style="color:#888;">Fill in the form and click Generate.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var inTitle = document.getElementById('inTitle');
+  var inDesc = document.getElementById('inDesc');
+  var inUrl = document.getElementById('inUrl');
+  var inImage = document.getElementById('inImage');
+  var inSite = document.getElementById('inSite');
+  var inTwitter = document.getElementById('inTwitter');
+  var metaOutput = document.getElementById('metaOutput');
+  var btnGenerate = document.getElementById('btnGenerate');
+  var btnCopy = document.getElementById('btnCopy');
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function generate() {
+    var title = inTitle.value.trim() || 'Page Title';
+    var desc = inDesc.value.trim() || 'Page description.';
+    var url = inUrl.value.trim() || 'https://example.com';
+    var image = inImage.value.trim() || '';
+    var site = inSite.value.trim() || '';
+    var twitter = inTwitter.value.trim() || '@handle';
+
+    var tags = [];
+    tags.push('<title>' + escapeHtml(title) + '</title>');
+    tags.push('<meta name="description" content="' + escapeHtml(desc) + '">');
+
+    // Open Graph
+    tags.push('<meta property="og:title" content="' + escapeHtml(title) + '">');
+    tags.push('<meta property="og:description" content="' + escapeHtml(desc) + '">');
+    tags.push('<meta property="og:url" content="' + escapeHtml(url) + '">');
+    tags.push('<meta property="og:type" content="website">');
+    if (site) tags.push('<meta property="og:site_name" content="' + escapeHtml(site) + '">');
+    if (image) tags.push('<meta property="og:image" content="' + escapeHtml(image) + '">');
+
+    // Twitter
+    tags.push('<meta name="twitter:card" content="summary_large_image">');
+    tags.push('<meta name="twitter:title" content="' + escapeHtml(title) + '">');
+    tags.push('<meta name="twitter:description" content="' + escapeHtml(desc) + '">');
+    if (image) tags.push('<meta name="twitter:image" content="' + escapeHtml(image) + '">');
+    if (twitter) tags.push('<meta name="twitter:site" content="' + escapeHtml(twitter) + '">');
+
+    // Canonical
+    tags.push('<link rel="canonical" href="' + escapeHtml(url) + '">');
+
+    metaOutput.textContent = tags.join('\n');
+    btnCopy.disabled = false;
+
+    // Update previews
+    document.querySelector('#googlePreview .g-title').textContent = title;
+    document.querySelector('#googlePreview .g-url').textContent = url;
+    document.querySelector('#googlePreview .g-desc').textContent = desc;
+
+    var hostname = url.replace(/^https?:\/\//, '').split('/')[0];
+    document.getElementById('fbUrl').textContent = hostname.toUpperCase();
+    document.getElementById('fbTitle').textContent = title;
+    document.getElementById('fbDesc').textContent = desc;
+    if (image) {
+      document.getElementById('fbImg').innerHTML = '<img src="' + escapeHtml(image) + '" alt="OG Image" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent=\'OG Image Preview\'">';
+    } else {
+      document.getElementById('fbImg').textContent = 'OG Image Preview';
+    }
+  }
+
+  btnGenerate.addEventListener('click', generate);
+
+  btnCopy.addEventListener('click', function() {
+    if (!metaOutput.textContent) return;
+    navigator.clipboard.writeText(metaOutput.textContent).then(function() {
+      var orig = btnCopy.textContent;
+      btnCopy.textContent = 'Copied!';
+      setTimeout(function() { btnCopy.textContent = orig; }, 1500);
+    }).catch(function() {
+      var ta = document.createElement('textarea');
+      ta.value = metaOutput.textContent;
+      ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      var orig = btnCopy.textContent;
+      btnCopy.textContent = 'Copied!';
+      setTimeout(function() { btnCopy.textContent = orig; }, 1500);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

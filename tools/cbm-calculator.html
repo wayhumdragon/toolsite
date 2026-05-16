@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBM Calculator - Calculate Cubic Meters for Shipping</title>
+  <meta name="description" content="Free online CBM calculator for shipping and freight. Calculate cubic meters, volume weight, and total cargo volume. 100% client-side.">
+  <meta property="og:title" content="CBM Calculator - Free Online Tool">
+  <meta property="og:description" content="Calculate cubic meters (CBM) for shipping and freight instantly. Multi-item support. 100% private.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .cbm-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .cbm-table th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0.4rem 0.5rem;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    .cbm-table td {
+      padding: 0.35rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .cbm-table input {
+      width: 80px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .cbm-table .col-qty input { width: 55px; }
+    .cbm-table .col-act { width: 40px; text-align: center; }
+    .cbm-table .col-act button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--error);
+      padding: 0;
+    }
+    .total-row {
+      background: var(--primary-light);
+      font-weight: 700;
+    }
+    .total-row td { padding: 0.6rem 0.5rem; }
+    .dim-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .dim-row input { flex: 1; min-width: 60px; }
+  </style>
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>CBM Calculator</h1>
+      <p>Calculate cubic meters for shipping, freight, and logistics. Add multiple items to get total cargo volume. All local.</p>
+    </div>
+
+    <div class="card">
+      <div class="bar">
+        <label>Unit
+          <select id="unitSelect">
+            <option value="cm">Centimeters (cm)</option>
+            <option value="m">Meters (m)</option>
+            <option value="in">Inches (in)</option>
+            <option value="ft">Feet (ft)</option>
+          </select>
+        </label>
+        <button class="btn btn-outline btn-sm" id="btnAddItem">+ Add Item</button>
+        <button class="btn btn-outline btn-sm" id="btnClear">Clear All</button>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="cbm-table" id="itemTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Length</th>
+              <th>Width</th>
+              <th>Height</th>
+              <th class="col-qty">Qty</th>
+              <th>CBM</th>
+              <th>kg (Vol. Wt)</th>
+              <th class="col-act"></th>
+            </tr>
+          </thead>
+          <tbody id="itemBody"></tbody>
+          <tfoot id="itemFoot"></tfoot>
+        </table>
+      </div>
+
+      <div style="margin-top:1rem;display:flex;gap:2rem;flex-wrap:wrap;font-size:0.9rem;">
+        <div><strong>Total CBM:</strong> <span id="totalCBM" style="color:var(--primary);font-size:1.2rem;">0.000</span></div>
+        <div><strong>Total Vol. Weight:</strong> <span id="totalWeight">0</span> kg</div>
+      </div>
+      <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem;">Volume weight = CBM × 167 (standard DIM factor for air freight). 1 CBM = 167 kg volumetric weight.</p>
+    </div>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script>
+(function() {
+  var unitSelect = document.getElementById('unitSelect');
+  var itemBody = document.getElementById('itemBody');
+  var itemFoot = document.getElementById('itemFoot');
+  var btnAddItem = document.getElementById('btnAddItem');
+  var btnClear = document.getElementById('btnClear');
+  var totalCBM = document.getElementById('totalCBM');
+  var totalWeight = document.getElementById('totalWeight');
+
+  var itemCount = 0;
+
+  function toMeters(val, unit) {
+    switch (unit) {
+      case 'cm': return val / 100;
+      case 'm':  return val;
+      case 'in': return val * 0.0254;
+      case 'ft': return val * 0.3048;
+    }
+    return val;
+  }
+
+  function addItem(l, w, h, q) {
+    itemCount++;
+    var len = l || '';
+    var wid = w || '';
+    var hei = h || '';
+    var qty = q || 1;
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + itemCount + '</td>' +
+      '<td><input type="number" class="dim-l" value="' + len + '" placeholder="0" min="0" step="0.1"></td>' +
+      '<td><input type="number" class="dim-w" value="' + wid + '" placeholder="0" min="0" step="0.1"></td>' +
+      '<td><input type="number" class="dim-h" value="' + hei + '" placeholder="0" min="0" step="0.1"></td>' +
+      '<td class="col-qty"><input type="number" class="dim-q" value="' + qty + '" placeholder="1" min="1"></td>' +
+      '<td class="item-cbm">0.000</td>' +
+      '<td class="item-wt">0</td>' +
+      '<td class="col-act"><button class="btn-del">&times;</button></td>';
+    itemBody.appendChild(tr);
+
+    var inputs = tr.querySelectorAll('input');
+    inputs.forEach(function(inp) {
+      inp.addEventListener('input', recalc);
+    });
+    tr.querySelector('.btn-del').addEventListener('click', function() {
+      tr.remove();
+      recalc();
+    });
+    recalc();
+  }
+
+  function recalc() {
+    var unit = unitSelect.value;
+    var rows = itemBody.querySelectorAll('tr');
+    var total = 0;
+    rows.forEach(function(tr) {
+      var l = parseFloat(tr.querySelector('.dim-l').value) || 0;
+      var w = parseFloat(tr.querySelector('.dim-w').value) || 0;
+      var h = parseFloat(tr.querySelector('.dim-h').value) || 0;
+      var q = parseInt(tr.querySelector('.dim-q').value) || 1;
+      var cbm = toMeters(l, unit) * toMeters(w, unit) * toMeters(h, unit) * q;
+      tr.querySelector('.item-cbm').textContent = cbm.toFixed(4);
+      tr.querySelector('.item-wt').textContent = Math.round(cbm * 167);
+      total += cbm;
+    });
+    totalCBM.textContent = total.toFixed(4);
+    totalWeight.textContent = Math.round(total * 167).toLocaleString();
+
+    if (rows.length === 0) {
+      itemFoot.innerHTML = '';
+    } else {
+      itemFoot.innerHTML = '<tr class="total-row"><td colspan="5">Total</td><td>' + total.toFixed(4) + ' m³</td><td>' + Math.round(total * 167).toLocaleString() + ' kg</td><td></td></tr>';
+    }
+  }
+
+  btnAddItem.addEventListener('click', function() { addItem(); });
+  btnClear.addEventListener('click', function() {
+    itemBody.innerHTML = '';
+    itemFoot.innerHTML = '';
+    itemCount = 0;
+    totalCBM.textContent = '0.000';
+    totalWeight.textContent = '0';
+  });
+  unitSelect.addEventListener('change', recalc);
+
+  // Start with 1 item
+  addItem();
+})();
+</script>
+
+</body>
+</html>

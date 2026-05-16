@@ -15,11 +15,8 @@
   var h =
     '<header class="site-header">' +
     '<div class="container">' +
-    '<a href="/" class="logo"><span class="logo-icon">&#x1F6E0;</span>ToolBox</a>' +
-    '<nav class="nav">' +
-    '<a href="/">Home</a>' +
-    '<a href="/#tools">All Tools</a>' +
-    '</nav>' +
+    '<a href="' + (location.pathname.includes('/tools/') ? '../index.html' : 'index.html') + '" class="logo"><span class="logo-icon">&#x1F6E0;</span>ToolBox</a>' +
+    '<span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>' +
     '</div>' +
     '</header>';
 
