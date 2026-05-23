@@ -701,6 +701,41 @@ details.faq-item .faq-answer {
 }
 .blog-back:hover { text-decoration: underline; }
 
+/* ── Trust section ── */
+.trust-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  justify-content: center;
+}
+
+.trust-item {
+  text-align: center;
+  padding: 1.25rem 1rem;
+}
+
+.trust-icon {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.trust-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+  color: var(--text);
+}
+
+.trust-item p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
 /* ── Homepage blog section ── */
 .home-blog {
   margin-top: 2.5rem;
