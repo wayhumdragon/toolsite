@@ -1,0 +1,19 @@
+# Cloudflare Pages redirects & headers
+# https://developers.cloudflare.com/pages/configuration/redirects/
+
+# 404 fallback
+/* /404.html 404
+
+# Security headers
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Cache static assets (1 year)
+*.css
+  Cache-Control: public, max-age=31536000, immutable
+*.js
+  Cache-Control: public, max-age=31536000, immutable
+*.html
+  Cache-Control: public, max-age=0, must-revalidate
