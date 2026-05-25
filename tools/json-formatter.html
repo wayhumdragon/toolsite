@@ -73,7 +73,7 @@
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "JSON Formatter",
-    "url": "https://REPLACE_WITH_YOUR_DOMAIN/tools/json-formatter.html",
+    "url": "https://wayhum.com/tools/json-formatter.html",
     "description": "Free online JSON formatter, validator, and minifier. Pretty-print, validate syntax, and compress JSON data. 100% client-side processing.",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
@@ -81,6 +81,29 @@
     "browserRequirements": "Requires JavaScript"
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Is my JSON data sent to a server?", "acceptedAnswer": { "@type": "Answer", "text": "No. All formatting, validation, and minification run entirely in your browser via JavaScript. Your data stays on your device at all times. You can verify this by disconnecting from the internet — the tool works fully offline after the page loads." } },
+      { "@type": "Question", "name": "What JSON errors does the validator catch?", "acceptedAnswer": { "@type": "Answer", "text": "The validator catches all standard JSON syntax errors: trailing commas, missing quotes around keys, unescaped characters, single quotes (JSON requires double quotes), incomplete objects or arrays, and invalid values like undefined or NaN. The exact error position is highlighted to help you fix it quickly." } },
+      { "@type": "Question", "name": "Does this support JSON5 or JSON with comments?", "acceptedAnswer": { "@type": "Answer", "text": "This tool validates against the strict JSON specification (RFC 8259). JSON5 (which allows comments, trailing commas, and unquoted keys) is not supported by the validator. If you paste JSON5, the validator will flag it as invalid. For standard JSON, it works perfectly." } },
+      { "@type": "Question", "name": "Does the formatter work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The JSON Formatter is fully responsive and works on all modern browsers including iOS Safari and Android Chrome. The text area and buttons adapt to smaller screens." } }
+    ]
+  }
+  </script>
+  <link rel="canonical" href="https://wayhum.com/tools/json-formatter.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://wayhum.com/tools/json-formatter.html">
+  <meta property="og:site_name" content="ToolBox">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="JSON Formatter - Pretty Print, Validate & Minify JSON Online">
+  <meta name="twitter:description" content="Pretty-print, validate, and minify JSON instantly. 100% private, processed in your browser.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:image" content="https://wayhum.com/og-image.svg">
+  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
 </head>
 <body>
 

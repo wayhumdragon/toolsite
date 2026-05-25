@@ -1,123 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/</loc>
+    <loc>https://wayhum.com/</loc>
     <changefreq>weekly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/image-converter.html</loc>
+    <loc>https://wayhum.com/tools/image-converter.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/qrcode.html</loc>
+    <loc>https://wayhum.com/tools/qrcode.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/json-formatter.html</loc>
+    <loc>https://wayhum.com/tools/json-formatter.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/password-generator.html</loc>
+    <loc>https://wayhum.com/tools/password-generator.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/uuid-generator.html</loc>
+    <loc>https://wayhum.com/tools/uuid-generator.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/base64-encoder.html</loc>
+    <loc>https://wayhum.com/tools/base64-encoder.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/url-encoder.html</loc>
+    <loc>https://wayhum.com/tools/url-encoder.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://wayhum.com/tools/word-counter.html</loc>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/case-converter.html</loc>
+    <loc>https://wayhum.com/tools/markdown-preview.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/word-counter.html</loc>
+    <loc>https://wayhum.com/tools/diff-checker.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/markdown-preview.html</loc>
+    <loc>https://wayhum.com/tools/lorem-ipsum.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/diff-checker.html</loc>
+    <loc>https://wayhum.com/tools/meta-tag-generator.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/lorem-ipsum.html</loc>
+    <loc>https://wayhum.com/tools/percentage-calculator.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/meta-tag-generator.html</loc>
+    <loc>https://wayhum.com/tools/bmi-calculator.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/percentage-calculator.html</loc>
+    <loc>https://wayhum.com/tools/social-image-resizer.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/bmi-calculator.html</loc>
+    <loc>https://wayhum.com/tools/cbm-calculator.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/social-image-resizer.html</loc>
+    <loc>https://wayhum.com/tools/engagement-rate-calculator.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/cbm-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/tools/engagement-rate-calculator.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/blog/</loc>
+    <loc>https://wayhum.com/blog/</loc>
     <changefreq>weekly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/blog/posts/jpg-to-png-no-upload.html</loc>
+    <loc>https://wayhum.com/blog/posts/jpg-to-png-no-upload.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/blog/posts/what-is-json-format-validate-debug.html</loc>
+    <loc>https://wayhum.com/blog/posts/what-is-json-format-validate-debug.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/blog/posts/create-qr-code-wifi-url.html</loc>
+    <loc>https://wayhum.com/blog/posts/create-qr-code-wifi-url.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://REPLACE_WITH_YOUR_DOMAIN/blog/posts/password-entropy-strong-passwords.html</loc>
+    <loc>https://wayhum.com/blog/posts/password-entropy-strong-passwords.html</loc>
     <changefreq>monthly</changefreq>
+    <lastmod>2026-05-25</lastmod>
     <priority>0.7</priority>
   </url>
 </urlset>

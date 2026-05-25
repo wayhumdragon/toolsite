@@ -16,7 +16,7 @@ A 100% client-side web tools collection. All computation happens in the browser 
 ├── global.css          All shared styles (design tokens, buttons, forms, cards, layout)
 ├── layout.js           Injects header + footer + GA into every page
 ├── robots.txt          SEO
-├── sitemap.xml         SEO (replace REPLACE_WITH_YOUR_DOMAIN)
+├── sitemap.xml         SEO (replace wayhum.com)
 ├── CLAUDE.md           This file
 └── tools/
     ├── image-converter.html   Multi-format converter (JPG/PNG/WebP)
@@ -48,5 +48,5 @@ Placeholder in `layout.js` at `GA_MEASUREMENT_ID`. When you have a real GA4 ID, 
 
 ## SEO Notes
 - Each tool page is a landing page — unique title, description, and h1 are mandatory.
-- `sitemap.xml` and `robots.txt` have `REPLACE_WITH_YOUR_DOMAIN` — replace before launch.
+- `sitemap.xml` and `robots.txt` have `wayhum.com` — replace before launch.
 - Coming Soon cards on homepage are placeholders; replace them as tools are built.

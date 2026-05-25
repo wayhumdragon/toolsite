@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f8f9fb"/>
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="600" y="280" font-size="72" font-weight="800" font-family="system-ui, sans-serif" text-anchor="middle" fill="#1e293b">ToolBox</text>
+  <text x="600" y="360" font-size="36" font-family="system-ui, sans-serif" text-anchor="middle" fill="#64748b">Free online tools — 100% private, runs in your browser</text>
+  <circle cx="600" cy="480" r="4" fill="#3b82f6"/>
+</svg>

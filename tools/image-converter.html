@@ -13,7 +13,7 @@
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Image Converter",
-    "url": "https://REPLACE_WITH_YOUR_DOMAIN/tools/image-converter.html",
+    "url": "https://wayhum.com/tools/image-converter.html",
     "description": "Convert images between JPG, PNG, WebP and AVIF formats directly in your browser. Batch processing, quality control, no upload required.",
     "applicationCategory": "MultimediaApplication",
     "operatingSystem": "Any",
@@ -21,6 +21,30 @@
     "browserRequirements": "Requires JavaScript"
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Are my images really private? Are they uploaded anywhere?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, completely private. All image processing uses the HTML5 Canvas API and runs locally in your browser. Your images never leave your device — nothing is uploaded to any server. You can verify this by disconnecting from the internet after the page loads; the converter works fully offline." } },
+      { "@type": "Question", "name": "What is AVIF and should I use it?", "acceptedAnswer": { "@type": "Answer", "text": "AVIF (AV1 Image File Format) is a next-gen image format based on the AV1 video codec. It achieves 30-50% smaller file sizes than WebP at equivalent quality. Use AVIF for modern sites; provide a WebP or JPEG fallback via picture element for older browsers." } },
+      { "@type": "Question", "name": "Why does the quality slider have no effect on PNG output?", "acceptedAnswer": { "@type": "Answer", "text": "PNG uses lossless compression, which means every pixel is preserved exactly as-is. The quality setting only applies to lossy formats (JPG and WebP). If you need a smaller PNG file, try reducing the image dimensions or converting to WebP instead." } },
+      { "@type": "Question", "name": "Which format should I use for my website?", "acceptedAnswer": { "@type": "Answer", "text": "WebP is the recommended format for web use — it produces files 25-35% smaller than equivalent JPG or PNG and is supported in all modern browsers. Use PNG for images requiring transparency or sharp edges (logos, icons, screenshots). Use JPG if you need maximum compatibility." } },
+      { "@type": "Question", "name": "Does this tool work on mobile devices?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Image Converter works in any modern browser on iOS and Android. You can convert images directly from your phone's photo library. No app installation required." } }
+    ]
+  }
+  </script>
+  <link rel="canonical" href="https://wayhum.com/tools/image-converter.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://wayhum.com/tools/image-converter.html">
+  <meta property="og:site_name" content="ToolBox">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Image Converter - Convert JPG, PNG, WebP, AVIF">
+  <meta name="twitter:description" content="Convert images between JPG, PNG, WebP and AVIF formats directly in your browser. 100% private, no uploads.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:image" content="https://wayhum.com/og-image.svg">
+  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
 </head>
 <body>
 
