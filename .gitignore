@@ -3,3 +3,5 @@
 *.webp
 .DS_Store
 Thumbs.db
+.claude/
+filters.xml
