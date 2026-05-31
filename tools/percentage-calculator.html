@@ -94,13 +94,31 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Percentage Calculator - Calculate Percentages Online">
   <meta name="twitter:description" content="Calculate percentages instantly. Find % of a number, percentage change, and more. 100% private.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wayhum.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Percentage Calculator", "item": "https://wayhum.com/tools/percentage-calculator.html" }
+    ]
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:image" content="https://wayhum.com/og-image.svg">
-  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+  <meta property="og:image" content="https://wayhum.com/images/wayhum.jpg">
+  <meta name="twitter:image" content="https://wayhum.com/images/wayhum.jpg">
 </head>
 <body>
 
-<header id="site-header"></header>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../images/wayhum.jpg" alt="ToolBox" class="logo-img">ToolBox</a>
+    <nav class="header-nav">
+      <a href="../blog/">Blog</a>
+    </nav>
+    <span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>
+  </div>
+</header>
 
 <main>
   <div class="tool-wrap">
@@ -230,7 +248,12 @@
   </div>
 </main>
 
-<footer id="site-footer"></footer>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 ToolBox. All tools run locally in your browser.</p>
+    <p class="tagline">Your files are never uploaded. 100% private.</p>
+  </div>
+</footer>
 
 <script src="../layout.js"></script>
 <script>

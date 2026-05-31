@@ -75,13 +75,43 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="CBM Calculator - Calculate Cubic Meters for Shipping">
   <meta name="twitter:description" content="Calculate cubic meters (CBM) for shipping and freight instantly. Multi-item support. 100% private.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What is CBM and how is it calculated?", "acceptedAnswer": { "@type": "Answer", "text": "CBM (Cubic Meter) is the standard unit for measuring cargo volume in shipping and freight. It's calculated by multiplying length x width x height of a package in meters. One CBM equals 1,000,000 cubic centimeters. For multiple items, you sum the CBM of each to get total cargo volume." } },
+      { "@type": "Question", "name": "What is volumetric weight and how does it relate to CBM?", "acceptedAnswer": { "@type": "Answer", "text": "Volumetric (dimensional) weight accounts for the space a package occupies, not just its actual weight. Air freight: Volumetric Weight (kg) = CBM x 167 (DIM divisor). Sea freight uses ~1,000 kg per CBM. Carriers charge based on whichever is greater — actual weight or volumetric weight." } },
+      { "@type": "Question", "name": "Can I enter dimensions in different units?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The CBM Calculator supports centimeters (cm), meters (m), inches (in), and feet (ft). Select your preferred unit for each dimension, and the tool automatically converts all measurements before calculating." } },
+      { "@type": "Question", "name": "Is my data stored or shared?", "acceptedAnswer": { "@type": "Answer", "text": "No. All calculations happen locally in your browser. Your cargo dimensions never leave your device." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wayhum.com/" },
+      { "@type": "ListItem", "position": 2, "name": "CBM Calculator", "item": "https://wayhum.com/tools/cbm-calculator.html" }
+    ]
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:image" content="https://wayhum.com/og-image.svg">
-  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+  <meta property="og:image" content="https://wayhum.com/images/wayhum.jpg">
+  <meta name="twitter:image" content="https://wayhum.com/images/wayhum.jpg">
 </head>
 <body>
 
-<header id="site-header"></header>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../images/wayhum.jpg" alt="ToolBox" class="logo-img">ToolBox</a>
+    <nav class="header-nav">
+      <a href="../blog/">Blog</a>
+    </nav>
+    <span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>
+  </div>
+</header>
 
 <main>
   <div class="tool-wrap">
@@ -130,9 +160,82 @@
       <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem;">Volume weight = CBM × 167 (standard DIM factor for air freight). 1 CBM = 167 kg volumetric weight.</p>
     </div>
   </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The CBM Calculator helps shippers, freight forwarders, and e-commerce sellers calculate cargo volume in cubic meters (CBM). CBM is the standard unit used by shipping carriers (sea and air freight) to determine freight charges. Knowing your total CBM upfront lets you accurately quote shipping costs, compare carrier rates, and optimize container loading.</p>
+        <p>This tool supports <strong>multiple items</strong> — add rows for each package in your shipment — and calculates <strong>volumetric weight</strong> using the standard DIM factor of 167 kg/CBM (the standard for air freight). Dimensions can be entered in centimeters, meters, inches, or feet. All calculations run locally in your browser.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Select your unit.</strong> Choose cm, m, inch, or ft from the unit dropdown for each measurement type.</li>
+          <li><strong>Enter dimensions.</strong> Input length, width, height, and quantity for each package. Click "+ Add Item" to add more packages for multi-item shipments.</li>
+          <li><strong>View totals.</strong> Total CBM and volumetric weight update instantly as you enter your dimensions. Use these figures to get accurate freight quotes from carriers.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>What is CBM and how is it calculated?</summary>
+        <div class="faq-answer">
+          <p>CBM (Cubic Meter) = Length × Width × Height (all in meters). It's the standard unit for measuring cargo volume in shipping. One CBM = 1,000,000 cubic centimeters.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>What is volumetric weight?</summary>
+        <div class="faq-answer">
+          <p>Volumetric weight = CBM × 167 (air freight DIM divisor). Carriers charge based on whichever is greater — actual weight or volumetric weight. This prevents light-but-bulky cargo from being undercharged.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Can I enter dimensions in different units?</summary>
+        <div class="faq-answer">
+          <p>Yes. Support for cm, m, inches, and feet is built in. The tool automatically converts to meters for CBM calculation.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Is my data stored or shared?</summary>
+        <div class="faq-answer">
+          <p>No. All calculations happen locally in your browser. Your cargo dimensions never leave your device.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="percentage-calculator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4CA;</span> Percentage Calculator
+        </a>
+        <a href="bmi-calculator.html" class="related-tool-link">
+          <span class="rt-icon">&#x2695;</span> BMI Calculator
+        </a>
+        <a href="engagement-rate-calculator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4CA;</span> Engagement Rate Calc
+        </a>
+      </div>
+    </section>
+
+  </div>
 </main>
 
-<footer id="site-footer"></footer>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 ToolBox. All tools run locally in your browser.</p>
+    <p class="tagline">Your files are never uploaded. 100% private.</p>
+  </div>
+</footer>
 
 <script src="../layout.js"></script>
 <script>

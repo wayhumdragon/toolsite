@@ -106,13 +106,43 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Meta Tag Generator - Generate SEO Meta Tags & Open Graph Tags">
   <meta name="twitter:description" content="Generate SEO meta tags and social media preview cards. Preview Google, Facebook, and Twitter snippets.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What are meta tags and why do they matter for SEO?", "acceptedAnswer": { "@type": "Answer", "text": "Meta tags are HTML elements that provide information about a web page to search engines and social media platforms. Key tags include the title tag (appears in search results), meta description (snippet shown below the title), and Open Graph tags (control how your page looks when shared on Facebook, LinkedIn, and Twitter). Well-crafted meta tags improve click-through rates and social sharing engagement." } },
+      { "@type": "Question", "name": "What's the difference between OG tags and Twitter cards?", "acceptedAnswer": { "@type": "Answer", "text": "Open Graph (OG) tags were created by Facebook and are used by most social platforms including LinkedIn, Pinterest, and Slack. Twitter has its own card system with twitter:card, twitter:title, and twitter:image tags. If Twitter tags are absent, Twitter falls back to OG tags. For optimal cross-platform sharing, include both sets of tags in your page." } },
+      { "@type": "Question", "name": "Is the data I enter stored anywhere?", "acceptedAnswer": { "@type": "Answer", "text": "No. The Meta Tag Generator runs entirely in your browser. The title, description, URL, and other values you enter are processed locally and never sent to any server. The preview generation is also done client-side using JavaScript." } },
+      { "@type": "Question", "name": "Does this work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Meta Tag Generator is fully responsive and works on all modern browsers including iOS Safari and Android Chrome." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wayhum.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Meta Tag Generator", "item": "https://wayhum.com/tools/meta-tag-generator.html" }
+    ]
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:image" content="https://wayhum.com/og-image.svg">
-  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+  <meta property="og:image" content="https://wayhum.com/images/wayhum.jpg">
+  <meta name="twitter:image" content="https://wayhum.com/images/wayhum.jpg">
 </head>
 <body>
 
-<header id="site-header"></header>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../images/wayhum.jpg" alt="ToolBox" class="logo-img">ToolBox</a>
+    <nav class="header-nav">
+      <a href="../blog/">Blog</a>
+    </nav>
+    <span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>
+  </div>
+</header>
 
 <main>
   <div class="tool-wrap">
@@ -185,9 +215,86 @@
       </div>
     </div>
   </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The Meta Tag Generator helps you create a complete set of SEO and social media meta tags for any web page. Meta tags are crucial for search engine visibility and social sharing — they control how your page title appears in Google results, what description shows as the snippet, and how your page looks when shared on Facebook, LinkedIn, and Twitter.</p>
+        <p>This tool generates all three essential tag sets at once: <strong>standard SEO tags</strong> (title, description, canonical URL), <strong>Open Graph tags</strong> (for Facebook, LinkedIn, Slack, Pinterest), and <strong>Twitter Card tags</strong> (for X/Twitter). Built-in live previews show exactly how your page will appear in Google search results, Facebook news feed, and Twitter timeline.</p>
+        <p>All tag generation happens locally in your browser. The values you enter are never sent to any server.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Enter your page details.</strong> Fill in the Page Title (50-60 characters recommended), Description (under 160 characters), Canonical URL, and optional OG Image URL and Site Name.</li>
+          <li><strong>Review live previews.</strong> Check the Google, Facebook, and Twitter previews on the left to see exactly how your page will look when shared or displayed in search results.</li>
+          <li><strong>Copy the generated HTML.</strong> Click "Copy Tags" and paste them into the <code>&lt;head&gt;</code> section of your web page. The tags include title, description, OG, Twitter, and canonical link.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>What are meta tags and why do they matter?</summary>
+        <div class="faq-answer">
+          <p>Meta tags are HTML elements that provide information about a web page to search engines and social platforms. The title tag appears as the clickable headline in search results. The meta description appears as the snippet below it. OG and Twitter tags control how your page looks when shared — the image, title, and description that appear in the preview card.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>What's the difference between OG tags and Twitter cards?</summary>
+        <div class="faq-answer">
+          <p>Open Graph (OG) tags were created by Facebook and are used by most social platforms including LinkedIn, Pinterest, and Slack. Twitter has its own <code>twitter:card</code> system. If Twitter tags are absent, Twitter falls back to OG tags. For optimal cross-platform sharing, include both sets.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Is the data I enter stored anywhere?</summary>
+        <div class="faq-answer">
+          <p>No. The Meta Tag Generator runs entirely in your browser. All values are processed locally and never sent to any server.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this work on mobile?</summary>
+        <div class="faq-answer">
+          <p>Yes. The Meta Tag Generator is fully responsive and works on all modern browsers including iOS Safari and Android Chrome.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="json-formatter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4DD;</span> JSON Formatter
+        </a>
+        <a href="url-encoder.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F517;</span> URL Encoder
+        </a>
+        <a href="base64-encoder.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4E6;</span> Base64 Encoder
+        </a>
+        <a href="markdown-preview.html" class="related-tool-link">
+          <span class="rt-icon">&#x2B50;</span> Markdown Preview
+        </a>
+      </div>
+    </section>
+
+  </div>
 </main>
 
-<footer id="site-footer"></footer>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 ToolBox. All tools run locally in your browser.</p>
+    <p class="tagline">Your files are never uploaded. 100% private.</p>
+  </div>
+</footer>
 
 <script src="../layout.js"></script>
 <script>

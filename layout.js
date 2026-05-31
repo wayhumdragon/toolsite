@@ -10,30 +10,4 @@
     g2.text = 'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","' + gaId + '");';
     document.head.appendChild(g2);
   }
-
-  // ── Header ──
-  var h =
-    '<header class="site-header">' +
-    '<div class="container">' +
-    '<a href="' + (function() { var p = location.pathname; if (p.includes('/blog/posts/')) return '../../index.html'; if (p.includes('/tools/') || p.includes('/blog/')) return '../index.html'; return 'index.html'; })() + '" class="logo"><span class="logo-icon">&#x1F6E0;</span>ToolBox</a>' +
-    '<nav class="header-nav">' +
-      '<a href="' + (function() { var p = location.pathname; if (p.includes('/blog/posts/')) return '../index.html'; if (p.includes('/tools/')) return '../blog/index.html'; if (p.includes('/blog/')) return 'index.html'; return 'blog/index.html'; })() + '">Blog</a>' +
-    '</nav>' +
-    '<span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>' +
-    '</div>' +
-    '</header>';
-
-  // ── Footer ──
-  var f =
-    '<footer class="site-footer">' +
-    '<div class="container">' +
-    '<p>&copy; ' + new Date().getFullYear() + ' ToolBox. All tools run locally in your browser.</p>' +
-    '<p class="tagline">Your files are never uploaded. 100% private.</p>' +
-    '</div>' +
-    '</footer>';
-
-  var elH = document.getElementById('site-header');
-  var elF = document.getElementById('site-footer');
-  if (elH) elH.outerHTML = h;
-  if (elF) elF.outerHTML = f;
 })();

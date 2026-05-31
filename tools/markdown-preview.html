@@ -122,13 +122,43 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Markdown Preview - Live Markdown Editor & Preview Online">
   <meta name="twitter:description" content="Write and preview Markdown with live rendering. 100% private, processed in your browser.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What is Markdown and why should I use it?", "acceptedAnswer": { "@type": "Answer", "text": "Markdown is a lightweight markup language created by John Gruber in 2004. It uses simple plain-text formatting syntax (like **bold**, *italic*, # headings) that converts to clean HTML. Markdown is widely used for documentation, README files, blog posts, forum comments, and note-taking apps. It's easy to read as plain text and renders into professional-looking formatted documents." } },
+      { "@type": "Question", "name": "What is GitHub Flavored Markdown (GFM)?", "acceptedAnswer": { "@type": "Answer", "text": "GitHub Flavored Markdown (GFM) is an extended version of standard Markdown used on GitHub. It adds features like tables with pipes and dashes, strikethrough with ~~double tildes~~, task lists (- [ ] and - [x]), fenced code blocks with language hints, and auto-linking of URLs. This tool's preview follows GFM conventions, matching what you would see on GitHub." } },
+      { "@type": "Question", "name": "Is my Markdown text stored or sent to a server?", "acceptedAnswer": { "@type": "Answer", "text": "No. All Markdown rendering happens locally in your browser via JavaScript. The Markdown you write never leaves your device and is never stored or transmitted to any server." } },
+      { "@type": "Question", "name": "Does this work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Markdown Preview tool is fully responsive and works on all modern browsers including iOS Safari and Android Chrome." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wayhum.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Markdown Preview", "item": "https://wayhum.com/tools/markdown-preview.html" }
+    ]
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:image" content="https://wayhum.com/og-image.svg">
-  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+  <meta property="og:image" content="https://wayhum.com/images/wayhum.jpg">
+  <meta name="twitter:image" content="https://wayhum.com/images/wayhum.jpg">
 </head>
 <body>
 
-<header id="site-header"></header>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../images/wayhum.jpg" alt="ToolBox" class="logo-img">ToolBox</a>
+    <nav class="header-nav">
+      <a href="../blog/">Blog</a>
+    </nav>
+    <span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>
+  </div>
+</header>
 
 <main>
   <div class="tool-wrap">
@@ -155,9 +185,86 @@
       </div>
     </div>
   </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The Markdown Preview tool provides a live editing and preview environment for Markdown, right in your browser. Write Markdown on one side and see the rendered HTML output on the other — no server required. It supports <strong>GitHub Flavored Markdown (GFM)</strong> conventions, the same format used for GitHub README files, issues, and pull request comments.</p>
+        <p>Supported syntax includes headings, bold, italic, inline code and fenced code blocks with syntax highlighting hints, ordered and unordered lists, blockquotes, links, images, horizontal rules, strikethrough, and tables. The rendering updates in real time as you type. Three view modes are available: <strong>Edit</strong> (editor only), <strong>Preview</strong> (rendered output only), and <strong>Split</strong> (both side by side).</p>
+        <p>All rendering happens locally in your browser. No text is ever sent to any server, making this tool suitable for previewing confidential or internal documentation.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Write your Markdown</strong> in the editor panel on the left. A sample document is loaded by default to demonstrate common syntax.</li>
+          <li><strong>Toggle view mode.</strong> Use the Edit, Preview, and Split buttons at the top of the toolbar to switch between editor-only, preview-only, or side-by-side layouts.</li>
+          <li><strong>Copy the rendered output.</strong> The preview updates in real time. Use the rendered HTML as a visual reference, or copy your raw Markdown to use in your blog, README, or documentation tool.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>What is Markdown and why should I use it?</summary>
+        <div class="faq-answer">
+          <p>Markdown is a lightweight markup language that uses simple plain-text formatting (like <code>**bold**</code>, <code>*italic*</code>, <code># headings</code>) that converts to clean HTML. It's widely used for documentation, README files, blog posts, and note-taking because it's easy to read as plain text and renders into professional-looking documents.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>What is GitHub Flavored Markdown (GFM)?</summary>
+        <div class="faq-answer">
+          <p>GFM extends standard Markdown with tables, strikethrough (<code>~~text~~</code>), task lists, fenced code blocks with language hints, and auto-linked URLs. This tool follows GFM conventions, matching what you'd see on GitHub.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Is my Markdown text stored or sent to a server?</summary>
+        <div class="faq-answer">
+          <p>No. All rendering happens locally in your browser via JavaScript. Your text never leaves your device.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this work on mobile?</summary>
+        <div class="faq-answer">
+          <p>Yes. The Markdown Preview is fully responsive and works on all modern browsers including iOS Safari and Android Chrome.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="json-formatter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4DD;</span> JSON Formatter
+        </a>
+        <a href="diff-checker.html" class="related-tool-link">
+          <span class="rt-icon">&#x2696;</span> Diff Checker
+        </a>
+        <a href="word-counter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4CA;</span> Word Counter
+        </a>
+        <a href="lorem-ipsum.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4C4;</span> Lorem Ipsum
+        </a>
+      </div>
+    </section>
+
+  </div>
 </main>
 
-<footer id="site-footer"></footer>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 ToolBox. All tools run locally in your browser.</p>
+    <p class="tagline">Your files are never uploaded. 100% private.</p>
+  </div>
+</footer>
 
 <script src="../layout.js"></script>
 <script>

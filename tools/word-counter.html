@@ -60,13 +60,43 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Word Counter - Count Words, Characters & Sentences Online">
   <meta name="twitter:description" content="Count words, characters, sentences and more. 100% private, processed in your browser.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "How is reading time calculated?", "acceptedAnswer": { "@type": "Answer", "text": "Reading time is estimated assuming an average reading speed of 200 words per minute — the widely accepted standard for English prose. For example, a 1000-word article would show approximately 5 minutes of reading time. This is an estimate; actual reading speed varies by reader and content complexity." } },
+      { "@type": "Question", "name": "How are words counted?", "acceptedAnswer": { "@type": "Answer", "text": "The counter splits text on whitespace (spaces, tabs, newlines) and counts each resulting segment as one word. Empty strings and punctuation-only segments are excluded. This matches how most word processors and writing platforms count words." } },
+      { "@type": "Question", "name": "Is my text stored or shared when using this tool?", "acceptedAnswer": { "@type": "Answer", "text": "No. All counting happens locally in your browser via JavaScript. Your text is never stored, logged, or transmitted to any server. You can verify this by disconnecting from the internet after loading the page — the counter continues to work." } },
+      { "@type": "Question", "name": "Does this work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Word Counter is fully responsive and works on all modern browsers including iOS Safari and Android Chrome. You can paste text and get word counts directly from your phone." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wayhum.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Word Counter", "item": "https://wayhum.com/tools/word-counter.html" }
+    ]
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:image" content="https://wayhum.com/og-image.svg">
-  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+  <meta property="og:image" content="https://wayhum.com/images/wayhum.jpg">
+  <meta name="twitter:image" content="https://wayhum.com/images/wayhum.jpg">
 </head>
 <body>
 
-<header id="site-header"></header>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../images/wayhum.jpg" alt="ToolBox" class="logo-img">ToolBox</a>
+    <nav class="header-nav">
+      <a href="../blog/">Blog</a>
+    </nav>
+    <span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>
+  </div>
+</header>
 
 <main>
   <div class="tool-wrap">
@@ -81,9 +111,86 @@
       <div class="stat-grid" id="stats"></div>
     </div>
   </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The Word Counter provides instant text statistics as you type or paste. It counts <strong>words, characters, sentences, paragraphs, and lines</strong>, plus estimates <strong>reading time</strong> using the standard 200 words-per-minute benchmark. It's useful for writers checking word counts for essays, blog posts, social media character limits, or SEO meta descriptions.</p>
+        <p>All counting is done locally in your browser using JavaScript — no data is sent to any server. The statistics update in real time as you type, so you get immediate feedback without clicking any buttons. The character count includes a no-spaces variant, useful for platforms like Twitter/X that count characters without spaces.</p>
+        <p>The reading time estimate helps content creators gauge how long their article will take to read — a key metric for blog UX and reader engagement.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Paste or type your text</strong> into the text area. Statistics update instantly as you type.</li>
+          <li><strong>Monitor the stat cards.</strong> Seven metrics are displayed: Words, Characters, Characters (no spaces), Sentences, Paragraphs, Reading time, and Lines.</li>
+          <li><strong>Edit and refine.</strong> Adjust your text and watch the counts update in real time — no need to click anything.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>How is reading time calculated?</summary>
+        <div class="faq-answer">
+          <p>Reading time is estimated at 200 words per minute — the widely accepted standard for English prose. A 1000-word article would show approximately 5 minutes. Actual reading speed varies by reader and content complexity.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>How are words counted?</summary>
+        <div class="faq-answer">
+          <p>The counter splits text on whitespace (spaces, tabs, newlines) and counts each non-empty segment as one word. This matches how most word processors and writing platforms count words.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Is my text stored or shared?</summary>
+        <div class="faq-answer">
+          <p>No. All counting happens locally in your browser. Your text is never stored, logged, or transmitted to any server.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this work on mobile?</summary>
+        <div class="faq-answer">
+          <p>Yes. The Word Counter works on all modern browsers including iOS Safari and Android Chrome.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="markdown-preview.html" class="related-tool-link">
+          <span class="rt-icon">&#x2B50;</span> Markdown Preview
+        </a>
+        <a href="lorem-ipsum.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4C4;</span> Lorem Ipsum
+        </a>
+        <a href="diff-checker.html" class="related-tool-link">
+          <span class="rt-icon">&#x2696;</span> Diff Checker
+        </a>
+        <a href="json-formatter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4DD;</span> JSON Formatter
+        </a>
+      </div>
+    </section>
+
+  </div>
 </main>
 
-<footer id="site-footer"></footer>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 ToolBox. All tools run locally in your browser.</p>
+    <p class="tagline">Your files are never uploaded. 100% private.</p>
+  </div>
+</footer>
 
 <script src="../layout.js"></script>
 <script>

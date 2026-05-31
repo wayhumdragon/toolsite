@@ -45,13 +45,43 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="URL Encoder & Decoder - Encode/Decode URLs Online">
   <meta name="twitter:description" content="URL encode and decode text instantly. 100% private, processed in your browser.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What is URL encoding and why do I need it?", "acceptedAnswer": { "@type": "Answer", "text": "URL encoding converts special characters into a format that can be safely transmitted over the internet. Characters like spaces, ampersands, and non-ASCII characters are replaced with % followed by their hex code (e.g., space becomes %20). It's essential when including user input in query strings, building API calls, or crafting shareable links." } },
+      { "@type": "Question", "name": "What's the difference between encodeURI and encodeURIComponent?", "acceptedAnswer": { "@type": "Answer", "text": "encodeURIComponent encodes all special characters including / ? & = #, making it suitable for encoding individual query parameter values. encodeURI preserves characters that have meaning in a URL structure (like / and ?), so it's better for encoding entire URLs. This tool uses encodeURIComponent for thorough encoding." } },
+      { "@type": "Question", "name": "Is my data stored or shared when using this tool?", "acceptedAnswer": { "@type": "Answer", "text": "No. All encoding and decoding happens locally in your browser via JavaScript. The text you enter is never stored, logged, or transmitted to any server." } },
+      { "@type": "Question", "name": "Does this work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The URL Encoder is fully responsive and works on all modern browsers including iOS Safari and Android Chrome." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wayhum.com/" },
+      { "@type": "ListItem", "position": 2, "name": "URL Encoder & Decoder", "item": "https://wayhum.com/tools/url-encoder.html" }
+    ]
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:image" content="https://wayhum.com/og-image.svg">
-  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+  <meta property="og:image" content="https://wayhum.com/images/wayhum.jpg">
+  <meta name="twitter:image" content="https://wayhum.com/images/wayhum.jpg">
 </head>
 <body>
 
-<header id="site-header"></header>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../images/wayhum.jpg" alt="ToolBox" class="logo-img">ToolBox</a>
+    <nav class="header-nav">
+      <a href="../blog/">Blog</a>
+    </nav>
+    <span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>
+  </div>
+</header>
 
 <main>
   <div class="tool-wrap">
@@ -83,9 +113,86 @@
       </div>
     </div>
   </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The URL Encoder / Decoder lets you encode or decode URL-encoded strings instantly in your browser. URL encoding (also called percent-encoding) converts characters that aren't safe in a URL — spaces, symbols, non-ASCII characters — into <code>%XX</code> format recognized by all web servers and browsers.</p>
+        <p>This tool uses JavaScript's <code>encodeURIComponent()</code> for encoding, which escapes <strong>all</strong> special characters including <code>/ ? & = #</code>. This makes it ideal for encoding individual query parameter values, form data, or any text you need to embed safely in a URL. The decode function reverses the process, turning percent-encoded strings back into readable text.</p>
+        <p>All processing happens locally in your browser — your data never leaves your device.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Paste your text or URL</strong> into the Input field. You can paste a full URL, a query string, or any text containing special characters.</li>
+          <li><strong>Click Encode or Decode.</strong> Click "Encode" to convert special characters to percent-encoded format, or "Decode" to convert percent-encoded text back to readable form.</li>
+          <li><strong>Copy the result.</strong> Click "Copy Result" to copy the output to your clipboard. Use "Swap" to move the output back to input for round-trip testing.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>What is URL encoding and why do I need it?</summary>
+        <div class="faq-answer">
+          <p>URL encoding converts special characters into a format that can be safely transmitted over the internet. Characters like spaces, ampersands (&amp;), and non-ASCII characters are replaced with <code>%</code> followed by their hexadecimal code (e.g., space becomes <code>%20</code>). It's essential when including user input in query strings, building API calls, or crafting shareable links.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>What's the difference between encodeURI and encodeURIComponent?</summary>
+        <div class="faq-answer">
+          <p><code>encodeURIComponent</code> encodes <strong>all</strong> special characters including <code>/ ? &amp; = #</code>, making it suitable for encoding individual query parameter values. <code>encodeURI</code> preserves characters that have structural meaning in a URL, so it's better for encoding entire URLs. This tool uses <code>encodeURIComponent</code> for thorough encoding.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Is my data stored or shared?</summary>
+        <div class="faq-answer">
+          <p>No. All encoding and decoding happens locally in your browser via JavaScript. The text you enter is never stored, logged, or transmitted to any server.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this work on mobile?</summary>
+        <div class="faq-answer">
+          <p>Yes. The URL Encoder / Decoder is fully responsive and works on all modern browsers including iOS Safari and Android Chrome.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="base64-encoder.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4E6;</span> Base64 Encoder
+        </a>
+        <a href="json-formatter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4DD;</span> JSON Formatter
+        </a>
+        <a href="qrcode.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4F1;</span> QR Code Generator
+        </a>
+        <a href="uuid-generator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F522;</span> UUID Generator
+        </a>
+      </div>
+    </section>
+
+  </div>
 </main>
 
-<footer id="site-footer"></footer>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 ToolBox. All tools run locally in your browser.</p>
+    <p class="tagline">Your files are never uploaded. 100% private.</p>
+  </div>
+</footer>
 
 <script src="../layout.js"></script>
 <script>

@@ -71,13 +71,43 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Social Media Image Resizer - Resize Images for All Platforms">
   <meta name="twitter:description" content="Resize images to perfect dimensions for every social platform. 100% private.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What image dimensions should I use for each social media platform?", "acceptedAnswer": { "@type": "Answer", "text": "Instagram posts: 1080x1080 (square), Stories/Reels: 1080x1920 (portrait). Facebook link posts: 1200x630. Twitter/X posts: 1200x675. LinkedIn posts: 1200x627. TikTok: 1080x1920 (portrait). YouTube thumbnails: 1280x720 (16:9). WhatsApp profile: 400x400. Using the correct dimensions prevents awkward cropping and ensures your images look professional." } },
+      { "@type": "Question", "name": "Are my images uploaded to a server when I use this tool?", "acceptedAnswer": { "@type": "Answer", "text": "No. All image processing happens locally in your browser using the HTML5 Canvas API. Your images are never uploaded to any server — the tool works fully offline after the page loads. You can verify this by disconnecting from the internet; the resizer continues to work." } },
+      { "@type": "Question", "name": "Which image formats can I upload?", "acceptedAnswer": { "@type": "Answer", "text": "The Social Image Resizer accepts JPG, PNG, WebP, GIF, BMP, and SVG images. The output is always JPG format at your chosen quality level. For photos, JPG is recommended. For graphics with text, use PNG as your source image and download at high quality." } },
+      { "@type": "Question", "name": "Does this work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Social Image Resizer is fully responsive and works on all modern browsers including iOS Safari and Android Chrome. You can resize images directly from your phone's photo library." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wayhum.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Social Media Image Resizer", "item": "https://wayhum.com/tools/social-image-resizer.html" }
+    ]
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:image" content="https://wayhum.com/og-image.svg">
-  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+  <meta property="og:image" content="https://wayhum.com/images/wayhum.jpg">
+  <meta name="twitter:image" content="https://wayhum.com/images/wayhum.jpg">
 </head>
 <body>
 
-<header id="site-header"></header>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../images/wayhum.jpg" alt="ToolBox" class="logo-img">ToolBox</a>
+    <nav class="header-nav">
+      <a href="../blog/">Blog</a>
+    </nav>
+    <span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>
+  </div>
+</header>
 
 <main>
   <div class="tool-wrap">
@@ -127,9 +157,83 @@
       </div>
     </div>
   </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The Social Media Image Resizer lets you resize any image to the exact dimensions required by each social media platform — all in your browser. Every platform has different optimal image sizes, and uploading the wrong dimensions leads to awkward cropping, blurry previews, or important content getting cut off.</p>
+        <p>This tool includes presets for <strong>Instagram</strong> (square posts and vertical Stories), <strong>Facebook</strong> (link post images), <strong>Twitter/X</strong> (inline post images), <strong>LinkedIn</strong> (post images), <strong>TikTok</strong> (vertical video thumbnails), <strong>YouTube</strong> (video thumbnails), and <strong>WhatsApp</strong> (profile pictures). Select a preset and the tool fits your image perfectly into those dimensions — centering it and filling the background with white where needed.</p>
+        <p>All image processing uses the HTML5 Canvas API and runs locally. Your images never leave your device.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Upload your image.</strong> Drag and drop an image onto the upload zone, or click to browse. Most image formats are accepted (JPG, PNG, WebP, GIF, BMP, SVG).</li>
+          <li><strong>Choose a platform preset.</strong> Click one of the platform buttons — Instagram, Facebook, Twitter, LinkedIn, TikTok, YouTube, or WhatsApp. The preview updates instantly to show how your image fits the selected dimensions.</li>
+          <li><strong>Adjust quality and download.</strong> Choose High (90%), Medium (75%), or Low (50%) output quality. Click Download to save the resized image to your device.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>What dimensions should I use for each platform?</summary>
+        <div class="faq-answer">
+          <p><strong>Instagram posts:</strong> 1080×1080 (square), <strong>Stories/Reels:</strong> 1080×1920 (portrait). <strong>Facebook:</strong> 1200×630. <strong>Twitter/X:</strong> 1200×675. <strong>LinkedIn:</strong> 1200×627. <strong>TikTok:</strong> 1080×1920. <strong>YouTube thumbnails:</strong> 1280×720. <strong>WhatsApp DP:</strong> 400×400. Click any preset in the tool to see these dimensions applied.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Are my images uploaded to a server?</summary>
+        <div class="faq-answer">
+          <p>No. All image processing happens locally in your browser using the HTML5 Canvas API. Your images are never uploaded to any server — the tool works fully offline after the page loads.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Which image formats can I upload?</summary>
+        <div class="faq-answer">
+          <p>The resizer accepts JPG, PNG, WebP, GIF, BMP, and SVG images. Output is always JPG format. For photos, JPG is recommended. For graphics with text, use PNG as your source and download at high quality.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this work on mobile?</summary>
+        <div class="faq-answer">
+          <p>Yes. The Social Image Resizer works on all modern browsers including iOS Safari and Android Chrome. You can resize images directly from your phone's photo library.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="image-converter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F5BC;</span> Image Converter
+        </a>
+        <a href="qrcode.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4F1;</span> QR Code Generator
+        </a>
+        <a href="meta-tag-generator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4F0;</span> Meta Tag Generator
+        </a>
+      </div>
+    </section>
+
+  </div>
 </main>
 
-<footer id="site-footer"></footer>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 ToolBox. All tools run locally in your browser.</p>
+    <p class="tagline">Your files are never uploaded. 100% private.</p>
+  </div>
+</footer>
 
 <script src="../layout.js"></script>
 <script>

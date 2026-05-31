@@ -51,13 +51,43 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="UUID Generator - Generate UUID v4 Identifiers Online">
   <meta name="twitter:description" content="Generate UUID v4 identifiers instantly. Batch mode, multiple formats. 100% private.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What is a UUID and what does v4 mean?", "acceptedAnswer": { "@type": "Answer", "text": "A UUID (Universally Unique Identifier) is a 128-bit number used to uniquely identify information. Version 4 (v4) UUIDs are generated from random numbers, making them practically collision-free. The odds of generating two identical UUID v4 values is roughly 1 in 2^122 — astronomically unlikely. They are widely used as database primary keys, API identifiers, and distributed system IDs." } },
+      { "@type": "Question", "name": "How many UUIDs should I generate at once?", "acceptedAnswer": { "@type": "Answer", "text": "It depends on your use case. For database seeding or testing, 25-50 is common. For one-off IDs, generate 1 at a time. For bulk operations, 50-100 is usually sufficient. Note that the tool generates all UUIDs instantly in your browser using crypto.getRandomValues() for true randomness." } },
+      { "@type": "Question", "name": "Are these UUIDs truly unique?", "acceptedAnswer": { "@type": "Answer", "text": "UUID v4 uses 122 bits of random data, giving 2^122 possible values (~5.3 x 10^36). The chance of collision, even when generating billions of UUIDs, is negligible. They are generated using the browser's cryptographically secure random number generator, not predictable Math.random()." } },
+      { "@type": "Question", "name": "Does this work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The UUID Generator is fully responsive and works on all modern browsers including iOS Safari and Android Chrome." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wayhum.com/" },
+      { "@type": "ListItem", "position": 2, "name": "UUID Generator", "item": "https://wayhum.com/tools/uuid-generator.html" }
+    ]
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:image" content="https://wayhum.com/og-image.svg">
-  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+  <meta property="og:image" content="https://wayhum.com/images/wayhum.jpg">
+  <meta name="twitter:image" content="https://wayhum.com/images/wayhum.jpg">
 </head>
 <body>
 
-<header id="site-header"></header>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../images/wayhum.jpg" alt="ToolBox" class="logo-img">ToolBox</a>
+    <nav class="header-nav">
+      <a href="../blog/">Blog</a>
+    </nav>
+    <span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>
+  </div>
+</header>
 
 <main>
   <div class="tool-wrap">
@@ -90,9 +120,86 @@
       <div id="output" class="uuid-output empty">Click Generate to create UUIDs.</div>
     </div>
   </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The UUID Generator creates random UUID v4 (Universally Unique Identifier version 4) values instantly in your browser. UUIDs are 128-bit identifiers used across software development — as database primary keys, API request IDs, session tokens, and distributed system identifiers. They eliminate the need for centralized ID coordination.</p>
+        <p>This tool uses the browser's <code>crypto.getRandomValues()</code> API to generate cryptographically random UUIDs that conform to the RFC 4122 v4 specification. Each UUID has 122 bits of entropy, making collisions practically impossible — you would need to generate about 2.7 × 10<sup>18</sup> UUIDs to have a 50% chance of a single collision.</p>
+        <p>Choose from three output formats: standard dash-separated, compact no-dash, or uppercase. All UUIDs are generated locally — nothing leaves your browser.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Choose a format.</strong> Select "Standard" for dash-separated UUIDs (recommended), "No dashes" for compact IDs, or "Uppercase" for all-caps output.</li>
+          <li><strong>Select quantity.</strong> Choose how many UUIDs to generate — from 1 to 50 at a time. For database seeding or testing, 10-25 is a common batch size.</li>
+          <li><strong>Generate and copy.</strong> Click "Generate" to create UUIDs, then "Copy All" to copy them to your clipboard. Each UUID is on its own line for easy pasting into code or spreadsheets.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>What is a UUID and what does v4 mean?</summary>
+        <div class="faq-answer">
+          <p>A UUID (Universally Unique Identifier) is a 128-bit number used to uniquely identify information. Version 4 (v4) UUIDs are generated from random numbers, making them practically collision-free. They are widely used as database primary keys, API identifiers, and distributed system IDs.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Are these UUIDs truly unique?</summary>
+        <div class="faq-answer">
+          <p>UUID v4 uses 122 bits of random data, giving 2<sup>122</sup> possible values (~5.3 × 10<sup>36</sup>). The chance of collision, even when generating billions of UUIDs, is negligible. The generator uses the browser's cryptographically secure random number generator (<code>crypto.getRandomValues()</code>), not the predictable <code>Math.random()</code>.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>How many UUIDs should I generate at once?</summary>
+        <div class="faq-answer">
+          <p>For database seeding or testing, 25-50 is common. For one-off IDs, generate 1 at a time. For bulk operations, 50 is usually sufficient. All UUIDs are generated instantly in your browser.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this work on mobile?</summary>
+        <div class="faq-answer">
+          <p>Yes. The UUID Generator is fully responsive and works on all modern browsers including iOS Safari and Android Chrome.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="password-generator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F511;</span> Password Generator
+        </a>
+        <a href="base64-encoder.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4E6;</span> Base64 Encoder
+        </a>
+        <a href="url-encoder.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F517;</span> URL Encoder
+        </a>
+        <a href="json-formatter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4DD;</span> JSON Formatter
+        </a>
+      </div>
+    </section>
+
+  </div>
 </main>
 
-<footer id="site-footer"></footer>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 ToolBox. All tools run locally in your browser.</p>
+    <p class="tagline">Your files are never uploaded. 100% private.</p>
+  </div>
+</footer>
 
 <script src="../layout.js"></script>
 <script>

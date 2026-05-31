@@ -45,13 +45,43 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Base64 Encoder & Decoder - Encode/Decode Text Online">
   <meta name="twitter:description" content="Encode and decode Base64 text instantly. 100% private, processed in your browser.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What is Base64 encoding used for?", "acceptedAnswer": { "@type": "Answer", "text": "Base64 encoding converts binary data (or any text) into a set of 64 ASCII characters that can be safely transmitted over text-based protocols like HTTP, SMTP (email), and JSON. Common uses include embedding images in HTML/CSS as data URIs, encoding credentials for HTTP Basic Auth, and transferring binary files through text-only APIs." } },
+      { "@type": "Question", "name": "Is Base64 encoding the same as encryption?", "acceptedAnswer": { "@type": "Answer", "text": "No. Base64 is an encoding scheme, not encryption. It transforms data but provides no security — anyone can decode a Base64 string back to its original form without a key. Do not use Base64 to hide sensitive information. If you need security, use proper encryption (like AES) in addition to encoding." } },
+      { "@type": "Question", "name": "Why does Base64 increase the data size?", "acceptedAnswer": { "@type": "Answer", "text": "Base64 encoding increases data size by approximately 33%. This is because every 3 bytes (24 bits) of input data are represented by 4 Base64 characters (each representing 6 bits). This overhead is the trade-off for making binary data compatible with text-based protocols." } },
+      { "@type": "Question", "name": "Is my data stored or shared?", "acceptedAnswer": { "@type": "Answer", "text": "No. All encoding and decoding happens locally in your browser via JavaScript. Your text is never stored, logged, or transmitted to any server." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wayhum.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Base64 Encoder & Decoder", "item": "https://wayhum.com/tools/base64-encoder.html" }
+    ]
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:image" content="https://wayhum.com/og-image.svg">
-  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+  <meta property="og:image" content="https://wayhum.com/images/wayhum.jpg">
+  <meta name="twitter:image" content="https://wayhum.com/images/wayhum.jpg">
 </head>
 <body>
 
-<header id="site-header"></header>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../images/wayhum.jpg" alt="ToolBox" class="logo-img">ToolBox</a>
+    <nav class="header-nav">
+      <a href="../blog/">Blog</a>
+    </nav>
+    <span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>
+  </div>
+</header>
 
 <main>
   <div class="tool-wrap">
@@ -85,9 +115,85 @@
       </div>
     </div>
   </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The Base64 Encoder / Decoder lets you encode any text to Base64 format or decode Base64 back to plain text — instantly in your browser. Base64 is a binary-to-text encoding scheme that represents data using 64 ASCII characters (A-Z, a-z, 0-9, +, /). It's widely used for embedding images in HTML/CSS as data URIs, encoding credentials for HTTP Basic Authentication, attaching files in email (MIME), and transferring binary data through JSON APIs.</p>
+        <p>This tool supports <strong>UTF-8</strong> text, handling international characters correctly by first encoding to UTF-8 bytes before Base64 conversion. The encode/decode operations happen entirely in your browser using JavaScript — no data leaves your device.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Enter your text</strong> in the Input field. You can paste any text — plain strings, JSON, HTML, or previously encoded Base64.</li>
+          <li><strong>Click Encode or Decode.</strong> Click "Encode" to convert your text to Base64, or "Decode" to convert Base64 back to readable text.</li>
+          <li><strong>Copy or swap.</strong> Use "Copy Result" to copy the output to your clipboard. Use "Swap" to move the output back to the input field for verification or round-trip encoding.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>What is Base64 encoding used for?</summary>
+        <div class="faq-answer">
+          <p>Base64 converts binary data (or text) into ASCII characters safe for text-based protocols. Common uses: embedding images in HTML/CSS as data URIs, encoding credentials for HTTP Basic Auth, attaching files in email (MIME), and transferring data through JSON APIs.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Is Base64 encoding the same as encryption?</summary>
+        <div class="faq-answer">
+          <p>No. Base64 is an encoding scheme, not encryption. It provides no security — anyone can decode a Base64 string back to its original form. Do not use Base64 to hide sensitive data. Use proper encryption (like AES) for security.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Why does Base64 increase data size?</summary>
+        <div class="faq-answer">
+          <p>Base64 increases data size by ~33% because every 3 bytes (24 bits) of input become 4 Base64 characters (6 bits each). This overhead is the trade-off for making binary data compatible with text protocols.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Is my data stored or shared?</summary>
+        <div class="faq-answer">
+          <p>No. All encoding/decoding happens locally in your browser via JavaScript. Your text is never stored, logged, or transmitted to any server.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="url-encoder.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F517;</span> URL Encoder
+        </a>
+        <a href="uuid-generator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F522;</span> UUID Generator
+        </a>
+        <a href="password-generator.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F511;</span> Password Generator
+        </a>
+        <a href="json-formatter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4DD;</span> JSON Formatter
+        </a>
+      </div>
+    </section>
+
+  </div>
 </main>
 
-<footer id="site-footer"></footer>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 ToolBox. All tools run locally in your browser.</p>
+    <p class="tagline">Your files are never uploaded. 100% private.</p>
+  </div>
+</footer>
 
 <script src="../layout.js"></script>
 <script>

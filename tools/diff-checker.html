@@ -80,13 +80,43 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Diff Checker - Compare Text Online">
   <meta name="twitter:description" content="Compare two texts side-by-side and find differences. 100% private, processed in your browser.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What is a diff and how does line-by-line comparison work?", "acceptedAnswer": { "@type": "Answer", "text": "A diff (difference) compares two texts line by line and highlights lines that have been added, removed, or changed. Lines present in the original but absent in the modified version are marked in red as deletions. Lines added in the modified version appear in green as additions. This is the same algorithm used by Git, diff utilities, and code review tools to show what changed between two versions of a file." } },
+      { "@type": "Question", "name": "What can I use a diff checker for?", "acceptedAnswer": { "@type": "Answer", "text": "Diff checkers are useful for: comparing code versions before committing to version control, reviewing edited documents or contracts, verifying that a text change matches what you intended, checking configuration file differences between environments, and comparing draft versions of articles or essays." } },
+      { "@type": "Question", "name": "Is my text stored or shared?", "acceptedAnswer": { "@type": "Answer", "text": "No. All comparison happens locally in your browser via JavaScript. The text you paste into both panels never leaves your device and is never stored or transmitted to any server." } },
+      { "@type": "Question", "name": "Does this work on mobile?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Diff Checker is fully responsive and works on all modern browsers including iOS Safari and Android Chrome." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wayhum.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Diff Checker", "item": "https://wayhum.com/tools/diff-checker.html" }
+    ]
+  }
+  </script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta property="og:image" content="https://wayhum.com/og-image.svg">
-  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+  <meta property="og:image" content="https://wayhum.com/images/wayhum.jpg">
+  <meta name="twitter:image" content="https://wayhum.com/images/wayhum.jpg">
 </head>
 <body>
 
-<header id="site-header"></header>
+<header class="site-header">
+  <div class="container">
+    <a href="../index.html" class="logo"><img src="../images/wayhum.jpg" alt="ToolBox" class="logo-img">ToolBox</a>
+    <nav class="header-nav">
+      <a href="../blog/">Blog</a>
+    </nav>
+    <span class="header-tagline">100% Private &mdash; Nothing leaves your browser</span>
+  </div>
+</header>
 
 <main>
   <div class="tool-wrap">
@@ -117,9 +147,85 @@
       <div id="diffOutput" class="diff-output empty mt-2">Differences will appear here.</div>
     </div>
   </div>
+
+    <!-- ── About ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The Diff Checker compares two blocks of text line by line and highlights the differences with color coding. Lines that exist in the original (left) but not in the modified (right) are marked in <strong>red as deletions</strong>. Lines that were added in the modified version appear in <strong>green as additions</strong>. Unchanged lines remain unhighlighted. This is the same fundamental algorithm used by Git and other version control systems when you run <code>git diff</code>.</p>
+        <p>Use cases range from comparing code snippets before committing, reviewing edited documents or contracts, verifying that changes match what you intended, to comparing configuration files between environments. All processing runs locally in your browser — your text never leaves your device.</p>
+      </div>
+    </section>
+
+    <!-- ── How to use ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Paste the original text</strong> in the left panel. This is your "before" version — the baseline for comparison.</li>
+          <li><strong>Paste the modified text</strong> in the right panel. This is your "after" version — what you want to compare against the original.</li>
+          <li><strong>Review the diff.</strong> The output panel below shows line-by-line differences with color highlighting. Red lines were removed from the original, green lines were added in the modified, and unmarked lines are identical.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>What is a diff and how does it work?</summary>
+        <div class="faq-answer">
+          <p>A diff compares two texts line by line and highlights additions (green), deletions (red), and unchanged lines. It's the same algorithm used by Git and code review tools to show what changed between two versions of a file.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>What can I use a diff checker for?</summary>
+        <div class="faq-answer">
+          <p>Comparing code versions, reviewing edited documents or contracts, verifying configuration file changes between environments, and checking draft revisions of articles.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Is my text stored or shared?</summary>
+        <div class="faq-answer">
+          <p>No. All comparison happens locally in your browser. The text you paste never leaves your device and is never stored or transmitted to any server.</p>
+        </div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this work on mobile?</summary>
+        <div class="faq-answer">
+          <p>Yes. The Diff Checker is fully responsive and works on all modern browsers including iOS Safari and Android Chrome.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── Related tools ── -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="json-formatter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4DD;</span> JSON Formatter
+        </a>
+        <a href="markdown-preview.html" class="related-tool-link">
+          <span class="rt-icon">&#x2B50;</span> Markdown Preview
+        </a>
+        <a href="word-counter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4CA;</span> Word Counter
+        </a>
+        <a href="lorem-ipsum.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4C4;</span> Lorem Ipsum
+        </a>
+      </div>
+    </section>
+
+  </div>
 </main>
 
-<footer id="site-footer"></footer>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; 2026 ToolBox. All tools run locally in your browser.</p>
+    <p class="tagline">Your files are never uploaded. 100% private.</p>
+  </div>
+</footer>
 
 <script src="../layout.js"></script>
 <script>
