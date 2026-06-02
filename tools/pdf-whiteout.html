@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Whiteout - Redact & Cover Text in PDFs Online</title>
+  <meta name="description" content="Cover, redact and whiteout text or images in PDF files. Add colored rectangles to hide sensitive info. 100% client-side, no upload.">
+  <meta property="og:title" content="PDF Whiteout - Redact PDFs Online">
+  <meta property="og:description" content="Cover and redact sensitive content in PDF files. Draw whiteout rectangles, add text or images on top. 100% private.">
+  <link rel="stylesheet" href="../global.css">
+  <style>
+    .workspace { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+    .preview-panel { flex: 1; min-width: 320px; max-width: 620px; }
+    .controls-panel { width: 260px; flex-shrink: 0; }
+    @media (max-width: 760px) {
+      .workspace { flex-direction: column; }
+      .controls-panel { width: 100%; }
+    }
+    .canvas-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: #e2e8f0;
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+      line-height: 0;
+      cursor: crosshair;
+      max-width: 100%;
+    }
+    .canvas-wrap canvas { display: block; max-width: 100%; height: auto; }
+    .overlay { position: absolute; top: 0; left: 0; pointer-events: none; }
+    .overlay.active { pointer-events: auto; }
+    .rect-preview {
+      position: absolute;
+      border: 2px dashed var(--error);
+      background: rgba(239,68,68,0.15);
+      pointer-events: none;
+    }
+    .rect-placed {
+      position: absolute;
+      border: 2px solid var(--primary);
+      background: rgba(59,130,246,0.12);
+    }
+    .rect-placed .r-delete {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--error);
+      color: #fff;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .page-bar .btn { min-width: 60px; }
+    .page-info { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+    .color-swatches { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .swatch {
+      width: 30px; height: 30px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .swatch.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.25); }
+    .swatch-picker { padding: 0; width: 30px; height: 30px; cursor: pointer; border: 2px solid var(--border); border-radius: var(--radius-sm); }
+    .picker-row { display: flex; align-items: center; gap: 0.5rem; }
+    .eyedropper-btn { font-size: 1.2rem; cursor: pointer; padding: 4px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+    .eyedropper-btn.active { background: var(--primary-light); border-color: var(--primary); }
+    .zoom-info { position: absolute; bottom: 6px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; font-size: 0.72rem; padding: 2px 8px; border-radius: 10px; pointer-events: none; }
+    .cover-list { max-height: 160px; overflow-y: auto; }
+    .cover-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.4rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.35rem;
+      font-size: 0.8rem;
+      gap: 0.5rem;
+    }
+    .cover-item .ci-color { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; border: 1px solid var(--border); }
+    .cover-item .ci-info { flex: 1; min-width: 0; }
+    .cover-item button { background: none; border: none; color: var(--error); cursor: pointer; font-size: 1rem; padding: 0 4px; }
+    .text-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .text-row input { flex: 1; }
+    .text-row select { width: auto; }
+    .drop-hint {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: var(--text-muted);
+      pointer-events: none;
+    }
+    .zoom-range { width: 100%; margin-top: 0.3rem; }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PDF Whiteout",
+    "url": "https://wayhum.com/tools/pdf-whiteout.html",
+    "description": "Cover, redact and whiteout text or images in PDF files. Add colored rectangles, text, and images. 100% client-side processing.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "browserRequirements": "Requires JavaScript"
+  }
+  </script>
+  <link rel="canonical" href="https://wayhum.com/tools/pdf-whiteout.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://wayhum.com/tools/pdf-whiteout.html">
+  <meta property="og:site_name" content="ToolBox">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="PDF Whiteout - Redact & Cover PDFs Online">
+  <meta name="twitter:description" content="Cover and redact sensitive content in PDF files. Draw whiteout rectangles, add text or images. 100% private.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:image" content="https://wayhum.com/og-image.svg">
+  <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<main>
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <h1>PDF Whiteout</h1>
+      <p>Cover text &amp; images in PDFs. Draw rectangles, pick background colors for perfect camouflage. 100% client-side.</p>
+    </div>
+
+    <div class="card">
+      <!-- File input -->
+      <input type="file" id="fileInput" accept=".pdf" hidden>
+
+      <div class="workspace" id="workspace" style="display:none;">
+        <!-- Preview panel -->
+        <div class="preview-panel">
+          <div class="page-bar">
+            <button class="btn btn-outline btn-sm" id="btnPrev">&larr; Prev</button>
+            <span class="page-info" id="pageInfo">Page 1 / 1</span>
+            <button class="btn btn-outline btn-sm" id="btnNext">Next &rarr;</button>
+          </div>
+
+          <div class="canvas-wrap" id="canvasWrap">
+            <canvas id="pdfCanvas"></canvas>
+            <div class="overlay" id="overlay"></div>
+            <div class="drop-hint" id="dropHint">Drop PDF here or click to browse</div>
+            <div class="zoom-info" id="zoomInfo">100%</div>
+          </div>
+
+          <input type="range" class="zoom-range" id="zoomSlider" min="50" max="250" value="100" step="10">
+        </div>
+
+        <!-- Controls panel -->
+        <div class="controls-panel">
+          <!-- Cover color -->
+          <label>Cover Color</label>
+          <div class="color-swatches" id="swatches">
+            <div class="swatch active" data-color="#ffffff" style="background:#fff;"></div>
+            <div class="swatch" data-color="#000000" style="background:#000;"></div>
+            <div class="swatch" data-color="#e2e8f0" style="background:#e2e8f0;"></div>
+            <div class="swatch" data-color="#f1f5f9" style="background:#f1f5f9;"></div>
+            <div class="swatch" data-color="#fefce8" style="background:#fefce8;"></div>
+            <input type="color" class="swatch-picker" id="customColor" value="#ffffff" title="Custom color">
+          </div>
+
+          <!-- Eyedropper -->
+          <div class="picker-row mt-1">
+            <button class="eyedropper-btn" id="btnEyedropper" title="Pick color from page">&#x1F489;</button>
+            <span style="font-size:0.8rem;color:var(--text-muted);">Click page to pick color</span>
+          </div>
+          <div id="pickedInfo" style="font-size:0.75rem;margin-top:0.25rem;color:var(--text-muted);"></div>
+
+          <!-- Cover list -->
+          <label class="mt-3">Covers (Page <span id="coverPageNum">1</span>)</label>
+          <div class="cover-list" id="coverList">
+            <p class="text-sm text-muted">Click &amp; drag on the preview to draw a cover rectangle.</p>
+          </div>
+
+          <!-- Add text overlay -->
+          <details class="mt-2" id="textOverlayToggle">
+            <summary style="font-weight:600;font-size:0.85rem;cursor:pointer;">Add Text Over Cover</summary>
+            <div class="text-row" style="margin-top:0.5rem;">
+              <input type="text" id="overlayText" placeholder="Text to add..." maxlength="200">
+              <select id="overlayFontSize">
+                <option value="10">10</option>
+                <option value="12" selected>12</option>
+                <option value="14">14</option>
+                <option value="18">18</option>
+                <option value="24">24</option>
+              </select>
+            </div>
+            <label class="mt-1" style="font-size:0.78rem;">Text Color</label>
+            <input type="color" id="overlayTextColor" value="#000000" style="width:60px;height:28px;">
+          </details>
+
+          <!-- Actions -->
+          <button class="btn btn-outline btn-sm mt-3" id="btnClearCovers">Clear All Covers</button>
+          <button class="btn btn-primary w-full mt-1" id="btnDownload">&#x2B07; Download PDF</button>
+        </div>
+      </div>
+
+      <!-- Upload zone (shown before file is loaded) -->
+      <div class="upload-zone" id="dropZone" style="cursor:pointer;">
+        <div class="icon">&#x1F4C4;</div>
+        <h3>Drop a PDF here or click to browse</h3>
+        <p>All processing is local &mdash; your document never leaves your device.</p>
+      </div>
+    </div>
+
+    <!-- About -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
+      <div class="prose">
+        <p>The PDF Whiteout tool lets you cover, hide and redact content in PDF documents directly in your browser. Think of it as digital correction fluid — draw a rectangle over any text, image, or area you want to conceal. The rectangle is permanently embedded into the PDF when you download it.</p>
+        <p>Key features: <strong>color picker</strong> to match the page background for invisible covers, <strong>custom color rectangles</strong> for highlighting or annotation, <strong>text overlay</strong> to add new text on top of covered areas, and <strong>multi-page support</strong> (navigate between pages, covers stay on their original page).</p>
+        <p>All processing uses <code>pdf-lib</code> and <code>pdf.js</code> — both run entirely in your browser. Your document never leaves your device. No upload, no server, no privacy risk.</p>
+        <p>Common use cases: redacting sensitive info before sharing, covering watermarks, whiteout for form corrections, hiding personal data in screenshots of PDFs, and annotating documents with colored highlights.</p>
+      </div>
+    </section>
+
+    <!-- How to use -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
+      <div class="prose">
+        <ol>
+          <li><strong>Load your PDF.</strong> Drag and drop a PDF file onto the upload zone, or click to browse. The first page renders instantly.</li>
+          <li><strong>Pick a cover color.</strong> Choose from the preset colors (white, black, gray) or use the <strong>eyedropper tool</strong> to sample a color directly from the page. This is the key to invisible covers — pick the exact background color.</li>
+          <li><strong>Draw cover rectangles.</strong> Click and drag on the preview to draw a rectangle. Each cover appears in the list. Navigate pages with the Prev/Next buttons. Covers are per-page.</li>
+          <li><strong>Optionally add text.</strong> Expand "Add Text Over Cover" and type text to embed on top of a covered area. Choose font size and color.</li>
+          <li><strong>Download.</strong> Click Download PDF to save the modified document with all covers and text permanently embedded.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <details class="faq-item">
+        <summary>Is my PDF uploaded to a server?</summary>
+        <div class="faq-answer"><p>No. The entire tool runs in your browser using JavaScript. Your PDF is loaded into memory locally and never sent to any server. pdf.js renders the preview, and pdf-lib modifies the document — both are client-side libraries. You can disconnect from the internet after the page loads and the tool still works.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>How does the color picker work?</summary>
+        <div class="faq-answer"><p>Click the eyedropper icon, then click any point on the PDF preview. The tool samples the exact pixel color at that point and sets it as your current cover color. This lets you match the page background perfectly for invisible covers. The last 5 picked colors are remembered.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>Can the cover rectangles be removed later?</summary>
+        <div class="faq-answer"><p>Once you download the modified PDF, the rectangles are permanently embedded into the document — they become part of the PDF content and cannot be removed with this tool. However, while editing, you can delete any cover before downloading.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>Does this work on mobile devices?</summary>
+        <div class="faq-answer"><p>Basic functionality works on mobile (upload, preview, draw covers, download). However, the drawing experience is best on desktop with a mouse. On touch devices, tap-and-drag works but may be less precise.</p></div>
+      </details>
+    </section>
+
+    <!-- Related tools -->
+    <section class="info-section">
+      <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
+      <div class="related-tools">
+        <a href="image-converter.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F5BC;</span> Image Converter
+        </a>
+        <a href="qrcode.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4F1;</span> QR Code Generator
+        </a>
+        <a href="social-image-resizer.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4F1;</span> Social Image Resizer
+        </a>
+        <a href="base64-encoder.html" class="related-tool-link">
+          <span class="rt-icon">&#x1F4E6;</span> Base64 Encoder
+        </a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<script src="../layout.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+(function() {
+  // ── DOM refs ──
+  var fileInput = document.getElementById('fileInput');
+  var dropZone = document.getElementById('dropZone');
+  var workspace = document.getElementById('workspace');
+  var pdfCanvas = document.getElementById('pdfCanvas');
+  var overlay = document.getElementById('overlay');
+  var dropHint = document.getElementById('dropHint');
+  var zoomInfo = document.getElementById('zoomInfo');
+  var zoomSlider = document.getElementById('zoomSlider');
+  var btnPrev = document.getElementById('btnPrev');
+  var btnNext = document.getElementById('btnNext');
+  var pageInfo = document.getElementById('pageInfo');
+  var coverList = document.getElementById('coverList');
+  var coverPageNum = document.getElementById('coverPageNum');
+  var btnDownload = document.getElementById('btnDownload');
+  var btnClearCovers = document.getElementById('btnClearCovers');
+  var btnEyedropper = document.getElementById('btnEyedropper');
+  var customColor = document.getElementById('customColor');
+  var pickedInfo = document.getElementById('pickedInfo');
+  var overlayText = document.getElementById('overlayText');
+  var overlayFontSize = document.getElementById('overlayFontSize');
+  var overlayTextColor = document.getElementById('overlayTextColor');
+  var canvasWrap = document.getElementById('canvasWrap');
+
+  // ── State ──
+  var pdfDoc = null;
+  var pdfBytes = null;
+  var currentPage = 1;
+  var totalPages = 0;
+  var pageRenderScale = 1; // internal render scale (for sharpness)
+  var zoom = 100;
+  var coverColor = '#ffffff';
+  var isEyedropper = false;
+  var covers = {}; // { pageNum: [{ x, y, w, h, color, text, fontSize, textColor }] }
+  var drawing = false;
+  var drawStart = { x: 0, y: 0 };
+  var recentColors = ['#ffffff'];
+  var pdfjsLib = window.pdfjsLib;
+
+  // ── Init ──
+  if (pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.mjs';
+  }
+
+  function ensureCovers(p) { if (!covers[p]) covers[p] = []; return covers[p]; }
+
+  // ── Upload zone click ──
+  dropZone.addEventListener('click', function() { fileInput.click(); });
+  fileInput.addEventListener('change', function(e) {
+    if (e.target.files.length) loadPDF(e.target.files[0]);
+  });
+
+  // Drag & drop
+  dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('drag-over'); });
+  dropZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files.length) loadPDF(e.dataTransfer.files[0]);
+  });
+
+  document.addEventListener('dragover', function(e) { e.preventDefault(); });
+  document.addEventListener('drop', function(e) { e.preventDefault(); });
+
+  async function loadPDF(file) {
+    if (file.type !== 'application/pdf') { alert('Please select a PDF file.'); return; }
+    var arr = await file.arrayBuffer();
+    pdfBytes = new Uint8Array(arr);
+    if (!pdfjsLib) { alert('PDF.js is loading. Please try again in a moment.'); return; }
+    var loading = pdfjsLib.getDocument({ data: pdfBytes.slice() });
+    pdfDoc = await loading.promise;
+    totalPages = pdfDoc.numPages;
+    currentPage = 1;
+    covers = {};
+    dropZone.style.display = 'none';
+    workspace.style.display = 'flex';
+    await renderPage();
+  }
+
+  async function renderPage() {
+    if (!pdfDoc) return;
+    var page = await pdfDoc.getPage(currentPage);
+    var vp = page.getViewport({ scale: 1 });
+    pageRenderScale = (zoom / 100) * (window.devicePixelRatio || 1);
+    var scale = zoom / 100;
+    var w = Math.floor(vp.width * scale);
+    var h = Math.floor(vp.height * scale);
+
+    pdfCanvas.width = Math.floor(vp.width * pageRenderScale);
+    pdfCanvas.height = Math.floor(vp.height * pageRenderScale);
+    pdfCanvas.style.width = w + 'px';
+    pdfCanvas.style.height = h + 'px';
+
+    var ctx = pdfCanvas.getContext('2d');
+    ctx.setTransform(pageRenderScale, 0, 0, pageRenderScale, 0, 0);
+
+    await page.render({ canvasContext: ctx, viewport: page.getViewport({ scale: 1 }) }).promise;
+
+    // Size overlay to match
+    overlay.style.width = w + 'px';
+    overlay.style.height = h + 'px';
+    overlay.className = 'overlay active';
+
+    zoomInfo.textContent = zoom + '%';
+    pageInfo.textContent = 'Page ' + currentPage + ' / ' + totalPages;
+    btnPrev.disabled = currentPage <= 1;
+    btnNext.disabled = currentPage >= totalPages;
+    coverPageNum.textContent = currentPage;
+
+    renderCovers();
+  }
+
+  // ── Render cover rectangles on overlay ──
+  function renderCovers() {
+    overlay.innerHTML = '';
+    var pageCovers = ensureCovers(currentPage);
+    var scale = zoom / 100;
+
+    for (var i = 0; i < pageCovers.length; i++) {
+      var c = pageCovers[i];
+      var div = document.createElement('div');
+      div.className = 'rect-placed';
+      div.style.left = (c.x * scale) + 'px';
+      div.style.top = (c.y * scale) + 'px';
+      div.style.width = (c.w * scale) + 'px';
+      div.style.height = (c.h * scale) + 'px';
+      div.style.background = c.color;
+      div.style.borderColor = (c.color === '#ffffff' || c.color === '#fff') ? 'var(--border)' : c.color;
+
+      var btn = document.createElement('button');
+      btn.className = 'r-delete';
+      btn.textContent = '×';
+      btn.title = 'Remove this cover';
+      btn.addEventListener('click', (function(idx) {
+        return function(e) { e.stopPropagation(); removeCover(idx); };
+      })(i));
+      div.appendChild(btn);
+
+      overlay.appendChild(div);
+    }
+    renderCoverList();
+  }
+
+  function renderCoverList() {
+    var pageCovers = ensureCovers(currentPage);
+    if (pageCovers.length === 0) {
+      coverList.innerHTML = '<p class="text-sm text-muted">No covers on this page. Click &amp; drag to draw one.</p>';
+      return;
+    }
+    var html = '';
+    for (var i = 0; i < pageCovers.length; i++) {
+      var c = pageCovers[i];
+      html += '<div class="cover-item">' +
+        '<div class="ci-color" style="background:' + c.color + ';"></div>' +
+        '<div class="ci-info">Cover ' + (i + 1) + (c.text ? ' + text' : '') + '</div>' +
+        '<button data-idx="' + i + '" class="ci-delete" title="Remove">×</button>' +
+        '</div>';
+    }
+    coverList.innerHTML = html;
+    var btns = coverList.querySelectorAll('.ci-delete');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].addEventListener('click', (function(idx) { return function() { removeCover(idx); }; })(j));
+    }
+  }
+
+  function removeCover(idx) {
+    var pageCovers = ensureCovers(currentPage);
+    pageCovers.splice(idx, 1);
+    renderCovers();
+  }
+
+  // ── Mouse drawing on overlay ──
+  overlay.addEventListener('mousedown', function(e) {
+    if (isEyedropper) { pickColor(e); return; }
+    var rect = overlay.getBoundingClientRect();
+    var scale = zoom / 100;
+    drawing = true;
+    drawStart = {
+      x: (e.clientX - rect.left) / scale,
+      y: (e.clientY - rect.top) / scale
+    };
+
+    // Create preview rect
+    var preview = document.createElement('div');
+    preview.className = 'rect-preview';
+    preview.id = 'drawPreview';
+    preview.style.left = (drawStart.x * scale) + 'px';
+    preview.style.top = (drawStart.y * scale) + 'px';
+    overlay.appendChild(preview);
+  });
+
+  overlay.addEventListener('mousemove', function(e) {
+    if (isEyedropper) return;
+    if (!drawing) return;
+    var rect = overlay.getBoundingClientRect();
+    var scale = zoom / 100;
+    var cx = (e.clientX - rect.left) / scale;
+    var cy = (e.clientY - rect.top) / scale;
+    var preview = document.getElementById('drawPreview');
+    if (!preview) return;
+    var x = Math.min(drawStart.x, cx);
+    var y = Math.min(drawStart.y, cy);
+    var w = Math.abs(cx - drawStart.x);
+    var h = Math.abs(cy - drawStart.y);
+    preview.style.left = (x * scale) + 'px';
+    preview.style.top = (y * scale) + 'px';
+    preview.style.width = (w * scale) + 'px';
+    preview.style.height = (h * scale) + 'px';
+  });
+
+  overlay.addEventListener('mouseup', function(e) {
+    if (!drawing) return;
+    drawing = false;
+    var preview = document.getElementById('drawPreview');
+    if (preview) preview.remove();
+
+    var rect = overlay.getBoundingClientRect();
+    var scale = zoom / 100;
+    var cx = (e.clientX - rect.left) / scale;
+    var cy = (e.clientY - rect.top) / scale;
+    var x = Math.min(drawStart.x, cx);
+    var y = Math.min(drawStart.y, cy);
+    var w = Math.abs(cx - drawStart.x);
+    var h = Math.abs(cy - drawStart.y);
+
+    if (w < 5 || h < 5) return; // too small
+
+    var pageCovers = ensureCovers(currentPage);
+    pageCovers.push({
+      x: x, y: y, w: w, h: h,
+      color: coverColor,
+      text: overlayText.value.trim() || null,
+      fontSize: parseInt(overlayFontSize.value),
+      textColor: overlayTextColor.value
+    });
+
+    renderCovers();
+    overlayText.value = '';
+  });
+
+  overlay.addEventListener('mouseleave', function() {
+    if (!drawing) return;
+    drawing = false;
+    var preview = document.getElementById('drawPreview');
+    if (preview) preview.remove();
+  });
+
+  // ── Eyedropper ──
+  function pickColor(e) {
+    var rect = pdfCanvas.getBoundingClientRect();
+    var sx = (e.clientX - rect.left) * (pdfCanvas.width / rect.width);
+    var sy = (e.clientY - rect.top) * (pdfCanvas.height / rect.height);
+    var ctx = pdfCanvas.getContext('2d');
+    var pixel = ctx.getImageData(Math.floor(sx), Math.floor(sy), 1, 1).data;
+    var hex = '#' + toHex(pixel[0]) + toHex(pixel[1]) + toHex(pixel[2]);
+
+    setCoverColor(hex);
+    if (recentColors.indexOf(hex) === -1) {
+      recentColors.unshift(hex);
+      if (recentColors.length > 5) recentColors.pop();
+      updateSwatches();
+    }
+
+    pickedInfo.textContent = 'Picked: ' + hex + ' (R:' + pixel[0] + ' G:' + pixel[1] + ' B:' + pixel[2] + ')';
+    isEyedropper = false;
+    btnEyedropper.classList.remove('active');
+    overlay.style.cursor = 'crosshair';
+  }
+
+  function toHex(n) { var h = n.toString(16); return h.length === 1 ? '0' + h : h; }
+
+  btnEyedropper.addEventListener('click', function() {
+    isEyedropper = !isEyedropper;
+    btnEyedropper.classList.toggle('active', isEyedropper);
+    overlay.style.cursor = isEyedropper ? 'crosshair' : 'crosshair';
+    if (isEyedropper) drawing = false;
+  });
+
+  // ── Color swatches ──
+  function setCoverColor(hex) {
+    coverColor = hex;
+    customColor.value = hex;
+    document.querySelectorAll('.swatch').forEach(function(s) {
+      s.classList.toggle('active', s.dataset.color.toLowerCase() === hex.toLowerCase());
+    });
+  }
+
+  function updateSwatches() {
+    var container = document.getElementById('swatches');
+    // Remove old dynamic swatches
+    container.querySelectorAll('.swatch-dynamic').forEach(function(s) { s.remove(); });
+    for (var i = 0; i < recentColors.length; i++) {
+      var c = recentColors[i];
+      if (c === '#ffffff' || c === '#000000' || c === '#e2e8f0' || c === '#f1f5f9' || c === '#fefce8') continue;
+      var div = document.createElement('div');
+      div.className = 'swatch swatch-dynamic';
+      div.dataset.color = c;
+      div.style.background = c;
+      div.addEventListener('click', function() { setCoverColor(this.dataset.color); });
+      container.insertBefore(div, customColor);
+    }
+  }
+
+  // Swatch clicks
+  document.getElementById('swatches').addEventListener('click', function(e) {
+    var swatch = e.target.closest('.swatch');
+    if (!swatch) return;
+    setCoverColor(swatch.dataset.color);
+  });
+
+  customColor.addEventListener('input', function() {
+    coverColor = customColor.value;
+    document.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('active'); });
+  });
+
+  // ── Zoom ──
+  zoomSlider.addEventListener('input', function() {
+    zoom = parseInt(zoomSlider.value);
+    renderPage();
+  });
+
+  // ── Page navigation ──
+  btnPrev.addEventListener('click', function() { if (currentPage > 1) { currentPage--; renderPage(); } });
+  btnNext.addEventListener('click', function() { if (currentPage < totalPages) { currentPage++; renderPage(); } });
+
+  // ── Clear covers ──
+  btnClearCovers.addEventListener('click', function() {
+    if (confirm('Remove all covers on this page?')) {
+      covers[currentPage] = [];
+      renderCovers();
+    }
+  });
+
+  // ── Download ──
+  btnDownload.addEventListener('click', async function() {
+    if (!pdfBytes || !window.PDFLib) { alert('PDF library is still loading. Please wait.'); return; }
+    try {
+      var pdfDoc2 = await PDFLib.PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+      var pages = pdfDoc2.getPages();
+
+      // Draw covers for each page
+      for (var p = 1; p <= totalPages; p++) {
+        if (!covers[p] || covers[p].length === 0) continue;
+        var pg = pages[p - 1];
+        var h = pg.getHeight();
+        // In PDF-lib, origin is bottom-left. We need to flip Y.
+        for (var c = 0; c < covers[p].length; c++) {
+          var cv = covers[p][c];
+          pg.drawRectangle({
+            x: cv.x,
+            y: h - cv.y - cv.h,
+            width: cv.w,
+            height: cv.h,
+            color: parseColor(cv.color)
+          });
+
+          // Add text overlay if present
+          if (cv.text && cv.text.trim()) {
+            var fs = cv.fontSize || 12;
+            var tc = parseColor(cv.textColor || '#000000');
+            pg.drawText(cv.text.trim(), {
+              x: cv.x + 4,
+              y: h - cv.y - cv.h + (cv.h - fs) / 2,
+              size: fs,
+              color: tc,
+              maxWidth: cv.w - 8
+            });
+          }
+        }
+      }
+
+      var modBytes = await pdfDoc2.save();
+      downloadBlob(modBytes, 'redacted.pdf');
+      btnDownload.textContent = '✔ Downloaded!';
+      setTimeout(function() { btnDownload.innerHTML = '&#x2B07; Download PDF'; }, 2000);
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+  });
+
+  function parseColor(hex) {
+    var h = hex.replace('#', '');
+    return PDFLib.rgb(
+      parseInt(h.substring(0, 2), 16) / 255,
+      parseInt(h.substring(2, 4), 16) / 255,
+      parseInt(h.substring(4, 6), 16) / 255
+    );
+  }
+
+  function downloadBlob(bytes, name) {
+    var blob = new Blob([bytes], { type: 'application/pdf' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  // ── Global drag/drop to prevent browser opening PDF ──
+  window.addEventListener('dragover', function(e) { e.preventDefault(); });
+  window.addEventListener('drop', function(e) { e.preventDefault(); });
+
+  updateSwatches();
+})();
+</script>
+
+</body>
+</html>
