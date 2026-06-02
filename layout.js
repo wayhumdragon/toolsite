@@ -14,20 +14,22 @@
 
     // ── Path helpers ──
     var path = location.pathname;
-    var home = path.includes('/blog/posts/') ? '../../index.html' :
-               (path.includes('/tools/') || path.includes('/blog/')) ? '../index.html' :
-               'index.html';
+    var base = path.includes('/blog/posts/') ? '../../' :
+               (path.includes('/tools/') || path.includes('/blog/')) ? '../' :
+               '';
+    var home = base + 'index.html';
     var blog = path.includes('/blog/posts/') ? '../index.html' :
                path.includes('/tools/') ? '../blog/index.html' :
                path.includes('/blog/') ? 'index.html' :
                'blog/index.html';
+    var logoImg = base + 'images/wayhum.jpg';
 
     // ── Header ──
     var h = document.querySelector('.site-header');
     if (h) {
       h.innerHTML =
         '<div class="container">' +
-        '<a href="' + home + '" class="logo"><img src="/images/wayhum.jpg" alt="Wayhum" class="logo-img"></a>' +
+        '<a href="' + home + '" class="logo"><img src="' + logoImg + '" alt="Wayhum" class="logo-img"></a>' +
         '<nav class="header-nav">' +
           '<a href="' + blog + '">Blog</a>' +
         '</nav>' +
