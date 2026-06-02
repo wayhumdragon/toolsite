@@ -67,7 +67,7 @@ body {
   gap: 0.5rem;
 }
 
-.logo-img { height: 28px; width: auto; border-radius: 6px; }
+.logo-img { height: 22px; width: auto; border-radius: 4px; }
 
 .header-nav {
   display: flex;

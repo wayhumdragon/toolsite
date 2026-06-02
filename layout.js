@@ -11,13 +11,18 @@
     document.head.appendChild(g2);
   }
 
+  // ── Path helpers ──
+  var path = location.pathname;
+  var home = path.includes('/blog/posts/') ? '../../index.html' : (path.includes('/tools/') || path.includes('/blog/')) ? '../index.html' : 'index.html';
+  var blog = path.includes('/blog/posts/') ? '../index.html' : (path.includes('/tools/')) ? '../blog/index.html' : (path.includes('/blog/')) ? 'index.html' : 'blog/index.html';
+
   // ── Header ──
   var h =
     '<header class="site-header">' +
     '<div class="container">' +
-    '<a href="' + (function() { var p = location.pathname; if (p.includes('/blog/posts/')) return '../../index.html'; if (p.includes('/tools/') || p.includes('/blog/')) return '../index.html'; return 'index.html'; })() + '" class="logo"><img src="/images/wayhum.jpg" alt="Wayhum" class="logo-img" width="44" height="44">ToolBox</a>' +
+    '<a href="' + home + '" class="logo"><img src="/images/wayhum.jpg" alt="Wayhum" class="logo-img" width="44" height="44"></a>' +
     '<nav class="header-nav">' +
-      '<a href="' + (function() { var p = location.pathname; if (p.includes('/blog/posts/')) return '../index.html'; if (p.includes('/tools/')) return '../blog/index.html'; if (p.includes('/blog/')) return 'index.html'; return 'blog/index.html'; })() + '">Blog</a>' +
+      '<a href="' + blog + '">Blog</a>' +
     '</nav>' +
     '</div>' +
     '</header>';
@@ -31,8 +36,8 @@
     '</div>' +
     '</footer>';
 
-  var elH = document.getElementById('site-header');
-  var elF = document.getElementById('site-footer');
+  var elH = document.querySelector('.site-header');
+  var elF = document.querySelector('.site-footer');
   if (elH) elH.outerHTML = h;
   if (elF) elF.outerHTML = f;
 })();
