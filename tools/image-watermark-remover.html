@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Watermark Remover - Remove Watermarks Online Free</title>
-  <meta name="description" content="Remove watermarks and unwanted objects from images online. Smart fill, clone stamp, and manual brush. 100% client-side, no upload.">
-  <meta property="og:title" content="Image Watermark Remover - Remove Watermarks Online">
-  <meta property="og:description" content="Remove watermarks and unwanted objects from images. Smart fill and clone stamp tools. 100% private, works in your browser.">
+  <title>AI Watermark Remover - Remove Watermarks Online Free</title>
+  <meta name="description" content="AI-powered watermark removal. Brush over watermarks and let AI fill the area naturally. 100% client-side, no upload.">
+  <meta property="og:title" content="AI Watermark Remover - Remove Watermarks Online">
+  <meta property="og:description" content="Brush over watermarks and let AI intelligently fill the area. Powered by on-device AI, 100% private.">
   <link rel="stylesheet" href="../global.css">
   <style>
     .workspace { display: flex; gap: 1.25rem; flex-wrap: wrap; }
     .preview-panel { flex: 1; min-width: 320px; max-width: 700px; }
-    .controls-panel { width: 270px; flex-shrink: 0; }
+    .controls-panel { width: 250px; flex-shrink: 0; }
     @media (max-width: 760px) {
       .workspace { flex-direction: column; }
       .controls-panel { width: 100%; }
@@ -19,96 +19,62 @@
     .canvas-wrap {
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      background: #e2e8f0;
-      overflow: hidden;
+      background: repeating-conic-gradient(#e2e8f0 0% 25%, #f8fafc 0% 50%) 50% / 16px 16px;
       position: relative;
       display: inline-block;
       line-height: 0;
-      cursor: crosshair;
       max-width: 100%;
+      overflow: hidden;
     }
-    .canvas-wrap canvas { display: block; max-width: 100%; height: auto; }
-    .overlay { position: absolute; top: 0; left: 0; pointer-events: none; }
-    .overlay.active { pointer-events: auto; }
-    .select-rect {
-      position: absolute;
-      border: 2px dashed var(--error);
-      background: rgba(239,68,68,0.15);
-      pointer-events: none;
-    }
-    .zoom-info { position: absolute; bottom: 6px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; font-size: 0.72rem; padding: 2px 8px; border-radius: 10px; pointer-events: none; }
-    .drop-hint {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; color: var(--text-muted);
-      pointer-events: none;
-    }
-    .zoom-range { width: 100%; margin-top: 0.3rem; }
-    .mode-tabs {
-      display: flex;
+    .canvas-wrap canvas { display: block; max-width: 100%; height: auto; cursor: crosshair; }
+    #maskCanvas { position: absolute; top: 0; left: 0; }
+    .status-bar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.65rem 0.85rem;
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      overflow: hidden;
       margin-bottom: 0.75rem;
+      font-size: 0.82rem;
     }
-    .mode-tab {
-      flex: 1;
-      padding: 0.5rem 0.5rem;
-      text-align: center;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      background: var(--surface);
-      border: none;
-      color: var(--text-muted);
-      transition: all 0.15s;
-      white-space: nowrap;
+    .status-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+      background: var(--text-muted);
     }
-    .mode-tab + .mode-tab { border-left: 1px solid var(--border); }
-    .mode-tab.active { background: var(--primary); color: #fff; }
-    .mode-tab:hover:not(.active) { background: var(--surface-hover); }
+    .status-dot.ready { background: var(--success); }
+    .status-dot.busy { background: #f59e0b; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
     .brush-row { display: flex; gap: 0.5rem; align-items: center; }
     .brush-row input[type=range] { flex: 1; }
-    .color-swatch-row { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
-    .swatch {
-      width: 28px; height: 28px;
+    .progress-wrap { margin-top: 0.5rem; display: none; }
+    .progress-bar {
+      width: 100%; height: 6px;
+      background: var(--border);
+      border-radius: 3px; overflow: hidden;
+    }
+    .progress-bar div { height: 100%; background: var(--primary); width: 0%; transition: width 0.15s; border-radius: 3px; }
+    .result-tabs { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+    .result-tab {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.78rem; font-weight: 600;
+      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      border: 2px solid var(--border);
       cursor: pointer;
-      transition: border-color 0.15s;
+      background: var(--surface);
     }
-    .swatch.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.25); }
-    .picker-input { padding: 0; width: 28px; height: 28px; cursor: pointer; border: 2px solid var(--border); border-radius: var(--radius-sm); }
-    .history-bar { display: flex; gap: 0.4rem; margin-bottom: 0.5rem; }
-    .info-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-    .info-label { font-weight: 600; }
-    .action-bar { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
-    .clone-source-marker {
-      position: absolute;
-      width: 20px; height: 20px;
-      border: 2px solid #22c55e;
-      border-radius: 50%;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-    }
+    .result-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
   </style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Image Watermark Remover",
+    "name": "AI Watermark Remover",
     "url": "https://wayhum.com/tools/image-watermark-remover.html",
-    "description": "Remove watermarks and unwanted objects from images. Smart fill, clone stamp, and manual tools. 100% client-side processing.",
+    "description": "AI-powered watermark removal. Brush over watermarks and let AI fill the area. 100% client-side.",
     "applicationCategory": "MultimediaApplication",
     "operatingSystem": "Any",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "browserRequirements": "Requires JavaScript"
+    "browserRequirements": "Requires JavaScript and WebAssembly"
   }
   </script>
   <link rel="canonical" href="https://wayhum.com/tools/image-watermark-remover.html">
@@ -117,8 +83,8 @@
   <meta property="og:site_name" content="ToolBox">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Image Watermark Remover - Remove Watermarks Online">
-  <meta name="twitter:description" content="Remove watermarks and unwanted objects from images. Smart fill and clone stamp. 100% private.">
+  <meta name="twitter:title" content="AI Watermark Remover - Remove Watermarks Online">
+  <meta name="twitter:description" content="Brush over watermarks and let AI fill the area. 100% private.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta property="og:image" content="https://wayhum.com/og-image.svg">
   <meta name="twitter:image" content="https://wayhum.com/og-image.svg">
@@ -130,118 +96,72 @@
 <main>
   <div class="tool-wrap">
     <div class="tool-header">
-      <h1>Image Watermark Remover</h1>
-      <p>Remove watermarks, logos, and unwanted objects from images. Smart fill automatically blends the surrounding area. 100% client-side.</p>
+      <h1>AI Watermark Remover</h1>
+      <p>Brush over watermarks or unwanted objects — AI fills the area naturally. All processing runs on your device.</p>
     </div>
 
     <div class="card">
-      <!-- File input -->
       <input type="file" id="fileInput" accept="image/*" hidden>
 
+      <!-- Status bar -->
+      <div class="status-bar">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Ready. Upload an image to begin.</span>
+      </div>
+
+      <!-- Model download progress -->
+      <div class="progress-wrap" id="modelProgress">
+        <p class="text-sm text-muted" id="modelProgressText">Downloading AI model (28 MB)...</p>
+        <div class="progress-bar"><div id="modelProgressBar"></div></div>
+      </div>
+
       <div class="workspace" id="workspace" style="display:none;">
-        <!-- Preview panel -->
         <div class="preview-panel">
           <div class="canvas-wrap" id="canvasWrap">
             <canvas id="mainCanvas"></canvas>
-            <div class="overlay" id="overlay"></div>
-            <div class="drop-hint" id="dropHint">Drop image here or click to browse</div>
-            <div class="zoom-info" id="zoomInfo">100%</div>
+            <canvas id="maskCanvas"></canvas>
           </div>
-          <input type="range" class="zoom-range" id="zoomSlider" min="25" max="400" value="100" step="5">
+          <!-- Result view tabs -->
+          <div class="result-tabs" id="resultTabs" style="display:none;">
+            <button class="result-tab active" data-view="result">Result</button>
+            <button class="result-tab" data-view="original">Original</button>
+            <button class="result-tab" data-view="mask">Mask</button>
+          </div>
         </div>
 
-        <!-- Controls panel -->
         <div class="controls-panel">
-          <!-- Mode selector -->
-          <label>Tool Mode</label>
-          <div class="mode-tabs" id="modeTabs">
-            <button class="mode-tab active" data-mode="smart">Smart Fill</button>
-            <button class="mode-tab" data-mode="clone">Clone Stamp</button>
-            <button class="mode-tab" data-mode="brush">Brush</button>
+          <label>Brush Size</label>
+          <div class="brush-row">
+            <input type="range" id="brushSize" min="5" max="120" value="30" step="1">
+            <span id="brushSizeLabel" style="font-size:0.8rem;min-width:32px;">30</span>
           </div>
 
-          <div id="smartControls">
-            <label>Fill Method</label>
-            <select id="fillMethod" style="width:100%;margin-bottom:0.5rem;">
-              <option value="content-aware">Content-Aware Fill (recommended)</option>
-              <option value="edge-blend">Edge Blend</option>
-              <option value="solid">Solid Color</option>
-              <option value="blur">Gaussian Blur</option>
-            </select>
-            <div id="fillProgress" style="display:none;margin-bottom:0.5rem;">
-              <div style="width:100%;height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
-                <div id="fillProgressBar" style="height:100%;background:var(--primary);width:0%;transition:width 0.15s;border-radius:3px;"></div>
-              </div>
-              <span id="fillProgressText" style="font-size:0.72rem;color:var(--text-muted);">Filling...</span>
-            </div>
-            <div id="solidColorRow" class="color-swatch-row" style="display:none;margin-bottom:0.5rem;">
-              <div class="swatch active" data-color="#ffffff" style="background:#fff;"></div>
-              <div class="swatch" data-color="#000000" style="background:#000;"></div>
-              <div class="swatch" data-color="#cccccc" style="background:#ccc;"></div>
-              <input type="color" class="picker-input" id="solidColorPicker" value="#ffffff" title="Custom color">
-            </div>
-            <p class="text-sm text-muted">Click &amp; drag on the image to select the watermark area. Release to fill.</p>
+          <button class="btn btn-outline btn-sm mt-2 w-full" id="btnClearMask">Clear Mask</button>
+
+          <button class="btn btn-primary w-full mt-3" id="btnInpaint" disabled>
+            &#x2728; Inpaint (Remove)
+          </button>
+
+          <!-- Processing progress -->
+          <div class="progress-wrap" id="processProgress">
+            <p class="text-sm text-muted" id="processText">Processing...</p>
           </div>
 
-          <div id="cloneControls" style="display:none;">
-            <label>Brush Size</label>
-            <div class="brush-row">
-              <input type="range" id="cloneSize" min="5" max="120" value="30" step="1">
-              <span id="cloneSizeLabel" style="font-size:0.8rem;min-width:35px;">30px</span>
-            </div>
-            <label class="mt-1">Hardness</label>
-            <input type="range" id="cloneHardness" min="0" max="100" value="80" step="1" style="width:100%;">
-            <p class="text-sm text-muted mt-1">Click on a clean area to set the clone source, then paint over the watermark.</p>
-            <div class="info-row mt-1">
-              <span class="info-label">Source:</span>
-              <span id="cloneSourceInfo" style="color:var(--success);">Not set</span>
-            </div>
-          </div>
+          <button class="btn w-full mt-2" id="btnDownload" disabled style="display:none;">
+            &#x2B07; Download Result
+          </button>
 
-          <div id="brushControls" style="display:none;">
-            <label>Brush Size</label>
-            <div class="brush-row">
-              <input type="range" id="brushSize" min="3" max="150" value="25" step="1">
-              <span id="brushSizeLabel" style="font-size:0.8rem;min-width:35px;">25px</span>
-            </div>
-            <label class="mt-1">Paint Color</label>
-            <div class="color-swatch-row mt-1">
-              <div class="swatch active" data-color="#ffffff" style="background:#fff;"></div>
-              <div class="swatch" data-color="#000000" style="background:#000;"></div>
-              <div class="swatch" data-color="#e2e8f0" style="background:#e2e8f0;"></div>
-              <input type="color" class="picker-input" id="brushColorPicker" value="#ffffff" title="Custom color">
-            </div>
-            <label class="mt-1">Hardness</label>
-            <input type="range" id="brushHardness" min="0" max="100" value="85" step="1" style="width:100%;">
-            <p class="text-sm text-muted mt-1">Paint directly over the watermark with a solid color or sampled color.</p>
-          </div>
-
-          <!-- Eyedropper -->
-          <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.75rem;">
-            <button class="btn btn-outline btn-sm" id="btnEyedropper" title="Pick color from image">&#x1F489; Pick Color</button>
-            <span id="pickedColorInfo" style="font-size:0.75rem;color:var(--text-muted);"></span>
-          </div>
-
-          <!-- History -->
-          <div class="history-bar mt-3">
-            <button class="btn btn-outline btn-sm" id="btnUndo" disabled>&#x21A9; Undo</button>
-            <button class="btn btn-outline btn-sm" id="btnRedo" disabled>Redo &#x21AA;</button>
-            <button class="btn btn-outline btn-sm" id="btnReset" style="margin-left:auto;">Reset</button>
-          </div>
-
-          <!-- Actions -->
-          <div class="action-bar">
-            <button class="btn btn-primary w-full" id="btnDownload">&#x2B07; Download Image</button>
-            <button class="btn btn-outline btn-sm" id="btnCopy">&#x1F4CB; Copy to Clipboard</button>
-          </div>
+          <button class="btn btn-outline btn-sm w-full mt-1" id="btnReset" style="display:none;">
+            Start Over
+          </button>
         </div>
       </div>
 
-      <!-- Upload zone (shown before image is loaded) -->
+      <!-- Upload zone -->
       <div class="upload-zone" id="dropZone" style="cursor:pointer;">
         <div class="icon">&#x1F5BC;</div>
         <h3>Drop an image here or click to browse</h3>
-        <p>Supports JPG, PNG, WebP, GIF. All processing is local &mdash; your image never leaves your device.</p>
+        <p>Supports JPG, PNG, WebP. AI processing is 100% local.</p>
       </div>
     </div>
 
@@ -249,68 +169,45 @@
     <section class="info-section">
       <h2><span class="section-icon">&#x1F4A1;</span> About this tool</h2>
       <div class="prose">
-        <p>The Image Watermark Remover helps you remove watermarks, logos, timestamps, and other unwanted objects from your images — all directly in your browser. Nothing is uploaded to any server.</p>
-        <p>Three removal modes: <strong>Smart Fill</strong> auto-blends the selection using surrounding pixels (best for simple backgrounds), <strong>Clone Stamp</strong> lets you sample a clean area and paint over the watermark (best for complex backgrounds), and <strong>Manual Brush</strong> paints a solid color (best for borders and edges).</p>
-        <p>Built on the HTML5 Canvas API, everything runs client-side. Your images stay on your device — private, secure, and fast.</p>
+        <p>This tool uses <strong>MI-GAN</strong>, a deep learning model designed for mobile devices, to intelligently fill areas you mark. The model analyzes the surrounding image content (textures, edges, patterns) and reconstructs what should be behind the watermark or object.</p>
+        <p>The AI model (~28 MB) downloads once and is cached in your browser for future use. All inference runs locally via <strong>ONNX Runtime Web</strong> with WebAssembly. Nothing is ever uploaded.</p>
       </div>
     </section>
 
-    <!-- How to use -->
     <section class="info-section">
       <h2><span class="section-icon">&#x1F4CB;</span> How to use</h2>
       <div class="prose">
         <ol>
-          <li><strong>Upload your image.</strong> Drag and drop an image onto the upload zone, or click to browse. The image loads instantly in the preview.</li>
-          <li><strong>Choose a tool mode.</strong> <em>Smart Fill</em> for auto-blending flat backgrounds, <em>Clone Stamp</em> for textured or complex areas, <em>Brush</em> for painting solid colors.</li>
-          <li><strong>For Smart Fill:</strong> Click and drag to draw a rectangle over the watermark. Release to auto-fill. Use the color picker (&#x1F489;) to sample the exact background color first.</li>
-          <li><strong>For Clone Stamp:</strong> Click on a clean area to set the source point, then paint over the watermark. The source follows your brush movement.</li>
-          <li><strong>Zoom in</strong> for precision work using the slider below the image. Use <strong>Undo</strong> if you make a mistake.</li>
-          <li><strong>Download</strong> your cleaned image in PNG format. Or copy to clipboard to paste elsewhere.</li>
+          <li><strong>Upload an image</strong> — drag & drop or click to browse.</li>
+          <li><strong>Paint over the watermark</strong> — use the brush to mark the area you want removed. The red overlay shows what's selected.</li>
+          <li><strong>Click "Inpaint"</strong> — the AI model processes the image. This takes ~1–3 seconds depending on your device.</li>
+          <li><strong>Review & download</strong> — toggle between Result / Original / Mask views to compare. Download the cleaned image.</li>
         </ol>
       </div>
     </section>
 
-    <!-- FAQ -->
     <section class="info-section">
-      <h2><span class="section-icon">&#x2753;</span> Frequently asked questions</h2>
+      <h2><span class="section-icon">&#x2753;</span> FAQ</h2>
       <details class="faq-item">
-        <summary>Is my image uploaded to a server?</summary>
-        <div class="faq-answer"><p>No. The entire tool runs in your browser using the HTML5 Canvas API. Your image is loaded into memory locally and never sent to any server. You can disconnect from the internet after the page loads and the tool still works.</p></div>
+        <summary>Does it really run AI in the browser?</summary>
+        <div class="faq-answer"><p>Yes. The MI-GAN inpainting model runs via ONNX Runtime Web + WebAssembly directly in your browser. The model (~28 MB) downloads once and is cached in IndexedDB.</p></div>
       </details>
       <details class="faq-item">
-        <summary>How does Smart Fill work?</summary>
-        <div class="faq-answer"><p>Smart Fill analyzes the pixels along the border of your selection and interpolates them across the selected area. For each pixel inside the selection, it computes a weighted blend of the nearest border pixels on each side. This works best on smooth or gradient backgrounds.</p></div>
+        <summary>How good is the inpainting quality?</summary>
+        <div class="faq-answer"><p>MI-GAN works well on smooth backgrounds, gradients, and simple textures. It may struggle with highly complex patterns. Best results come from marking only the watermark itself (not a huge area).</p></div>
       </details>
       <details class="faq-item">
-        <summary>Can I remove watermarks from any image?</summary>
-        <div class="faq-answer"><p>The tool works best when the watermark sits on a relatively uniform or smooth background. For complex textured backgrounds, use Clone Stamp mode. For very intricate backgrounds, manual editing with professional software may yield better results.</p></div>
-      </details>
-      <details class="faq-item">
-        <summary>What file formats are supported?</summary>
-        <div class="faq-answer"><p>You can load JPG, PNG, WebP, GIF, and BMP images. The output is always saved as PNG to preserve quality (no compression artifacts). You can convert the downloaded PNG to other formats using our <a href="image-converter.html">Image Converter</a>.</p></div>
-      </details>
-      <details class="faq-item">
-        <summary>Does this work on mobile devices?</summary>
-        <div class="faq-answer"><p>Yes, the tool works on mobile browsers. However, precise watermark removal is much easier on desktop with a mouse. On touch devices, use pinch-to-zoom and the zoom slider for better precision.</p></div>
+        <summary>Is my image uploaded anywhere?</summary>
+        <div class="faq-answer"><p>No. Everything runs locally. The model runs in your browser via WebAssembly. Your image never leaves your device.</p></div>
       </details>
     </section>
 
-    <!-- Related tools -->
     <section class="info-section">
       <h2><span class="section-icon">&#x1F50D;</span> Related tools</h2>
       <div class="related-tools">
-        <a href="image-converter.html" class="related-tool-link">
-          <span class="rt-icon">&#x1F5BC;</span> Image Converter
-        </a>
-        <a href="pdf-whiteout.html" class="related-tool-link">
-          <span class="rt-icon">&#x1F4C4;</span> PDF Whiteout
-        </a>
-        <a href="social-image-resizer.html" class="related-tool-link">
-          <span class="rt-icon">&#x1F4F1;</span> Social Image Resizer
-        </a>
-        <a href="qrcode.html" class="related-tool-link">
-          <span class="rt-icon">&#x1F4F1;</span> QR Code Generator
-        </a>
+        <a href="pdf-whiteout.html" class="related-tool-link"><span class="rt-icon">&#x1F4C4;</span> PDF Whiteout</a>
+        <a href="image-converter.html" class="related-tool-link"><span class="rt-icon">&#x1F5BC;</span> Image Converter</a>
+        <a href="social-image-resizer.html" class="related-tool-link"><span class="rt-icon">&#x1F4F1;</span> Social Image Resizer</a>
       </div>
     </section>
   </div>
@@ -319,6 +216,7 @@
 <footer class="site-footer"></footer>
 
 <script src="../layout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js"></script>
 <script>
 (function() {
   // ── DOM refs ──
@@ -326,137 +224,172 @@
   var dropZone = document.getElementById('dropZone');
   var workspace = document.getElementById('workspace');
   var mainCanvas = document.getElementById('mainCanvas');
-  var overlay = document.getElementById('overlay');
-  var dropHint = document.getElementById('dropHint');
-  var zoomInfo = document.getElementById('zoomInfo');
-  var zoomSlider = document.getElementById('zoomSlider');
-  var btnDownload = document.getElementById('btnDownload');
-  var btnCopy = document.getElementById('btnCopy');
-  var btnUndo = document.getElementById('btnUndo');
-  var btnRedo = document.getElementById('btnRedo');
-  var btnReset = document.getElementById('btnReset');
-  var btnEyedropper = document.getElementById('btnEyedropper');
-  var pickedColorInfo = document.getElementById('pickedColorInfo');
+  var maskCanvas = document.getElementById('maskCanvas');
   var canvasWrap = document.getElementById('canvasWrap');
-  var fillMethod = document.getElementById('fillMethod');
-  var solidColorRow = document.getElementById('solidColorRow');
-  var solidColorPicker = document.getElementById('solidColorPicker');
-  var smartControls = document.getElementById('smartControls');
-  var cloneControls = document.getElementById('cloneControls');
-  var brushControls = document.getElementById('brushControls');
-  var cloneSizeSlider = document.getElementById('cloneSize');
-  var cloneSizeLabel = document.getElementById('cloneSizeLabel');
-  var cloneSourceInfo = document.getElementById('cloneSourceInfo');
+  var statusDot = document.getElementById('statusDot');
+  var statusText = document.getElementById('statusText');
+  var modelProgress = document.getElementById('modelProgress');
+  var modelProgressBar = document.getElementById('modelProgressBar');
+  var modelProgressText = document.getElementById('modelProgressText');
   var brushSizeSlider = document.getElementById('brushSize');
   var brushSizeLabel = document.getElementById('brushSizeLabel');
+  var btnClearMask = document.getElementById('btnClearMask');
+  var btnInpaint = document.getElementById('btnInpaint');
+  var processProgress = document.getElementById('processProgress');
+  var processText = document.getElementById('processText');
+  var btnDownload = document.getElementById('btnDownload');
+  var btnReset = document.getElementById('btnReset');
+  var resultTabs = document.getElementById('resultTabs');
+
+  // ── Constants ──
+  var MODEL_URL = 'https://huggingface.co/andraniksargsyan/migan/resolve/main/migan_pipeline_v2.onnx';
+  var MODEL_SIZE = 28 * 1024 * 1024; // ~28MB
+  var INFER_SIZE = 512;
+  var DB_NAME = 'toolbox-models';
+  var DB_VERSION = 1;
+  var STORE_NAME = 'models';
+  var MODEL_KEY = 'migan-v2';
 
   // ── State ──
-  var img = null;
-  var imgNatural = { w: 0, h: 0 };
-  var zoom = 100;
-  var currentMode = 'smart'; // 'smart' | 'clone' | 'brush'
-  var solidColor = '#ffffff';
-  var brushColor = '#ffffff';
-  var isEyedropper = false;
-  var pickedColor = null;
+  var img = null;                  // Original Image element
+  var imgW = 0, imgH = 0;         // Original dimensions
+  var originalImageData = null;   // ImageData of original on canvas
+  var resultImageData = null;     // ImageData after inpainting
+  var maskCtx = null;             // Mask canvas 2D context
+  var painting = false;
+  var brushSize = 30;
+  var ortSession = null;          // ONNX inference session
+  var modelReady = false;
+  var lastX = -1, lastY = -1;
+  var currentView = 'result';     // 'result' | 'original' | 'mask'
 
-  // Selection state
-  var selecting = false;
-  var selStart = { x: 0, y: 0 };
-  var selEnd = { x: 0, y: 0 };
+  // ── Status helpers ──
+  function setStatus(state, msg) {
+    statusDot.className = 'status-dot ' + state;
+    statusText.textContent = msg;
+  }
 
-  // Clone stamp state
-  var cloneSource = null; // { x, y } in natural coords
-  var clonePainting = false;
-  var cloneBrushSize = 30;
-  var cloneHardness = 0.8;
-  var lastClonePos = null;
-
-  // Brush state
-  var brushPainting = false;
-  var brushSize = 25;
-  var brushHardness = 0.85;
-  var lastBrushPos = null;
-
-  // History
-  var history = [];
-  var historyIndex = -1;
-  var MAX_HISTORY = 30;
-
-  // ── Init ──
-  function saveState() {
-    if (historyIndex < history.length - 1) {
-      history = history.slice(0, historyIndex + 1);
+  // ── Model: download + cache + load ──
+  async function getModel() {
+    // Check IndexedDB cache first
+    var cached = await loadFromIndexedDB();
+    if (cached) {
+      modelProgress.style.display = '';
+      modelProgressText.textContent = 'Loading model from cache...';
+      modelProgressBar.style.width = '100%';
+      ortSession = await ort.InferenceSession.create(cached);
+      modelReady = true;
+      modelProgress.style.display = 'none';
+      setStatus('ready', 'AI model ready. Paint over watermark and click Inpaint.');
+      if (img) btnInpaint.disabled = false;
+      return;
     }
-    var dataUrl = mainCanvas.toDataURL();
-    history.push(dataUrl);
-    if (history.length > MAX_HISTORY) history.shift();
-    historyIndex = history.length - 1;
-    updateHistoryButtons();
+
+    // Download
+    modelProgress.style.display = '';
+    modelProgressText.textContent = 'Downloading AI model (28 MB) — first time only...';
+    setStatus('busy', 'Downloading AI model...');
+
+    var buffer = await downloadWithProgress(MODEL_URL, function(loaded, total) {
+      var pct = Math.round((loaded / total) * 100);
+      modelProgressBar.style.width = pct + '%';
+      modelProgressText.textContent = 'Downloading AI model... ' + pct + '% (' +
+        (loaded / 1048576).toFixed(1) + ' / ' + (total / 1048576).toFixed(1) + ' MB)';
+    });
+
+    // Save to IndexedDB
+    modelProgressText.textContent = 'Caching model for future use...';
+    await saveToIndexedDB(buffer);
+
+    // Load into ORT
+    modelProgressText.textContent = 'Loading model into memory...';
+    ortSession = await ort.InferenceSession.create(buffer);
+    modelReady = true;
+    modelProgress.style.display = 'none';
+    setStatus('ready', 'AI model ready. Paint over watermark and click Inpaint.');
+    if (img) btnInpaint.disabled = false;
   }
 
-  function loadState(idx) {
-    if (idx < 0 || idx >= history.length) return;
-    var dataUrl = history[idx];
-    var tmpImg = new Image();
-    tmpImg.onload = function() {
-      var ctx = mainCanvas.getContext('2d');
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      mainCanvas.width = tmpImg.width;
-      mainCanvas.height = tmpImg.height;
-      ctx.drawImage(tmpImg, 0, 0);
-      applyZoom();
-    };
-    tmpImg.src = dataUrl;
-    historyIndex = idx;
-    updateHistoryButtons();
+  function downloadWithProgress(url, onProgress) {
+    return new Promise(function(resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'arraybuffer';
+      xhr.onprogress = function(e) {
+        if (e.lengthComputable) onProgress(e.loaded, e.total);
+      };
+      xhr.onload = function() {
+        if (xhr.status === 200) resolve(xhr.response);
+        else reject(new Error('Download failed: HTTP ' + xhr.status));
+      };
+      xhr.onerror = function() { reject(new Error('Network error')); };
+      xhr.send();
+    });
   }
 
-  function updateHistoryButtons() {
-    btnUndo.disabled = historyIndex <= 0;
-    btnRedo.disabled = historyIndex >= history.length - 1;
+  function openDB() {
+    return new Promise(function(resolve, reject) {
+      var req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = function(e) {
+        var db = e.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME);
+        }
+      };
+      req.onsuccess = function(e) { resolve(e.target.result); };
+      req.onerror = function(e) { reject(e.target.error); };
+    });
   }
 
-  function resetImage() {
-    if (!img) return;
-    var ctx = mainCanvas.getContext('2d');
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    mainCanvas.width = imgNatural.w;
-    mainCanvas.height = imgNatural.h;
-    ctx.drawImage(img, 0, 0);
-    applyZoom();
-    cloneSource = null;
-    cloneSourceInfo.textContent = 'Not set';
-    lastClonePos = null;
-    refreshOverlay();
+  async function loadFromIndexedDB() {
+    try {
+      var db = await openDB();
+      return new Promise(function(resolve, reject) {
+        var tx = db.transaction(STORE_NAME, 'readonly');
+        var store = tx.objectStore(STORE_NAME);
+        var req = store.get(MODEL_KEY);
+        req.onsuccess = function() { resolve(req.result || null); };
+        req.onerror = function() { resolve(null); };
+      });
+    } catch (e) { return null; }
   }
 
-  // ── Canvas sizing ──
-  function applyZoom() {
-    var scale = zoom / 100;
-    mainCanvas.style.width = (imgNatural.w * scale) + 'px';
-    mainCanvas.style.height = (imgNatural.h * scale) + 'px';
-    overlay.style.width = mainCanvas.style.width;
-    overlay.style.height = mainCanvas.style.height;
-    zoomInfo.textContent = zoom + '%';
+  async function saveToIndexedDB(buffer) {
+    try {
+      var db = await openDB();
+      return new Promise(function(resolve, reject) {
+        var tx = db.transaction(STORE_NAME, 'readwrite');
+        var store = tx.objectStore(STORE_NAME);
+        store.put(buffer, MODEL_KEY);
+        tx.oncomplete = function() { resolve(); };
+        tx.onerror = function() { resolve(); };
+      });
+    } catch (e) { /* ignore */ }
   }
 
-  // ── Upload zone ──
+  // ── Configure ONNX Runtime ──
+  if (typeof ort !== 'undefined') {
+    ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/';
+    // Start downloading model immediately
+    getModel().catch(function(err) {
+      console.error('Model load error:', err);
+      setStatus('', 'AI model failed to load. Check your connection and refresh.');
+    });
+  } else {
+    setStatus('', 'ONNX Runtime failed to load. Please refresh the page.');
+  }
+
+  // ── Image upload ──
   dropZone.addEventListener('click', function() { fileInput.click(); });
   fileInput.addEventListener('change', function(e) {
     if (e.target.files.length) loadImage(e.target.files[0]);
   });
-
   dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
   dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('drag-over'); });
   dropZone.addEventListener('drop', function(e) {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
+    e.preventDefault(); dropZone.classList.remove('drag-over');
     if (e.dataTransfer.files.length) loadImage(e.dataTransfer.files[0]);
   });
-
-  document.addEventListener('dragover', function(e) { e.preventDefault(); });
-  document.addEventListener('drop', function(e) { e.preventDefault(); });
 
   function loadImage(file) {
     if (!file.type.match(/image\/(jpeg|png|webp|gif|bmp)/)) {
@@ -465,402 +398,353 @@
     }
     var reader = new FileReader();
     reader.onload = function(evt) {
-      img = new Image();
-      img.onload = function() {
-        imgNatural.w = img.naturalWidth;
-        imgNatural.h = img.naturalHeight;
+      var tmp = new Image();
+      tmp.onload = function() {
+        img = tmp;
+        imgW = img.naturalWidth;
+        imgH = img.naturalHeight;
+
+        // Size canvases
+        mainCanvas.width = imgW;
+        mainCanvas.height = imgH;
+        maskCanvas.width = imgW;
+        maskCanvas.height = imgH;
+        maskCanvas.style.width = imgW + 'px';
+        maskCanvas.style.height = imgH + 'px';
+        mainCanvas.style.width = imgW + 'px';
+        mainCanvas.style.height = imgH + 'px';
+
+        // Draw image on main canvas
         var ctx = mainCanvas.getContext('2d');
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        mainCanvas.width = imgNatural.w;
-        mainCanvas.height = imgNatural.h;
         ctx.drawImage(img, 0, 0);
-        applyZoom();
+
+        // Init mask canvas (all transparent black = nothing selected)
+        maskCtx = maskCanvas.getContext('2d');
+        maskCtx.clearRect(0, 0, imgW, imgH);
+
+        // Cap display size for huge images
+        var maxDisplay = 650;
+        if (Math.max(imgW, imgH) > maxDisplay) {
+          var scale = maxDisplay / Math.max(imgW, imgH);
+          mainCanvas.style.width = Math.round(imgW * scale) + 'px';
+          mainCanvas.style.height = Math.round(imgH * scale) + 'px';
+          maskCanvas.style.width = mainCanvas.style.width;
+          maskCanvas.style.height = mainCanvas.style.height;
+        }
+
+        originalImageData = ctx.getImageData(0, 0, imgW, imgH);
+        resultImageData = null;
+
         dropZone.style.display = 'none';
         workspace.style.display = 'flex';
-        overlay.className = 'overlay active';
-        history = [];
-        historyIndex = -1;
-        saveState();
-        // Cap zoom for huge images
-        var maxDim = Math.max(imgNatural.w, imgNatural.h);
-        if (maxDim > 2000) {
-          zoom = Math.max(25, Math.floor(2000 / maxDim * 100));
-          zoomSlider.value = zoom;
-          applyZoom();
+        resultTabs.style.display = 'none';
+        btnDownload.style.display = 'none';
+        btnReset.style.display = 'none';
+        btnInpaint.disabled = !modelReady;
+
+        if (modelReady) {
+          setStatus('ready', 'Paint over the watermark with your brush, then click Inpaint.');
         }
-        refreshOverlay();
       };
-      img.src = evt.target.result;
+      tmp.src = evt.target.result;
     };
     reader.readAsDataURL(file);
   }
 
-  // ── Mode switching ──
-  document.getElementById('modeTabs').addEventListener('click', function(e) {
-    var tab = e.target.closest('.mode-tab');
-    if (!tab) return;
-    currentMode = tab.dataset.mode;
-    document.querySelectorAll('.mode-tab').forEach(function(t) { t.classList.remove('active'); });
-    tab.classList.add('active');
-    smartControls.style.display = currentMode === 'smart' ? '' : 'none';
-    cloneControls.style.display = currentMode === 'clone' ? '' : 'none';
-    brushControls.style.display = currentMode === 'brush' ? '' : 'none';
-    overlay.style.cursor = currentMode === 'clone' ? 'crosshair' : (currentMode === 'brush' ? 'crosshair' : 'crosshair');
-    selecting = false;
-    brushPainting = false;
-    clonePainting = false;
-    refreshOverlay();
-  });
-
-  // ── Fill method ──
-  fillMethod.addEventListener('change', function() {
-    solidColorRow.style.display = fillMethod.value === 'solid' ? '' : 'none';
-    document.getElementById('fillProgress').style.display = 'none';
-  });
-
-  // Solid color picker
-  solidColorPicker.addEventListener('input', function() {
-    solidColor = solidColorPicker.value;
-    document.querySelectorAll('#solidColorRow .swatch').forEach(function(s) { s.classList.remove('active'); });
-  });
-  var solidSwatchContainer = document.getElementById('solidColorRow');
-  if (solidSwatchContainer) {
-    solidSwatchContainer.addEventListener('click', function(e) {
-      var swatch = e.target.closest('.swatch');
-      if (!swatch) return;
-      solidColor = swatch.dataset.color;
-      solidColorPicker.value = solidColor;
-      document.querySelectorAll('#solidColorRow .swatch').forEach(function(s) {
-        s.classList.toggle('active', s === swatch);
-      });
-    });
-  }
-
-  // Brush color
-  document.getElementById('brushColorPicker').addEventListener('input', function() {
-    brushColor = this.value;
-    document.querySelectorAll('#brushControls .swatch').forEach(function(s) { s.classList.remove('active'); });
-  });
-  brushControls.addEventListener('click', function(e) {
-    var swatch = e.target.closest('.swatch');
-    if (!swatch) return;
-    brushColor = swatch.dataset.color;
-    document.getElementById('brushColorPicker').value = brushColor;
-    document.querySelectorAll('#brushControls .swatch').forEach(function(s) {
-      s.classList.toggle('active', s === swatch);
-    });
-  });
-
-  // Clone size
-  cloneSizeSlider.addEventListener('input', function() {
-    cloneBrushSize = parseInt(cloneSizeSlider.value);
-    cloneSizeLabel.textContent = cloneBrushSize + 'px';
-  });
-  cloneHardness = document.getElementById('cloneHardness').value / 100;
-  document.getElementById('cloneHardness').addEventListener('input', function() {
-    cloneHardness = parseInt(this.value) / 100;
-  });
-
-  // Brush size
+  // ── Brushing (mask painting) ──
   brushSizeSlider.addEventListener('input', function() {
-    brushSize = parseInt(brushSizeSlider.value);
-    brushSizeLabel.textContent = brushSize + 'px';
-  });
-  brushHardness = document.getElementById('brushHardness').value / 100;
-  document.getElementById('brushHardness').addEventListener('input', function() {
-    brushHardness = parseInt(this.value) / 100;
+    brushSize = parseInt(this.value);
+    brushSizeLabel.textContent = brushSize;
   });
 
-  // ── Zoom ──
-  zoomSlider.addEventListener('input', function() {
-    zoom = parseInt(zoomSlider.value);
-    applyZoom();
-    refreshOverlay();
-  });
-
-  // ── Coordinate helpers: screen coords → natural (canvas pixel) coords ──
-  function screenToNatural(sx, sy) {
-    var rect = mainCanvas.getBoundingClientRect();
-    var scaleX = imgNatural.w / rect.width;
-    var scaleY = imgNatural.h / rect.height;
+  function getCanvasPos(e) {
+    var rect = maskCanvas.getBoundingClientRect();
+    var scaleX = imgW / rect.width;
+    var scaleY = imgH / rect.height;
     return {
-      x: (sx - rect.left) * scaleX,
-      y: (sy - rect.top) * scaleY
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
     };
   }
 
-  function refreshOverlay() {
-    overlay.innerHTML = '';
-    if (currentMode === 'clone' && cloneSource) {
-      var scale = zoom / 100;
-      var marker = document.createElement('div');
-      marker.className = 'clone-source-marker';
-      marker.style.left = (cloneSource.x * scale) + 'px';
-      marker.style.top = (cloneSource.y * scale) + 'px';
-      overlay.appendChild(marker);
-    }
-  }
+  function drawBrush(cx, cy) {
+    if (!maskCtx) return;
 
-  // ── Mouse interactions on overlay ──
-  overlay.addEventListener('mousedown', function(e) {
-    if (!img) return;
-    var nat = screenToNatural(e.clientX, e.clientY);
+    // Draw on mask canvas (white = marked for removal)
+    maskCtx.fillStyle = '#ffffff';
+    maskCtx.beginPath();
+    maskCtx.arc(cx, cy, brushSize / 2, 0, Math.PI * 2);
+    maskCtx.fill();
 
-    if (isEyedropper) {
-      pickColorFromCanvas(nat.x, nat.y);
-      return;
-    }
+    // Draw semi-transparent red overlay on main canvas
+    var mainCtx = mainCanvas.getContext('2d');
+    mainCtx.save();
+    mainCtx.globalAlpha = 0.35;
+    mainCtx.fillStyle = '#ef4444';
+    mainCtx.beginPath();
+    mainCtx.arc(cx, cy, brushSize / 2, 0, Math.PI * 2);
+    mainCtx.fill();
+    mainCtx.restore();
 
-    if (currentMode === 'smart') {
-      selecting = true;
-      selStart = { x: nat.x, y: nat.y };
-      selEnd = { x: nat.x, y: nat.y };
-    } else if (currentMode === 'clone') {
-      // Alt+click sets source, regular click paints
-      if (e.altKey) {
-        cloneSource = { x: nat.x, y: nat.y };
-        cloneSourceInfo.textContent = 'x:' + Math.round(nat.x) + ' y:' + Math.round(nat.y);
-        refreshOverlay();
-        return;
-      }
-      if (!cloneSource) {
-        cloneSource = { x: nat.x, y: nat.y };
-        cloneSourceInfo.textContent = 'x:' + Math.round(nat.x) + ' y:' + Math.round(nat.y);
-        refreshOverlay();
-        return;
-      }
-      clonePainting = true;
-      lastClonePos = nat;
-      saveState();
-      paintClone(nat.x, nat.y);
-    } else if (currentMode === 'brush') {
-      brushPainting = true;
-      lastBrushPos = nat;
-      saveState();
-      paintBrush(nat.x, nat.y);
-    }
-  });
+    // Interpolate for smooth strokes
+    if (lastX >= 0 && lastY >= 0) {
+      var dist = Math.sqrt((cx - lastX) ** 2 + (cy - lastY) ** 2);
+      if (dist > brushSize * 0.3) {
+        var steps = Math.floor(dist / (brushSize * 0.2));
+        for (var i = 1; i < steps; i++) {
+          var t = i / steps;
+          var ix = lastX + (cx - lastX) * t;
+          var iy = lastY + (cy - lastY) * t;
 
-  overlay.addEventListener('mousemove', function(e) {
-    if (!img) return;
-    var nat = screenToNatural(e.clientX, e.clientY);
+          maskCtx.fillStyle = '#ffffff';
+          maskCtx.beginPath();
+          maskCtx.arc(ix, iy, brushSize / 2, 0, Math.PI * 2);
+          maskCtx.fill();
 
-    if (currentMode === 'smart' && selecting) {
-      selEnd = { x: nat.x, y: nat.y };
-      drawSelectionRect();
-    } else if (currentMode === 'clone' && clonePainting) {
-      paintClone(nat.x, nat.y);
-    } else if (currentMode === 'brush' && brushPainting) {
-      paintBrush(nat.x, nat.y);
-    }
-  });
-
-  overlay.addEventListener('mouseup', function(e) {
-    if (!img) return;
-
-    if (currentMode === 'smart' && selecting) {
-      selecting = false;
-      var rx = Math.min(selStart.x, selEnd.x);
-      var ry = Math.min(selStart.y, selEnd.y);
-      var rw = Math.abs(selEnd.x - selStart.x);
-      var rh = Math.abs(selEnd.y - selStart.y);
-      // Remove selection rect
-      var selRect = document.getElementById('selectionRect');
-      if (selRect) selRect.remove();
-
-      if (rw >= 5 && rh >= 5) {
-        saveState(); // save before fill
-        var method = fillMethod.value;
-        if (method === 'content-aware') {
-          applySmartFill(rx, ry, rw, rh); // async — saveState is called in callback
-        } else {
-          applySmartFill(rx, ry, rw, rh);
-          saveState(); // save after synchronous fill
+          mainCtx.save();
+          mainCtx.globalAlpha = 0.35;
+          mainCtx.fillStyle = '#ef4444';
+          mainCtx.beginPath();
+          mainCtx.arc(ix, iy, brushSize / 2, 0, Math.PI * 2);
+          mainCtx.fill();
+          mainCtx.restore();
         }
       }
     }
-
-    if (currentMode === 'clone' && clonePainting) {
-      clonePainting = false;
-      lastClonePos = null;
-    }
-    if (currentMode === 'brush' && brushPainting) {
-      brushPainting = false;
-      lastBrushPos = null;
-    }
-  });
-
-  overlay.addEventListener('mouseleave', function(e) {
-    if (selecting) {
-      selecting = false;
-      var selRect = document.getElementById('selectionRect');
-      if (selRect) selRect.remove();
-    }
-    clonePainting = false;
-    lastClonePos = null;
-    brushPainting = false;
-    lastBrushPos = null;
-  });
-
-  function drawSelectionRect() {
-    var scale = zoom / 100;
-    var x = Math.min(selStart.x, selEnd.x) * scale;
-    var y = Math.min(selStart.y, selEnd.y) * scale;
-    var w = Math.abs(selEnd.x - selStart.x) * scale;
-    var h = Math.abs(selEnd.y - selStart.y) * scale;
-
-    var rect = document.getElementById('selectionRect');
-    if (!rect) {
-      rect = document.createElement('div');
-      rect.id = 'selectionRect';
-      rect.className = 'select-rect';
-      overlay.appendChild(rect);
-    }
-    rect.style.left = x + 'px';
-    rect.style.top = y + 'px';
-    rect.style.width = w + 'px';
-    rect.style.height = h + 'px';
+    lastX = cx; lastY = cy;
   }
 
-  // ── Smart Fill (edge-aware interpolation) ──
-  function applySmartFill(rx, ry, rw, rh) {
-    var ctx = mainCanvas.getContext('2d');
-    var imageData = ctx.getImageData(0, 0, imgNatural.w, imgNatural.h);
+  maskCanvas.addEventListener('mousedown', function(e) {
+    if (!img) return;
+    painting = true;
+    var pos = getCanvasPos(e);
+    lastX = pos.x; lastY = pos.y;
+    drawBrush(pos.x, pos.y);
+  });
 
-    // Clamp to image bounds
-    var x0 = Math.max(0, Math.floor(rx));
-    var y0 = Math.max(0, Math.floor(ry));
-    var x1 = Math.min(imgNatural.w - 1, Math.ceil(rx + rw));
-    var y1 = Math.min(imgNatural.h - 1, Math.ceil(ry + rh));
+  maskCanvas.addEventListener('mousemove', function(e) {
+    if (!painting || !img) return;
+    var pos = getCanvasPos(e);
+    drawBrush(pos.x, pos.y);
+  });
 
-    var method = fillMethod.value;
+  maskCanvas.addEventListener('mouseup', function() { painting = false; lastX = -1; lastY = -1; });
+  maskCanvas.addEventListener('mouseleave', function() { painting = false; lastX = -1; lastY = -1; });
 
-    if (method === 'solid') {
-      var hex = solidColor.replace('#', '');
-      var cr = parseInt(hex.substring(0, 2), 16);
-      var cg = parseInt(hex.substring(2, 4), 16);
-      var cb = parseInt(hex.substring(4, 6), 16);
-      var pixels = imageData.data;
-      var w = imageData.width;
-      for (var y = y0; y <= y1; y++) {
-        for (var x = x0; x <= x1; x++) {
-          var idx = (y * w + x) * 4;
-          pixels[idx] = cr;
-          pixels[idx + 1] = cg;
-          pixels[idx + 2] = cb;
-        }
+  // Touch support
+  maskCanvas.addEventListener('touchstart', function(e) {
+    if (!img) return;
+    e.preventDefault();
+    painting = true;
+    var pos = getCanvasPos(e.touches[0]);
+    lastX = pos.x; lastY = pos.y;
+    drawBrush(pos.x, pos.y);
+  });
+  maskCanvas.addEventListener('touchmove', function(e) {
+    if (!painting || !img) return;
+    e.preventDefault();
+    var pos = getCanvasPos(e.touches[0]);
+    drawBrush(pos.x, pos.y);
+  });
+  maskCanvas.addEventListener('touchend', function() { painting = false; lastX = -1; lastY = -1; });
+
+  // ── Clear mask ──
+  btnClearMask.addEventListener('click', function() {
+    if (!img) return;
+    maskCtx.clearRect(0, 0, imgW, imgH);
+    // Restore original image on main canvas
+    var mainCtx = mainCanvas.getContext('2d');
+    mainCtx.putImageData(originalImageData, 0, 0);
+    resultImageData = null;
+    resultTabs.style.display = 'none';
+    btnDownload.style.display = 'none';
+    btnReset.style.display = 'none';
+    setStatus('ready', 'Mask cleared. Paint again.');
+  });
+
+  // ── Inpaint ──
+  btnInpaint.addEventListener('click', async function() {
+    if (!img || !modelReady || !ortSession) return;
+
+    btnInpaint.disabled = true;
+    processProgress.style.display = '';
+    setStatus('busy', 'AI processing...');
+
+    try {
+      resultImageData = await runInpainting();
+      // Show result
+      var mainCtx = mainCanvas.getContext('2d');
+      mainCtx.putImageData(resultImageData, 0, 0);
+      resultTabs.style.display = 'flex';
+      document.querySelectorAll('.result-tab').forEach(function(t) { t.classList.remove('active'); });
+      document.querySelector('.result-tab[data-view="result"]').classList.add('active');
+      currentView = 'result';
+      btnDownload.style.display = '';
+      btnReset.style.display = '';
+      processProgress.style.display = 'none';
+      setStatus('ready', 'Done! Review and download the result.');
+    } catch (err) {
+      console.error('Inpaint error:', err);
+      processProgress.style.display = 'none';
+      setStatus('', 'Error: ' + err.message);
+    }
+
+    btnInpaint.disabled = false;
+  });
+
+  async function runInpainting() {
+    // 1. Get mask data from mask canvas
+    var maskFull = maskCtx.getImageData(0, 0, imgW, imgH);
+
+    // Check if anything was painted
+    var hasMask = false;
+    for (var i = 0; i < maskFull.data.length; i += 4) {
+      if (maskFull.data[i] > 0 || maskFull.data[i + 1] > 0 || maskFull.data[i + 2] > 0) {
+        hasMask = true; break;
       }
-      ctx.putImageData(imageData, 0, 0);
-    } else if (method === 'blur') {
-      blurRegion(imageData, x0, y0, x1, y1, 15);
-      ctx.putImageData(imageData, 0, 0);
-    } else if (method === 'content-aware') {
-      // Async: show progress, run in batches
-      contentAwareFillAsync(imageData, x0, y0, x1, y1, function(resultData) {
-        ctx.putImageData(resultData, 0, 0);
-        document.getElementById('fillProgress').style.display = 'none';
-        saveState(); // save after content-aware fill completes
-      });
-    } else {
-      edgeBlendFill(imageData, x0, y0, x1, y1);
-      ctx.putImageData(imageData, 0, 0);
     }
+    if (!hasMask) throw new Error('Please paint over the watermark area first.');
+
+    // 2. Create temp canvases at 512x512
+    var tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = INFER_SIZE; tmpCanvas.height = INFER_SIZE;
+    var tmpCtx = tmpCanvas.getContext('2d');
+    tmpCtx.drawImage(mainCanvas, 0, 0, INFER_SIZE, INFER_SIZE);
+    var imgData512 = tmpCtx.getImageData(0, 0, INFER_SIZE, INFER_SIZE);
+
+    var maskCanvas512 = document.createElement('canvas');
+    maskCanvas512.width = INFER_SIZE; maskCanvas512.height = INFER_SIZE;
+    var maskCtx512 = maskCanvas512.getContext('2d');
+    maskCtx512.drawImage(maskCanvas, 0, 0, INFER_SIZE, INFER_SIZE);
+    var maskData512 = maskCtx512.getImageData(0, 0, INFER_SIZE, INFER_SIZE);
+
+    // 3. Apply slight dilation to mask (1px) to ensure complete coverage
+    maskData512 = dilateMask(maskData512, INFER_SIZE, INFER_SIZE, 2);
+
+    // 4. Build tensors (NCHW format, normalized to [0,1])
+    var inputTensor = new Float32Array(1 * 3 * INFER_SIZE * INFER_SIZE);
+    var maskTensor = new Float32Array(1 * 1 * INFER_SIZE * INFER_SIZE);
+    var R_OFFSET = 0;
+    var G_OFFSET = INFER_SIZE * INFER_SIZE;
+    var B_OFFSET = 2 * INFER_SIZE * INFER_SIZE;
+
+    for (var y = 0; y < INFER_SIZE; y++) {
+      for (var x = 0; x < INFER_SIZE; x++) {
+        var srcIdx = (y * INFER_SIZE + x) * 4;
+        var dstIdx = y * INFER_SIZE + x;
+
+        inputTensor[R_OFFSET + dstIdx] = imgData512.data[srcIdx] / 255;
+        inputTensor[G_OFFSET + dstIdx] = imgData512.data[srcIdx + 1] / 255;
+        inputTensor[B_OFFSET + dstIdx] = imgData512.data[srcIdx + 2] / 255;
+
+        // Mask: white (>128) = 1 (inpaint area), black = 0 (keep)
+        maskTensor[dstIdx] = maskData512.data[srcIdx] > 128 ? 1 : 0;
+      }
+    }
+
+    // 5. Run ONNX inference
+    var feeds = {};
+    var inputNames = ortSession.inputNames;
+    var outputNames = ortSession.outputNames;
+
+    feeds[inputNames[0]] = new ort.Tensor('float32', inputTensor, [1, 3, INFER_SIZE, INFER_SIZE]);
+    feeds[inputNames[1]] = new ort.Tensor('float32', maskTensor, [1, 1, INFER_SIZE, INFER_SIZE]);
+
+    processText.textContent = 'Running AI model...';
+    var results = await ortSession.run(feeds);
+    var output = results[outputNames[0]];
+    var outputData = output.data; // Float32Array [1, 3, 512, 512]
+
+    // 6. Postprocess: build result ImageData at 512x512
+    var result512 = new Uint8ClampedArray(INFER_SIZE * INFER_SIZE * 4);
+    for (var y = 0; y < INFER_SIZE; y++) {
+      for (var x = 0; x < INFER_SIZE; x++) {
+        var dstIdx = (y * INFER_SIZE + x) * 4;
+        var srcIdx = y * INFER_SIZE + x;
+
+        var r = Math.round(Math.max(0, Math.min(1, outputData[R_OFFSET + srcIdx])) * 255);
+        var g = Math.round(Math.max(0, Math.min(1, outputData[G_OFFSET + srcIdx])) * 255);
+        var b = Math.round(Math.max(0, Math.min(1, outputData[B_OFFSET + srcIdx])) * 255);
+
+        result512[dstIdx] = r;
+        result512[dstIdx + 1] = g;
+        result512[dstIdx + 2] = b;
+        result512[dstIdx + 3] = 255;
+      }
+    }
+
+    // 7. Upscale result back to original size and blend
+    var resultCanvas = document.createElement('canvas');
+    resultCanvas.width = INFER_SIZE; resultCanvas.height = INFER_SIZE;
+    var resultCtx = resultCanvas.getContext('2d');
+    resultCtx.putImageData(new ImageData(result512, INFER_SIZE, INFER_SIZE), 0, 0);
+
+    // Draw upscaled result onto full-size temp canvas
+    var fullCanvas = document.createElement('canvas');
+    fullCanvas.width = imgW; fullCanvas.height = imgH;
+    var fullCtx = fullCanvas.getContext('2d');
+    fullCtx.drawImage(resultCanvas, 0, 0, imgW, imgH);
+    var inpaintedFull = fullCtx.getImageData(0, 0, imgW, imgH);
+
+    // Get mask at full size
+    var maskFullSize = maskCtx.getImageData(0, 0, imgW, imgH);
+
+    // Feather the mask edges (gaussian blur) for seamless blending
+    maskFullSize = blurMask(maskFullSize, imgW, imgH, Math.max(1, brushSize / 6));
+
+    // Blend: result = original * (1 - mask) + inpainted * mask
+    var finalData = new Uint8ClampedArray(imgW * imgH * 4);
+    var orig = originalImageData.data;
+    var inp = inpaintedFull.data;
+    var msk = maskFullSize.data;
+
+    for (var i = 0; i < finalData.length; i += 4) {
+      var alpha = msk[i] / 255; // 0 = keep original, 1 = use inpainted
+      finalData[i] = Math.round(orig[i] * (1 - alpha) + inp[i] * alpha);
+      finalData[i + 1] = Math.round(orig[i + 1] * (1 - alpha) + inp[i + 1] * alpha);
+      finalData[i + 2] = Math.round(orig[i + 2] * (1 - alpha) + inp[i + 2] * alpha);
+      finalData[i + 3] = 255;
+    }
+
+    return new ImageData(finalData, imgW, imgH);
   }
 
-  // Edge blend: for each pixel in the rect, blend from nearest edge pixels
-  function edgeBlendFill(imageData, x0, y0, x1, y1) {
-    var pixels = imageData.data;
-    var w = imageData.width;
-    var h = imageData.height;
-
-    // Sample border pixels — top, bottom, left, right edges just outside the selection
-    var top = [];
-    var bottom = [];
-    var left = [];
-    var right = [];
-
-    var bw = (x1 - x0);
-    var bh = (y1 - y0);
-
-    // Sample top edge
-    var ty = Math.max(0, y0 - 1);
-    for (var x = x0; x <= x1; x++) {
-      var idx = (ty * w + Math.min(x, w - 1)) * 4;
-      top.push({ r: pixels[idx], g: pixels[idx + 1], b: pixels[idx + 2] });
-    }
-
-    // Sample bottom edge
-    var by = Math.min(h - 1, y1 + 1);
-    for (var x = x0; x <= x1; x++) {
-      var idx = (by * w + Math.min(x, w - 1)) * 4;
-      bottom.push({ r: pixels[idx], g: pixels[idx + 1], b: pixels[idx + 2] });
-    }
-
-    // Sample left edge
-    var lx = Math.max(0, x0 - 1);
-    for (var y = y0; y <= y1; y++) {
-      var idx = (Math.min(y, h - 1) * w + lx) * 4;
-      left.push({ r: pixels[idx], g: pixels[idx + 1], b: pixels[idx + 2] });
-    }
-
-    // Sample right edge
-    var rx = Math.min(w - 1, x1 + 1);
-    for (var y = y0; y <= y1; y++) {
-      var idx = (Math.min(y, h - 1) * w + rx) * 4;
-      right.push({ r: pixels[idx], g: pixels[idx + 1], b: pixels[idx + 2] });
-    }
-
-    // Fill each pixel in the region
-    for (var y = y0; y <= y1; y++) {
-      for (var x = x0; x <= x1; x++) {
-        // Distance ratios to each edge
-        var dt = (y - y0) / Math.max(1, bh); // 0 at top, 1 at bottom
-        var db = (y1 - y) / Math.max(1, bh);
-        var dl = (x - x0) / Math.max(1, bw);
-        var dr = (x1 - x) / Math.max(1, bw);
-
-        // Get edge color at this position
-        var topIdx = Math.min(Math.floor((x - x0) / Math.max(1, bw) * (top.length - 1)), top.length - 1);
-        var botIdx = Math.min(Math.floor((x - x0) / Math.max(1, bw) * (bottom.length - 1)), bottom.length - 1);
-        var leftIdx = Math.min(Math.floor((y - y0) / Math.max(1, bh) * (left.length - 1)), left.length - 1);
-        var rightIdx = Math.min(Math.floor((y - y0) / Math.max(1, bh) * (right.length - 1)), right.length - 1);
-
-        var tc = top[Math.max(0, topIdx)] || { r: 255, g: 255, b: 255 };
-        var bc = bottom[Math.max(0, botIdx)] || { r: 255, g: 255, b: 255 };
-        var lc = left[Math.max(0, leftIdx)] || { r: 255, g: 255, b: 255 };
-        var rc = right[Math.max(0, rightIdx)] || { r: 255, g: 255, b: 255 };
-
-        // Weight: closer edges have more influence (inverse distance squared)
-        var wt = 1 / (dt * dt + 0.01);
-        var wb = 1 / (db * db + 0.01);
-        var wl = 1 / (dl * dl + 0.01);
-        var wr = 1 / (dr * dr + 0.01);
-        var totalW = wt + wb + wl + wr;
-
-        var pr = (tc.r * wt + bc.r * wb + lc.r * wl + rc.r * wr) / totalW;
-        var pg = (tc.g * wt + bc.g * wb + lc.g * wl + rc.g * wr) / totalW;
-        var pb = (tc.b * wt + bc.b * wb + lc.b * wl + rc.b * wr) / totalW;
-
+  // Dilate mask (expand white areas)
+  function dilateMask(maskData, w, h, radius) {
+    var src = maskData.data;
+    var dst = new Uint8ClampedArray(src);
+    for (var y = 0; y < h; y++) {
+      for (var x = 0; x < w; x++) {
         var idx = (y * w + x) * 4;
-        pixels[idx] = Math.round(pr);
-        pixels[idx + 1] = Math.round(pg);
-        pixels[idx + 2] = Math.round(pb);
-        // Alpha stays unchanged
+        if (src[idx] > 128) continue; // already white
+        // Check if any neighbor within radius is white
+        var found = false;
+        for (var dy = -radius; dy <= radius && !found; dy++) {
+          for (var dx = -radius; dx <= radius && !found; dx++) {
+            var nx = x + dx, ny = y + dy;
+            if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
+            var nidx = (ny * w + nx) * 4;
+            if (src[nidx] > 128) found = true;
+          }
+        }
+        if (found) {
+          dst[idx] = 255; dst[idx + 1] = 255; dst[idx + 2] = 255; dst[idx + 3] = 255;
+        }
       }
     }
+    return new ImageData(dst, w, h);
   }
 
-  // Gaussian blur for a region
-  function blurRegion(imageData, x0, y0, x1, y1, radius) {
-    var pixels = imageData.data;
-    var w = imageData.width;
-    var h = imageData.height;
+  // Feather mask with gaussian blur
+  function blurMask(maskData, w, h, radius) {
+    var src = maskData.data;
+    var dst = new Uint8ClampedArray(src.length);
 
-    // Build kernel
-    var kernel = [];
-    var sigma = radius / 3;
-    var sum = 0;
+    // Build 1D kernel
     var r = Math.ceil(radius);
+    var sigma = Math.max(0.5, radius / 2);
+    var kernel = [];
+    var sum = 0;
     for (var i = -r; i <= r; i++) {
       var val = Math.exp(-(i * i) / (2 * sigma * sigma));
       kernel.push(val);
@@ -868,541 +752,96 @@
     }
     for (var i = 0; i < kernel.length; i++) kernel[i] /= sum;
 
-    // Horizontal pass — only within the region (with padding for edge sampling)
-    var temp = new Uint8ClampedArray(pixels);
-    var pad = r;
-    for (var y = y0; y <= y1; y++) {
-      for (var x = x0; x <= x1; x++) {
-        var pr = 0, pg = 0, pb = 0;
+    // Horizontal pass
+    var temp = new Float32Array(src.length);
+    for (var y = 0; y < h; y++) {
+      for (var x = 0; x < w; x++) {
+        var val = 0;
         for (var k = -r; k <= r; k++) {
           var sx = Math.min(w - 1, Math.max(0, x + k));
           var idx = (y * w + sx) * 4;
-          var kval = kernel[k + r];
-          pr += temp[idx] * kval;
-          pg += temp[idx + 1] * kval;
-          pb += temp[idx + 2] * kval;
+          val += src[idx] * kernel[k + r];
         }
-        var idx = (y * w + x) * 4;
-        pixels[idx] = pr;
-        pixels[idx + 1] = pg;
-        pixels[idx + 2] = pb;
+        temp[(y * w + x) * 4] = val;
       }
     }
 
     // Vertical pass
-    temp = new Uint8ClampedArray(pixels);
-    for (var y = y0; y <= y1; y++) {
-      for (var x = x0; x <= x1; x++) {
-        var pr = 0, pg = 0, pb = 0;
+    for (var y = 0; y < h; y++) {
+      for (var x = 0; x < w; x++) {
+        var val = 0;
         for (var k = -r; k <= r; k++) {
           var sy = Math.min(h - 1, Math.max(0, y + k));
           var idx = (sy * w + x) * 4;
-          var kval = kernel[k + r];
-          pr += temp[idx] * kval;
-          pg += temp[idx + 1] * kval;
-          pb += temp[idx + 2] * kval;
+          val += temp[idx] * kernel[k + r];
         }
         var idx = (y * w + x) * 4;
-        pixels[idx] = pr;
-        pixels[idx + 1] = pg;
-        pixels[idx + 2] = pb;
+        var v = Math.round(val);
+        dst[idx] = v; dst[idx + 1] = v; dst[idx + 2] = v; dst[idx + 3] = 255;
       }
     }
+
+    return new ImageData(dst, w, h);
   }
 
-  // ── Content-Aware Fill (PatchMatch-style inpainting) ──
-  // Searches surrounding image for matching texture patches and fills the selection
-  function contentAwareFillAsync(imageData, x0, y0, x1, y1, callback) {
-    var w = imageData.width;
-    var h = imageData.height;
-    var pixels = imageData.data;
-    var PATCH_SIZE = 9;
-    var HALF = Math.floor(PATCH_SIZE / 2);
-    var PATCH_LEN = PATCH_SIZE * PATCH_SIZE;
+  // ── Result view switching ──
+  resultTabs.addEventListener('click', function(e) {
+    var tab = e.target.closest('.result-tab');
+    if (!tab || !img) return;
+    var view = tab.dataset.view;
+    currentView = view;
+    document.querySelectorAll('.result-tab').forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
 
-    // Show progress UI
-    var progressDiv = document.getElementById('fillProgress');
-    var progressBar = document.getElementById('fillProgressBar');
-    var progressText = document.getElementById('fillProgressText');
-    progressDiv.style.display = '';
-    progressBar.style.width = '0%';
-    progressText.textContent = 'Building patch catalog...';
-
-    // ---- 1. Create binary mask (1 = hole, 0 = known) ----
-    var mask = new Uint8Array(w * h);
-    var holePixels = 0;
-    for (var y = y0; y <= y1; y++) {
-      for (var x = x0; x <= x1; x++) {
-        mask[y * w + x] = 1;
-        holePixels++;
+    var mainCtx = mainCanvas.getContext('2d');
+    if (view === 'original') {
+      mainCtx.putImageData(originalImageData, 0, 0);
+    } else if (view === 'result') {
+      if (resultImageData) mainCtx.putImageData(resultImageData, 0, 0);
+    } else if (view === 'mask') {
+      // Show mask as grayscale
+      var maskData = maskCtx.getImageData(0, 0, imgW, imgH);
+      var grayData = new Uint8ClampedArray(imgW * imgH * 4);
+      for (var i = 0; i < maskData.data.length; i += 4) {
+        var v = maskData.data[i]; // R channel (mask is white on black)
+        grayData[i] = v; grayData[i + 1] = v; grayData[i + 2] = v; grayData[i + 3] = 255;
       }
-    }
-    var totalHole = holePixels;
-
-    // ---- 2. Build patch catalogue from surrounding known region ----
-    var margin = 60;
-    var sx0 = Math.max(HALF, x0 - margin);
-    var sy0 = Math.max(HALF, y0 - margin);
-    var sx1 = Math.min(w - 1 - HALF, x1 + margin);
-    var sy1 = Math.min(h - 1 - HALF, y1 + margin);
-
-    var patches = []; // each: { x, y, r:[], g:[], b:[] } — flattened patch pixels
-
-    // Stride adapts to search area size — coarser for large images
-    var searchArea = (sx1 - sx0) * (sy1 - sy0);
-    var stride = searchArea > 200000 ? 5 : (searchArea > 80000 ? 4 : 3);
-
-    // Linearise RGB for faster diffing
-    for (var sy = sy0; sy <= sy1; sy += stride) {
-      for (var sx = sx0; sx <= sx1; sx += stride) {
-        // Reject if any pixel of patch falls inside hole
-        var insideHole = false;
-        for (var dy = -HALF; dy <= HALF && !insideHole; dy++) {
-          for (var dx = -HALF; dx <= HALF && !insideHole; dx++) {
-            if (mask[(sy + dy) * w + (sx + dx)]) insideHole = true;
-          }
-        }
-        if (insideHole) continue;
-
-        var pr = new Float32Array(PATCH_LEN);
-        var pg = new Float32Array(PATCH_LEN);
-        var pb = new Float32Array(PATCH_LEN);
-        var pi = 0;
-        for (var dy = -HALF; dy <= HALF; dy++) {
-          for (var dx = -HALF; dx <= HALF; dx++) {
-            var idx = ((sy + dy) * w + (sx + dx)) * 4;
-            pr[pi] = pixels[idx];
-            pg[pi] = pixels[idx + 1];
-            pb[pi] = pixels[idx + 2];
-            pi++;
-          }
-        }
-        patches.push({ x: sx, y: sy, pr: pr, pg: pg, pb: pb });
-      }
-    }
-
-    if (patches.length < 5) {
-      // Too few patches — fall back to edge blend
-      edgeBlendFill(imageData, x0, y0, x1, y1);
-      progressDiv.style.display = 'none';
-      callback(imageData);
-      return;
-    }
-
-    progressText.textContent = 'Filling with ' + patches.length + ' source patches...';
-    var MAX_CHECK = Math.min(patches.length, 250);
-
-    // ---- 3. Pre-compute distance-to-boundary for hole pixels ----
-    // Pixels closer to the hole edge get filled first (layer-by-layer)
-    var distMap = new Int32Array(w * h);
-    var MAX_DIST = 999999;
-    for (var i = 0; i < distMap.length; i++) distMap[i] = MAX_DIST;
-
-    // BFS from known pixels just outside the hole to compute boundary distance
-    var queue = [];
-    var qhead = 0;
-    for (var y = y0; y <= y1; y++) {
-      for (var x = x0; x <= x1; x++) {
-        if (!mask[y * w + x]) continue;
-        // Check if adjacent to known pixel
-        var touchesKnown = false;
-        for (var dy = -1; dy <= 1 && !touchesKnown; dy++) {
-          for (var dx = -1; dx <= 1 && !touchesKnown; dx++) {
-            if (dx === 0 && dy === 0) continue;
-            var nx = x + dx, ny = y + dy;
-            if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
-            if (!mask[ny * w + nx]) touchesKnown = true;
-          }
-        }
-        if (touchesKnown) {
-          distMap[y * w + x] = 1;
-          queue.push({ x: x, y: y });
-        }
-      }
-    }
-
-    // Propagate distances inward
-    while (qhead < queue.length) {
-      var cur = queue[qhead++];
-      var nd = distMap[cur.y * w + cur.x] + 1;
-      for (var dy = -1; dy <= 1; dy++) {
-        for (var dx = -1; dx <= 1; dx++) {
-          if (dx === 0 && dy === 0) continue;
-          var nx = cur.x + dx, ny = cur.y + dy;
-          if (nx < x0 || nx > x1 || ny < y0 || ny > y1) continue;
-          if (mask[ny * w + nx] && distMap[ny * w + nx] === MAX_DIST) {
-            distMap[ny * w + nx] = nd;
-            queue.push({ x: nx, y: ny });
-          }
-        }
-      }
-    }
-
-    // Group hole pixels by distance layer
-    var maxDist = 0;
-    var layers = {}; // distance -> [{x,y}]
-    for (var y = y0; y <= y1; y++) {
-      for (var x = x0; x <= x1; x++) {
-        if (mask[y * w + x]) {
-          var d = distMap[y * w + x];
-          if (d === MAX_DIST) d = 1; // isolated pixel
-          if (d > maxDist) maxDist = d;
-          if (!layers[d]) layers[d] = [];
-          layers[d].push({ x: x, y: y });
-        }
-      }
-    }
-
-    // ---- 4. Fill layer by layer ----
-    var currentLayer = 1;
-    var filledCount = 0;
-
-    function processLayer() {
-      if (currentLayer > maxDist) {
-        progressBar.style.width = '100%';
-        progressText.textContent = 'Complete!';
-        callback(imageData);
-        return;
-      }
-
-      var layer = layers[currentLayer];
-      if (!layer || layer.length === 0) {
-        currentLayer++;
-        setTimeout(processLayer, 0);
-        return;
-      }
-
-      // Shuffle to avoid visible scan patterns
-      shuffleArray(layer);
-
-      for (var i = 0; i < layer.length; i++) {
-        var bx = layer[i].x;
-        var by = layer[i].y;
-        if (!mask[by * w + bx]) continue; // already filled by earlier layer
-
-        var bestDist = Infinity;
-        var bestPr = 0, bestPg = 0, bestPb = 0;
-
-        // Sample random subset of candidate patches
-        for (var p = 0; p < MAX_CHECK; p++) {
-          var pi = p < MAX_CHECK ? Math.floor(Math.random() * patches.length) : p;
-          var patch = patches[pi];
-
-          var dist = 0;
-          var compared = 0;
-
-          // Compare known pixels in target neighbourhood against patch
-          for (var dy = -HALF; dy <= HALF; dy++) {
-            for (var dx = -HALF; dx <= HALF; dx++) {
-              var ty = by + dy;
-              var tx = bx + dx;
-              if (tx < 0 || tx >= w || ty < 0 || ty >= h) continue;
-              if (mask[ty * w + tx]) continue; // skip hole pixels
-
-              var tidx = (ty * w + tx) * 4;
-              var pidx = (dy + HALF) * PATCH_SIZE + (dx + HALF);
-              var dr = pixels[tidx] - patch.pr[pidx];
-              var dg = pixels[tidx + 1] - patch.pg[pidx];
-              var db = pixels[tidx + 2] - patch.pb[pidx];
-              dist += dr * dr + dg * dg + db * db;
-              compared++;
-            }
-          }
-
-          if (compared > 0) {
-            dist /= compared;
-            if (dist < bestDist) {
-              bestDist = dist;
-              var centIdx = HALF * PATCH_SIZE + HALF;
-              bestPr = patch.pr[centIdx];
-              bestPg = patch.pg[centIdx];
-              bestPb = patch.pb[centIdx];
-            }
-          }
-        }
-
-        if (bestDist < Infinity) {
-          var idx = (by * w + bx) * 4;
-          pixels[idx] = bestPr;
-          pixels[idx + 1] = bestPg;
-          pixels[idx + 2] = bestPb;
-          mask[by * w + bx] = 0;
-          filledCount++;
-        } else {
-          // Fallback: average known 8-neighbours
-          var sr = 0, sg = 0, sb = 0, sc = 0;
-          for (var dy = -1; dy <= 1; dy++) {
-            for (var dx = -1; dx <= 1; dx++) {
-              if (dx === 0 && dy === 0) continue;
-              var nx = bx + dx, ny = by + dy;
-              if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
-              if (mask[ny * w + nx]) continue;
-              var nidx = (ny * w + nx) * 4;
-              sr += pixels[nidx]; sg += pixels[nidx + 1]; sb += pixels[nidx + 2];
-              sc++;
-            }
-          }
-          if (sc > 0) {
-            var idx = (by * w + bx) * 4;
-            pixels[idx] = Math.round(sr / sc);
-            pixels[idx + 1] = Math.round(sg / sc);
-            pixels[idx + 2] = Math.round(sb / sc);
-            mask[by * w + bx] = 0;
-            filledCount++;
-          }
-        }
-      }
-
-      // Progress
-      var pct = Math.round((filledCount / totalHole) * 100);
-      progressBar.style.width = pct + '%';
-      progressText.textContent = 'Filling layer ' + currentLayer + '/' + maxDist + ' — ' + pct + '%';
-
-      currentLayer++;
-      setTimeout(processLayer, 15); // yield to UI
-    }
-
-    setTimeout(processLayer, 50);
-  }
-
-  function shuffleArray(arr) {
-    for (var i = arr.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = tmp;
-    }
-  }
-
-  // ── Clone Stamp ──
-  function paintClone(cx, cy) {
-    if (!cloneSource) return;
-    var ctx = mainCanvas.getContext('2d');
-    var dx = cx - (lastClonePos ? lastClonePos.x : cx);
-    var dy = cy - (lastClonePos ? lastClonePos.y : cy);
-
-    // Source follows brush
-    var sx = cloneSource.x + dx;
-    var sy = cloneSource.y + dy;
-
-    // Draw with soft brush
-    var r = cloneBrushSize / 2;
-    var feather = r * (1 - cloneHardness) + 1;
-
-    // Create a temp canvas for the brush stamp
-    var tmpCanvas = document.createElement('canvas');
-    tmpCanvas.width = cloneBrushSize + feather * 2;
-    tmpCanvas.height = cloneBrushSize + feather * 2;
-    var tmpCtx = tmpCanvas.getContext('2d');
-
-    // Copy from source area
-    tmpCtx.drawImage(mainCanvas,
-      sx - r - feather, sy - r - feather,
-      cloneBrushSize + feather * 2, cloneBrushSize + feather * 2,
-      0, 0,
-      cloneBrushSize + feather * 2, cloneBrushSize + feather * 2);
-
-    // Apply soft mask
-    if (cloneHardness < 1) {
-      var maskCtx = tmpCanvas.getContext('2d');
-      maskCtx.globalCompositeOperation = 'destination-in';
-      var grad = maskCtx.createRadialGradient(r + feather, r + feather, r * cloneHardness, r + feather, r + feather, r + feather);
-      grad.addColorStop(0, 'rgba(255,255,255,1)');
-      grad.addColorStop(1, 'rgba(255,255,255,0)');
-      maskCtx.fillStyle = grad;
-      maskCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
-      maskCtx.globalCompositeOperation = 'source-over';
-    }
-
-    // Draw stamp onto main canvas
-    ctx.drawImage(tmpCanvas,
-      0, 0, tmpCanvas.width, tmpCanvas.height,
-      cx - r - feather, cy - r - feather, tmpCanvas.width, tmpCanvas.height);
-
-    // Update last position and clone source
-    if (lastClonePos) {
-      cloneSource = { x: cloneSource.x + dx, y: cloneSource.y + dy };
-    }
-    lastClonePos = { x: cx, y: cy };
-
-    refreshOverlay();
-  }
-
-  // ── Manual Brush ──
-  function paintBrush(cx, cy) {
-    var ctx = mainCanvas.getContext('2d');
-    var r = brushSize / 2;
-
-    var hex = brushColor.replace('#', '');
-    var cr = parseInt(hex.substring(0, 2), 16);
-    var cg = parseInt(hex.substring(2, 4), 16);
-    var cb = parseInt(hex.substring(4, 6), 16);
-
-    // Draw a filled circle with soft edges
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-
-    if (brushHardness < 1) {
-      var grad = ctx.createRadialGradient(cx, cy, r * brushHardness, cx, cy, r);
-      grad.addColorStop(0, 'rgba(' + cr + ',' + cg + ',' + cb + ',1)');
-      grad.addColorStop(1, 'rgba(' + cr + ',' + cg + ',' + cb + ',0)');
-      ctx.fillStyle = grad;
-    } else {
-      ctx.fillStyle = 'rgb(' + cr + ',' + cg + ',' + cb + ')';
-    }
-    ctx.fill();
-    ctx.restore();
-
-    // Interpolate for smooth strokes
-    if (lastBrushPos) {
-      var dist = Math.sqrt((cx - lastBrushPos.x) ** 2 + (cy - lastBrushPos.y) ** 2);
-      if (dist > r * 0.5) {
-        var steps = Math.floor(dist / (r * 0.3));
-        for (var i = 1; i < steps; i++) {
-          var t = i / steps;
-          var ix = lastBrushPos.x + (cx - lastBrushPos.x) * t;
-          var iy = lastBrushPos.y + (cy - lastBrushPos.y) * t;
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(ix, iy, r, 0, Math.PI * 2);
-          if (brushHardness < 1) {
-            var ig = ctx.createRadialGradient(ix, iy, r * brushHardness, ix, iy, r);
-            ig.addColorStop(0, 'rgba(' + cr + ',' + cg + ',' + cb + ',1)');
-            ig.addColorStop(1, 'rgba(' + cr + ',' + cg + ',' + cb + ',0)');
-            ctx.fillStyle = ig;
-          } else {
-            ctx.fillStyle = 'rgb(' + cr + ',' + cg + ',' + cb + ')';
-          }
-          ctx.fill();
-          ctx.restore();
-        }
-      }
-    }
-    lastBrushPos = { x: cx, y: cy };
-  }
-
-  // ── Eyedropper ──
-  function pickColorFromCanvas(nx, ny) {
-    var ctx = mainCanvas.getContext('2d');
-    var x = Math.max(0, Math.min(imgNatural.w - 1, Math.floor(nx)));
-    var y = Math.max(0, Math.min(imgNatural.h - 1, Math.floor(ny)));
-    var pixel = ctx.getImageData(x, y, 1, 1).data;
-    var hex = '#' + toHex(pixel[0]) + toHex(pixel[1]) + toHex(pixel[2]);
-
-    if (currentMode === 'smart') {
-      solidColor = hex;
-      solidColorPicker.value = hex;
-      fillMethod.value = 'solid';
-      fillMethod.dispatchEvent(new Event('change'));
-      document.querySelectorAll('#solidColorRow .swatch').forEach(function(s) { s.classList.remove('active'); });
-    } else if (currentMode === 'brush') {
-      brushColor = hex;
-      document.getElementById('brushColorPicker').value = hex;
-      document.querySelectorAll('#brushControls .swatch').forEach(function(s) { s.classList.remove('active'); });
-    }
-
-    pickedColor = hex;
-    pickedColorInfo.textContent = 'Picked: ' + hex + ' (R:' + pixel[0] + ' G:' + pixel[1] + ' B:' + pixel[2] + ')';
-    isEyedropper = false;
-    btnEyedropper.classList.remove('active');
-    overlay.style.cursor = 'crosshair';
-  }
-
-  function toHex(n) { var h = n.toString(16); return h.length === 1 ? '0' + h : h; }
-
-  btnEyedropper.addEventListener('click', function() {
-    isEyedropper = !isEyedropper;
-    btnEyedropper.classList.toggle('active', isEyedropper);
-    overlay.style.cursor = isEyedropper ? 'crosshair' : 'crosshair';
-    selecting = false;
-    clonePainting = false;
-    brushPainting = false;
-  });
-
-  // ── Undo / Redo / Reset ──
-  btnUndo.addEventListener('click', function() {
-    if (historyIndex > 0) loadState(historyIndex - 1);
-  });
-  btnRedo.addEventListener('click', function() {
-    if (historyIndex < history.length - 1) loadState(historyIndex + 1);
-  });
-  btnReset.addEventListener('click', function() {
-    if (confirm('Reset image to original? All changes will be lost.')) {
-      resetImage();
-      history = [];
-      historyIndex = -1;
-      saveState();
-      updateHistoryButtons();
+      mainCtx.putImageData(new ImageData(grayData, imgW, imgH), 0, 0);
     }
   });
 
   // ── Download ──
   btnDownload.addEventListener('click', function() {
-    if (!img) return;
+    if (!resultImageData) return;
+    var tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = imgW; tmpCanvas.height = imgH;
+    var tmpCtx = tmpCanvas.getContext('2d');
+    tmpCtx.putImageData(resultImageData, 0, 0);
     var link = document.createElement('a');
     link.download = 'cleaned-image.png';
-    link.href = mainCanvas.toDataURL('image/png');
+    link.href = tmpCanvas.toDataURL('image/png');
     link.click();
     btnDownload.textContent = '✔ Downloaded!';
-    setTimeout(function() { btnDownload.innerHTML = '&#x2B07; Download Image'; }, 2000);
+    setTimeout(function() { btnDownload.innerHTML = '&#x2B07; Download Result'; }, 2000);
   });
 
-  // ── Copy to clipboard ──
-  btnCopy.addEventListener('click', function() {
+  // ── Reset ──
+  btnReset.addEventListener('click', function() {
     if (!img) return;
-    mainCanvas.toBlob(function(blob) {
-      navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob })
-      ]).then(function() {
-        btnCopy.textContent = '✔ Copied!';
-        setTimeout(function() { btnCopy.innerHTML = '&#x1F4CB; Copy to Clipboard'; }, 2000);
-      }).catch(function() {
-        alert('Could not copy to clipboard. Try downloading instead.');
-      });
-    });
+    maskCtx.clearRect(0, 0, imgW, imgH);
+    var mainCtx = mainCanvas.getContext('2d');
+    mainCtx.putImageData(originalImageData, 0, 0);
+    resultImageData = null;
+    resultTabs.style.display = 'none';
+    btnDownload.style.display = 'none';
+    btnReset.style.display = 'none';
+    setStatus('ready', 'Ready. Paint over the watermark again.');
   });
 
-  // ── Keyboard shortcuts ──
-  document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.key === 'z') {
-      e.preventDefault();
-      if (historyIndex > 0) loadState(historyIndex - 1);
-    }
-    if (e.ctrlKey && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) {
-      e.preventDefault();
-      if (historyIndex < history.length - 1) loadState(historyIndex + 1);
-    }
-    // Numeric keys for mode switching
-    if (!e.ctrlKey && !e.metaKey && !e.altKey) {
-      if (e.key === '1') {
-        document.querySelector('.mode-tab[data-mode="smart"]').click();
-      } else if (e.key === '2') {
-        document.querySelector('.mode-tab[data-mode="clone"]').click();
-      } else if (e.key === '3') {
-        document.querySelector('.mode-tab[data-mode="brush"]').click();
-      }
-    }
-    // Alt key for clone source
-    if (e.altKey && currentMode === 'clone') {
-      overlay.style.cursor = 'cell';
-    }
-  });
-
-  document.addEventListener('keyup', function(e) {
-    if (!e.altKey && currentMode === 'clone') {
-      overlay.style.cursor = 'crosshair';
-    }
-  });
-
-  // ── Global drag/drop to prevent browser opening image ──
+  // ── Prevent browser from opening dragged image ──
   window.addEventListener('dragover', function(e) { e.preventDefault(); });
   window.addEventListener('drop', function(e) { e.preventDefault(); });
-
-  // Initial overlay state
-  overlay.className = 'overlay';
 })();
 </script>
-
 </body>
 </html>
