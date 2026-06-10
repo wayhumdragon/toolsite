@@ -140,7 +140,7 @@
   <div class="tool-wrap">
     <div class="tool-header">
       <h1>PDF Whiteout</h1>
-      <p>Cover text &amp; images in PDFs. Draw rectangles, pick background colors for perfect camouflage. 100% client-side.</p>
+      <p>Cover, annotate &amp; stamp PDFs. Draw whiteout rectangles, add text anywhere, or place PNG images. 100% client-side.</p>
     </div>
 
     <div class="card">
@@ -168,49 +168,65 @@
 
         <!-- Controls panel -->
         <div class="controls-panel">
-          <!-- Cover color -->
-          <label>Cover Color</label>
-          <div class="color-swatches" id="swatches">
-            <div class="swatch active" data-color="#ffffff" style="background:#fff;"></div>
-            <div class="swatch" data-color="#000000" style="background:#000;"></div>
-            <div class="swatch" data-color="#e2e8f0" style="background:#e2e8f0;"></div>
-            <div class="swatch" data-color="#f1f5f9" style="background:#f1f5f9;"></div>
-            <div class="swatch" data-color="#fefce8" style="background:#fefce8;"></div>
-            <input type="color" class="swatch-picker" id="customColor" value="#ffffff" title="Custom color">
+          <!-- Mode switcher -->
+          <label>Tool Mode</label>
+          <div class="mode-tabs" id="modeTabs" style="display:flex;gap:0;margin-bottom:1rem;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);">
+            <button data-mode="cover" class="active" style="flex:1;padding:0.45rem 0.4rem;font-size:0.78rem;font-weight:600;border:none;cursor:pointer;background:var(--primary);color:#fff;font-family:inherit;border-right:1px solid var(--border);">&#x2587; Cover</button>
+            <button data-mode="text" style="flex:1;padding:0.45rem 0.4rem;font-size:0.78rem;font-weight:600;border:none;cursor:pointer;background:var(--surface);color:var(--text-muted);font-family:inherit;border-right:1px solid var(--border);">&#x1F4DD; Text</button>
+            <button data-mode="image" style="flex:1;padding:0.45rem 0.4rem;font-size:0.78rem;font-weight:600;border:none;cursor:pointer;background:var(--surface);color:var(--text-muted);font-family:inherit;">&#x1F5BC; Image</button>
           </div>
 
-          <!-- Eyedropper -->
-          <div class="picker-row mt-1">
-            <button class="eyedropper-btn" id="btnEyedropper" title="Pick color from page">&#x1F489;</button>
-            <span style="font-size:0.8rem;color:var(--text-muted);">Click page to pick color</span>
-          </div>
-          <div id="pickedInfo" style="font-size:0.75rem;margin-top:0.25rem;color:var(--text-muted);"></div>
-
-          <!-- Cover list -->
-          <label class="mt-3">Covers (Page <span id="coverPageNum">1</span>)</label>
-          <div class="cover-list" id="coverList">
-            <p class="text-sm text-muted">Click &amp; drag on the preview to draw a cover rectangle.</p>
-          </div>
-
-          <!-- Add text overlay -->
-          <details class="mt-2" id="textOverlayToggle">
-            <summary style="font-weight:600;font-size:0.85rem;cursor:pointer;">Add Text Over Cover</summary>
-            <div class="text-row" style="margin-top:0.5rem;">
-              <input type="text" id="overlayText" placeholder="Text to add..." maxlength="200">
-              <select id="overlayFontSize">
-                <option value="10">10</option>
-                <option value="12" selected>12</option>
-                <option value="14">14</option>
-                <option value="18">18</option>
-                <option value="24">24</option>
-              </select>
+          <!-- COVER MODE -->
+          <div id="panelCover">
+            <label>Cover Color</label>
+            <div class="color-swatches" id="swatches">
+              <div class="swatch active" data-color="#ffffff" style="background:#fff;"></div>
+              <div class="swatch" data-color="#000000" style="background:#000;"></div>
+              <div class="swatch" data-color="#e2e8f0" style="background:#e2e8f0;"></div>
+              <div class="swatch" data-color="#f1f5f9" style="background:#f1f5f9;"></div>
+              <div class="swatch" data-color="#fefce8" style="background:#fefce8;"></div>
+              <input type="color" class="swatch-picker" id="customColor" value="#ffffff" title="Custom color">
             </div>
-            <label class="mt-1" style="font-size:0.78rem;">Text Color</label>
-            <input type="color" id="overlayTextColor" value="#000000" style="width:60px;height:28px;">
-          </details>
+            <div class="picker-row mt-1">
+              <button class="eyedropper-btn" id="btnEyedropper" title="Pick color from page">&#x1F489;</button>
+              <span style="font-size:0.78rem;color:var(--text-muted);">Pick color from page</span>
+            </div>
+            <div id="pickedInfo" style="font-size:0.72rem;margin-top:0.25rem;color:var(--text-muted);"></div>
+            <p class="text-sm text-muted mt-1">Click &amp; drag to draw a cover rectangle.</p>
+          </div>
+
+          <!-- TEXT MODE -->
+          <div id="panelText" style="display:none;">
+            <label>Text</label>
+            <input type="text" id="textInput" placeholder="Type text to place..." maxlength="200">
+            <div class="text-row mt-1">
+              <select id="textFontSize">
+                <option value="10">10</option><option value="12" selected>12</option><option value="14">14</option><option value="18">18</option><option value="24">24</option><option value="32">32</option>
+              </select>
+              <input type="color" id="textColor" value="#000000" style="width:48px;height:32px;padding:2px;">
+            </div>
+            <p class="text-sm text-muted mt-1">Click anywhere on the preview to place the text.</p>
+          </div>
+
+          <!-- IMAGE MODE -->
+          <div id="panelImage" style="display:none;">
+            <label>Upload PNG Image</label>
+            <input type="file" id="imageFileInput" accept="image/png">
+            <div id="imagePreview" style="margin-top:0.5rem;display:none;">
+              <img id="imageThumb" style="max-width:100%;max-height:80px;border:1px solid var(--border);border-radius:var(--radius-sm);">
+              <span class="text-sm text-muted" id="imageSize"></span>
+            </div>
+            <p class="text-sm text-muted mt-1">Click on the preview to place the image.</p>
+          </div>
+
+          <!-- Item list -->
+          <label class="mt-3">Page Items (<span id="coverPageNum">1</span>)</label>
+          <div class="cover-list" id="coverList">
+            <p class="text-sm text-muted">No items yet on this page.</p>
+          </div>
 
           <!-- Actions -->
-          <button class="btn btn-outline btn-sm mt-3" id="btnClearCovers">Clear All Covers</button>
+          <button class="btn btn-outline btn-sm mt-2" id="btnClearCovers">Clear All</button>
           <button class="btn btn-primary w-full mt-1" id="btnDownload">&#x2B07; Download PDF</button>
         </div>
       </div>
@@ -240,10 +256,9 @@
       <div class="prose">
         <ol>
           <li><strong>Load your PDF.</strong> Drag and drop a PDF file onto the upload zone, or click to browse. The first page renders instantly.</li>
-          <li><strong>Pick a cover color.</strong> Choose from the preset colors (white, black, gray) or use the <strong>eyedropper tool</strong> to sample a color directly from the page. This is the key to invisible covers — pick the exact background color.</li>
-          <li><strong>Draw cover rectangles.</strong> Click and drag on the preview to draw a rectangle. Each cover appears in the list. Navigate pages with the Prev/Next buttons. Covers are per-page.</li>
-          <li><strong>Optionally add text.</strong> Expand "Add Text Over Cover" and type text to embed on top of a covered area. Choose font size and color.</li>
-          <li><strong>Download.</strong> Click Download PDF to save the modified document with all covers and text permanently embedded.</li>
+          <li><strong>Choose a mode.</strong> Switch between <strong>Cover</strong> (drag to draw whiteout rectangles), <strong>Text</strong> (type text, then click to place it), or <strong>Image</strong> (upload a PNG, then click to stamp it).</li>
+          <li><strong>Place your changes.</strong> In Cover mode, click &amp; drag. In Text mode, type first then click. In Image mode, upload then click. All items appear on the page and can be deleted.</li>
+          <li><strong>Download.</strong> Click Download PDF to save the modified document with all covers, text, and images permanently embedded.</li>
         </ol>
       </div>
     </section>
@@ -260,8 +275,12 @@
         <div class="faq-answer"><p>Click the eyedropper icon, then click any point on the PDF preview. The tool samples the exact pixel color at that point and sets it as your current cover color. This lets you match the page background perfectly for invisible covers. The last 5 picked colors are remembered.</p></div>
       </details>
       <details class="faq-item">
-        <summary>Can the cover rectangles be removed later?</summary>
-        <div class="faq-answer"><p>Once you download the modified PDF, the rectangles are permanently embedded into the document — they become part of the PDF content and cannot be removed with this tool. However, while editing, you can delete any cover before downloading.</p></div>
+        <summary>Can I add text without drawing a cover rectangle?</summary>
+        <div class="faq-answer"><p>Yes! Switch to <strong>Text</strong> mode, type your text, select font size and color, then click anywhere on the page. The text will be placed at that exact position. You can add multiple text items across different pages.</p></div>
+      </details>
+      <details class="faq-item">
+        <summary>What image formats can I place on the PDF?</summary>
+        <div class="faq-answer"><p>Currently the tool supports <strong>PNG images only</strong>. Upload a PNG in <strong>Image</strong> mode, then click on the page to place it. The image is embedded into the PDF at the clicked position. For best results, use PNGs with transparent backgrounds (e.g., signatures, stamps, logos).</p></div>
       </details>
       <details class="faq-item">
         <summary>Does this work on mobile devices?</summary>
@@ -316,24 +335,34 @@
   var btnEyedropper = document.getElementById('btnEyedropper');
   var customColor = document.getElementById('customColor');
   var pickedInfo = document.getElementById('pickedInfo');
-  var overlayText = document.getElementById('overlayText');
-  var overlayFontSize = document.getElementById('overlayFontSize');
-  var overlayTextColor = document.getElementById('overlayTextColor');
   var canvasWrap = document.getElementById('canvasWrap');
+  var modeTabs = document.getElementById('modeTabs');
+  var panelCover = document.getElementById('panelCover');
+  var panelText = document.getElementById('panelText');
+  var panelImage = document.getElementById('panelImage');
+  var textInput = document.getElementById('textInput');
+  var textFontSize = document.getElementById('textFontSize');
+  var textColor = document.getElementById('textColor');
+  var imageFileInput = document.getElementById('imageFileInput');
+  var imagePreview = document.getElementById('imagePreview');
+  var imageThumb = document.getElementById('imageThumb');
+  var imageSize = document.getElementById('imageSize');
 
   // ── State ──
   var pdfDoc = null;
   var pdfBytes = null;
   var currentPage = 1;
   var totalPages = 0;
-  var pageRenderScale = 1; // internal render scale (for sharpness)
+  var pageRenderScale = 1;
   var zoom = 100;
+  var mode = 'cover'; // 'cover' | 'text' | 'image'
   var coverColor = '#ffffff';
   var isEyedropper = false;
-  var covers = {}; // { pageNum: [{ x, y, w, h, color, text, fontSize, textColor }] }
+  var items = {}; // { pageNum: [{ type:'rect'|'text'|'image', ... }] }
   var drawing = false;
   var drawStart = { x: 0, y: 0 };
   var recentColors = ['#ffffff'];
+  var pendingImage = null; // dataUrl of loaded PNG waiting to be placed
   var pdfjsLib = window.pdfjsLib;
 
   // ── Init ──
@@ -341,7 +370,7 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   }
 
-  function ensureCovers(p) { if (!covers[p]) covers[p] = []; return covers[p]; }
+  function getItems(p) { if (!items[p]) items[p] = []; return items[p]; }
 
   // ── Upload zone click ──
   dropZone.addEventListener('click', function() { fileInput.click(); });
@@ -370,7 +399,8 @@
     pdfDoc = await loading.promise;
     totalPages = pdfDoc.numPages;
     currentPage = 1;
-    covers = {};
+    items = {};
+    pendingImage = null;
     dropZone.style.display = 'none';
     workspace.style.display = 'flex';
     await renderPage();
@@ -384,107 +414,157 @@
     var scale = zoom / 100;
     var w = Math.floor(vp.width * scale);
     var h = Math.floor(vp.height * scale);
-
     pdfCanvas.width = Math.floor(vp.width * pageRenderScale);
     pdfCanvas.height = Math.floor(vp.height * pageRenderScale);
     pdfCanvas.style.width = w + 'px';
     pdfCanvas.style.height = h + 'px';
-
     var ctx = pdfCanvas.getContext('2d');
     ctx.setTransform(pageRenderScale, 0, 0, pageRenderScale, 0, 0);
-
     await page.render({ canvasContext: ctx, viewport: page.getViewport({ scale: 1 }) }).promise;
-
-    // Size overlay to match
     overlay.style.width = w + 'px';
     overlay.style.height = h + 'px';
     overlay.className = 'overlay active';
-
     zoomInfo.textContent = zoom + '%';
     pageInfo.textContent = 'Page ' + currentPage + ' / ' + totalPages;
     btnPrev.disabled = currentPage <= 1;
     btnNext.disabled = currentPage >= totalPages;
     coverPageNum.textContent = currentPage;
-
-    renderCovers();
+    renderItems();
   }
 
-  // ── Render cover rectangles on overlay ──
-  function renderCovers() {
+  // ── Render all items on overlay ──
+  function renderItems() {
     overlay.innerHTML = '';
-    var pageCovers = ensureCovers(currentPage);
-    var scale = zoom / 100;
-
-    for (var i = 0; i < pageCovers.length; i++) {
-      var c = pageCovers[i];
+    var pageItems = getItems(currentPage);
+    var s = zoom / 100;
+    for (var i = 0; i < pageItems.length; i++) {
+      var it = pageItems[i];
       var div = document.createElement('div');
-      div.className = 'rect-placed';
-      div.style.left = (c.x * scale) + 'px';
-      div.style.top = (c.y * scale) + 'px';
-      div.style.width = (c.w * scale) + 'px';
-      div.style.height = (c.h * scale) + 'px';
-      div.style.background = c.color;
-      div.style.borderColor = (c.color === '#ffffff' || c.color === '#fff') ? 'var(--border)' : c.color;
+      if (it.type === 'rect') {
+        div.className = 'rect-placed';
+        div.style.left = (it.x * s) + 'px';
+        div.style.top = (it.y * s) + 'px';
+        div.style.width = (it.w * s) + 'px';
+        div.style.height = (it.h * s) + 'px';
+        div.style.background = it.color;
+        div.style.borderColor = (it.color === '#ffffff' || it.color === '#fff') ? 'var(--border)' : it.color;
+        if (it.text) {
+          var ts = document.createElement('span');
+          ts.style.cssText = 'position:absolute;left:4px;top:50%;transform:translateY(-50%);font-size:' + (it.fontSize * s) + 'px;color:' + it.textColor + ';pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:' + (it.w * s - 8) + 'px;';
+          ts.textContent = it.text;
+          div.appendChild(ts);
+        }
+      } else if (it.type === 'text') {
+        div.style.cssText = 'position:absolute;left:' + (it.x * s) + 'px;top:' + (it.y * s) + 'px;font-size:' + (it.fontSize * s) + 'px;color:' + it.textColor + ';pointer-events:none;white-space:nowrap;font-family:system-ui,sans-serif;';
+        div.textContent = it.text;
+      } else if (it.type === 'image') {
+        div.style.cssText = 'position:absolute;left:' + (it.x * s) + 'px;top:' + (it.y * s) + 'px;pointer-events:none;';
+        var img = document.createElement('img');
+        img.src = it.dataUrl;
+        img.style.cssText = 'width:' + (it.w * s) + 'px;height:' + (it.h * s) + 'px;border:2px solid var(--primary);';
+        div.appendChild(img);
+      }
 
-      var btn = document.createElement('button');
-      btn.className = 'r-delete';
-      btn.textContent = '×';
-      btn.title = 'Remove this cover';
-      btn.addEventListener('click', (function(idx) {
-        return function(e) { e.stopPropagation(); removeCover(idx); };
-      })(i));
-      div.appendChild(btn);
+      if (it.type !== 'image') {
+        var btn = document.createElement('button');
+        btn.className = 'r-delete';
+        btn.textContent = '×';
+        btn.title = 'Remove';
+        btn.addEventListener('click', (function(idx) { return function(e) { e.stopPropagation(); removeItem(idx); }; })(i));
+        div.appendChild(btn);
+      } else {
+        var btn2 = document.createElement('button');
+        btn2.className = 'r-delete';
+        btn2.textContent = '×';
+        btn2.title = 'Remove';
+        btn2.addEventListener('click', (function(idx) { return function(e) { e.stopPropagation(); removeItem(idx); }; })(i));
+        div.appendChild(btn2);
+      }
 
       overlay.appendChild(div);
     }
-    renderCoverList();
+    renderItemList();
   }
 
-  function renderCoverList() {
-    var pageCovers = ensureCovers(currentPage);
-    if (pageCovers.length === 0) {
-      coverList.innerHTML = '<p class="text-sm text-muted">No covers on this page. Click &amp; drag to draw one.</p>';
+  function renderItemList() {
+    var pageItems = getItems(currentPage);
+    if (pageItems.length === 0) {
+      coverList.innerHTML = '<p class="text-sm text-muted">No items on this page.</p>';
       return;
     }
     var html = '';
-    for (var i = 0; i < pageCovers.length; i++) {
-      var c = pageCovers[i];
+    for (var i = 0; i < pageItems.length; i++) {
+      var it = pageItems[i];
+      var icon = it.type === 'rect' ? '&#x2587;' : (it.type === 'text' ? '&#x1F4DD;' : '&#x1F5BC;');
+      var label = it.type === 'rect' ? 'Cover ' + (i + 1) : (it.type === 'text' ? 'Text: "' + it.text.substring(0, 15) + '"' : 'Image ' + (i + 1));
       html += '<div class="cover-item">' +
-        '<div class="ci-color" style="background:' + c.color + ';"></div>' +
-        '<div class="ci-info">Cover ' + (i + 1) + (c.text ? ' + text' : '') + '</div>' +
+        '<span style="font-size:0.9rem;">' + icon + '</span>' +
+        '<div class="ci-info">' + label + '</div>' +
         '<button data-idx="' + i + '" class="ci-delete" title="Remove">×</button>' +
         '</div>';
     }
     coverList.innerHTML = html;
     var btns = coverList.querySelectorAll('.ci-delete');
     for (var j = 0; j < btns.length; j++) {
-      btns[j].addEventListener('click', (function(idx) { return function() { removeCover(idx); }; })(j));
+      btns[j].addEventListener('click', (function(idx) { return function() { removeItem(idx); }; })(j));
     }
   }
 
-  function removeCover(idx) {
-    var pageCovers = ensureCovers(currentPage);
-    pageCovers.splice(idx, 1);
-    renderCovers();
+  function removeItem(idx) {
+    var pageItems = getItems(currentPage);
+    pageItems.splice(idx, 1);
+    renderItems();
   }
 
-  // ── Mouse drawing on overlay ──
+  // ── Overlay interaction ──
   overlay.addEventListener('mousedown', function(e) {
     if (isEyedropper) { pickColor(e); return; }
     var rect = overlay.getBoundingClientRect();
-    var scale = zoom / 100;
-    drawing = true;
-    drawStart = {
-      x: (e.clientX - rect.left) / scale,
-      y: (e.clientY - rect.top) / scale
-    };
+    var s = zoom / 100;
+    var px = (e.clientX - rect.left) / s;
+    var py = (e.clientY - rect.top) / s;
 
-    // Create preview rect
+    // Text mode: place text at click position
+    if (mode === 'text') {
+      var txt = textInput.value.trim();
+      if (!txt) { alert('Please type some text first.'); return; }
+      getItems(currentPage).push({
+        type: 'text', x: px, y: py,
+        text: txt, fontSize: parseInt(textFontSize.value), textColor: textColor.value
+      });
+      textInput.value = '';
+      renderItems();
+      return;
+    }
+
+    // Image mode: place image at click position
+    if (mode === 'image') {
+      if (!pendingImage) { alert('Please upload a PNG image first.'); return; }
+      var imgEl = new Image();
+      imgEl.onload = function() {
+        var iw = imgEl.naturalWidth;
+        var ih = imgEl.naturalHeight;
+        var maxW = 200;
+        var scale2 = iw > maxW ? maxW / iw : 1;
+        var dw = iw * scale2;
+        var dh = ih * scale2;
+        getItems(currentPage).push({
+          type: 'image', x: px - dw/2, y: py - dh/2, w: dw, h: dh, dataUrl: pendingImage
+        });
+        renderItems();
+      };
+      imgEl.src = pendingImage;
+      return;
+    }
+
+    // Cover mode: start drag
+    drawing = true;
+    drawStart = { x: px, y: py };
     var preview = document.createElement('div');
     preview.className = 'rect-preview';
     preview.id = 'drawPreview';
-    preview.style.left = (drawStart.x * scale) + 'px';
-    preview.style.top = (drawStart.y * scale) + 'px';
+    preview.style.left = (px * s) + 'px';
+    preview.style.top = (py * s) + 'px';
     overlay.appendChild(preview);
   });
 
@@ -492,49 +572,31 @@
     if (isEyedropper) return;
     if (!drawing) return;
     var rect = overlay.getBoundingClientRect();
-    var scale = zoom / 100;
-    var cx = (e.clientX - rect.left) / scale;
-    var cy = (e.clientY - rect.top) / scale;
+    var s = zoom / 100;
+    var cx = (e.clientX - rect.left) / s;
+    var cy = (e.clientY - rect.top) / s;
     var preview = document.getElementById('drawPreview');
     if (!preview) return;
-    var x = Math.min(drawStart.x, cx);
-    var y = Math.min(drawStart.y, cy);
-    var w = Math.abs(cx - drawStart.x);
-    var h = Math.abs(cy - drawStart.y);
-    preview.style.left = (x * scale) + 'px';
-    preview.style.top = (y * scale) + 'px';
-    preview.style.width = (w * scale) + 'px';
-    preview.style.height = (h * scale) + 'px';
+    var x = Math.min(drawStart.x, cx), y = Math.min(drawStart.y, cy);
+    var w = Math.abs(cx - drawStart.x), h = Math.abs(cy - drawStart.y);
+    preview.style.left = (x * s) + 'px'; preview.style.top = (y * s) + 'px';
+    preview.style.width = (w * s) + 'px'; preview.style.height = (h * s) + 'px';
   });
 
   overlay.addEventListener('mouseup', function(e) {
-    if (!drawing) return;
+    if (mode !== 'cover' || !drawing) { drawing = false; return; }
     drawing = false;
     var preview = document.getElementById('drawPreview');
     if (preview) preview.remove();
-
     var rect = overlay.getBoundingClientRect();
-    var scale = zoom / 100;
-    var cx = (e.clientX - rect.left) / scale;
-    var cy = (e.clientY - rect.top) / scale;
-    var x = Math.min(drawStart.x, cx);
-    var y = Math.min(drawStart.y, cy);
-    var w = Math.abs(cx - drawStart.x);
-    var h = Math.abs(cy - drawStart.y);
-
-    if (w < 5 || h < 5) return; // too small
-
-    var pageCovers = ensureCovers(currentPage);
-    pageCovers.push({
-      x: x, y: y, w: w, h: h,
-      color: coverColor,
-      text: overlayText.value.trim() || null,
-      fontSize: parseInt(overlayFontSize.value),
-      textColor: overlayTextColor.value
-    });
-
-    renderCovers();
-    overlayText.value = '';
+    var s = zoom / 100;
+    var cx = (e.clientX - rect.left) / s;
+    var cy = (e.clientY - rect.top) / s;
+    var x = Math.min(drawStart.x, cx), y = Math.min(drawStart.y, cy);
+    var w = Math.abs(cx - drawStart.x), h = Math.abs(cy - drawStart.y);
+    if (w < 5 || h < 5) return;
+    getItems(currentPage).push({ type: 'rect', x: x, y: y, w: w, h: h, color: coverColor });
+    renderItems();
   });
 
   overlay.addEventListener('mouseleave', function() {
@@ -544,91 +606,71 @@
     if (preview) preview.remove();
   });
 
+  // ── Mode switching ──
+  modeTabs.addEventListener('click', function(e) {
+    if (e.target.tagName !== 'BUTTON') return;
+    mode = e.target.dataset.mode;
+    modeTabs.querySelectorAll('button').forEach(function(b) {
+      b.style.background = 'var(--surface)'; b.style.color = 'var(--text-muted)';
+    });
+    e.target.style.background = 'var(--primary)'; e.target.style.color = '#fff';
+    panelCover.style.display = mode === 'cover' ? 'block' : 'none';
+    panelText.style.display = mode === 'text' ? 'block' : 'none';
+    panelImage.style.display = mode === 'image' ? 'block' : 'none';
+    overlay.style.cursor = mode === 'text' || mode === 'image' ? 'crosshair' : 'crosshair';
+  });
+
+  // ── Image upload ──
+  imageFileInput.addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    if (!file || file.type !== 'image/png') { alert('Please select a PNG image.'); return; }
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      pendingImage = ev.target.result;
+      imageThumb.src = pendingImage;
+      imageSize.textContent = ' ' + Math.round(file.size / 1024) + ' KB';
+      imagePreview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
   // ── Eyedropper ──
   function pickColor(e) {
     var rect = pdfCanvas.getBoundingClientRect();
     var sx = (e.clientX - rect.left) * (pdfCanvas.width / rect.width);
     var sy = (e.clientY - rect.top) * (pdfCanvas.height / rect.height);
-    var ctx = pdfCanvas.getContext('2d');
-    var pixel = ctx.getImageData(Math.floor(sx), Math.floor(sy), 1, 1).data;
+    var pixel = pdfCanvas.getContext('2d').getImageData(Math.floor(sx), Math.floor(sy), 1, 1).data;
     var hex = '#' + toHex(pixel[0]) + toHex(pixel[1]) + toHex(pixel[2]);
-
     setCoverColor(hex);
-    if (recentColors.indexOf(hex) === -1) {
-      recentColors.unshift(hex);
-      if (recentColors.length > 5) recentColors.pop();
-      updateSwatches();
-    }
-
+    if (recentColors.indexOf(hex) === -1) { recentColors.unshift(hex); if (recentColors.length > 5) recentColors.pop(); updateSwatches(); }
     pickedInfo.textContent = 'Picked: ' + hex + ' (R:' + pixel[0] + ' G:' + pixel[1] + ' B:' + pixel[2] + ')';
     isEyedropper = false;
     btnEyedropper.classList.remove('active');
-    overlay.style.cursor = 'crosshair';
   }
-
   function toHex(n) { var h = n.toString(16); return h.length === 1 ? '0' + h : h; }
-
-  btnEyedropper.addEventListener('click', function() {
-    isEyedropper = !isEyedropper;
-    btnEyedropper.classList.toggle('active', isEyedropper);
-    overlay.style.cursor = isEyedropper ? 'crosshair' : 'crosshair';
-    if (isEyedropper) drawing = false;
-  });
+  btnEyedropper.addEventListener('click', function() { isEyedropper = !isEyedropper; btnEyedropper.classList.toggle('active', isEyedropper); });
 
   // ── Color swatches ──
-  function setCoverColor(hex) {
-    coverColor = hex;
-    customColor.value = hex;
-    document.querySelectorAll('.swatch').forEach(function(s) {
-      s.classList.toggle('active', s.dataset.color.toLowerCase() === hex.toLowerCase());
-    });
-  }
-
+  function setCoverColor(hex) { coverColor = hex; customColor.value = hex; document.querySelectorAll('.swatch').forEach(function(s) { s.classList.toggle('active', s.dataset.color.toLowerCase() === hex.toLowerCase()); }); }
   function updateSwatches() {
     var container = document.getElementById('swatches');
-    // Remove old dynamic swatches
     container.querySelectorAll('.swatch-dynamic').forEach(function(s) { s.remove(); });
     for (var i = 0; i < recentColors.length; i++) {
       var c = recentColors[i];
       if (c === '#ffffff' || c === '#000000' || c === '#e2e8f0' || c === '#f1f5f9' || c === '#fefce8') continue;
-      var div = document.createElement('div');
-      div.className = 'swatch swatch-dynamic';
-      div.dataset.color = c;
-      div.style.background = c;
+      var div = document.createElement('div'); div.className = 'swatch swatch-dynamic'; div.dataset.color = c; div.style.background = c;
       div.addEventListener('click', function() { setCoverColor(this.dataset.color); });
       container.insertBefore(div, customColor);
     }
   }
+  document.getElementById('swatches').addEventListener('click', function(e) { var sw = e.target.closest('.swatch'); if (sw) setCoverColor(sw.dataset.color); });
+  customColor.addEventListener('input', function() { coverColor = customColor.value; document.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('active'); }); });
 
-  // Swatch clicks
-  document.getElementById('swatches').addEventListener('click', function(e) {
-    var swatch = e.target.closest('.swatch');
-    if (!swatch) return;
-    setCoverColor(swatch.dataset.color);
-  });
-
-  customColor.addEventListener('input', function() {
-    coverColor = customColor.value;
-    document.querySelectorAll('.swatch').forEach(function(s) { s.classList.remove('active'); });
-  });
-
-  // ── Zoom ──
-  zoomSlider.addEventListener('input', function() {
-    zoom = parseInt(zoomSlider.value);
-    renderPage();
-  });
-
-  // ── Page navigation ──
+  // ── Zoom + Nav ──
+  zoomSlider.addEventListener('input', function() { zoom = parseInt(zoomSlider.value); renderPage(); });
   btnPrev.addEventListener('click', function() { if (currentPage > 1) { currentPage--; renderPage(); } });
   btnNext.addEventListener('click', function() { if (currentPage < totalPages) { currentPage++; renderPage(); } });
-
-  // ── Clear covers ──
-  btnClearCovers.addEventListener('click', function() {
-    if (confirm('Remove all covers on this page?')) {
-      covers[currentPage] = [];
-      renderCovers();
-    }
-  });
+  btnClearCovers.addEventListener('click', function() { if (confirm('Remove all items on this page?')) { items[currentPage] = []; renderItems(); } });
 
   // ── Download ──
   btnDownload.addEventListener('click', async function() {
@@ -636,72 +678,54 @@
     try {
       var pdfDoc2 = await PDFLib.PDFDocument.load(pdfBytes, { ignoreEncryption: true });
       var pages = pdfDoc2.getPages();
-
-      // Draw covers for each page
       for (var p = 1; p <= totalPages; p++) {
-        if (!covers[p] || covers[p].length === 0) continue;
+        if (!items[p] || items[p].length === 0) continue;
         var pg = pages[p - 1];
-        var h = pg.getHeight();
-        // In PDF-lib, origin is bottom-left. We need to flip Y.
-        for (var c = 0; c < covers[p].length; c++) {
-          var cv = covers[p][c];
-          pg.drawRectangle({
-            x: cv.x,
-            y: h - cv.y - cv.h,
-            width: cv.w,
-            height: cv.h,
-            color: parseColor(cv.color)
-          });
-
-          // Add text overlay if present
-          if (cv.text && cv.text.trim()) {
-            var fs = cv.fontSize || 12;
-            var tc = parseColor(cv.textColor || '#000000');
-            pg.drawText(cv.text.trim(), {
-              x: cv.x + 4,
-              y: h - cv.y - cv.h + (cv.h - fs) / 2,
-              size: fs,
-              color: tc,
-              maxWidth: cv.w - 8
-            });
+        var ph = pg.getHeight();
+        for (var c = 0; c < items[p].length; c++) {
+          var it = items[p][c];
+          if (it.type === 'rect') {
+            pg.drawRectangle({ x: it.x, y: ph - it.y - it.h, width: it.w, height: it.h, color: parseColor(it.color) });
+            if (it.text && it.text.trim()) {
+              pg.drawText(it.text.trim(), { x: it.x + 4, y: ph - it.y - it.h + (it.h - (it.fontSize || 12)) / 2, size: it.fontSize || 12, color: parseColor(it.textColor || '#000000'), maxWidth: it.w - 8 });
+            }
+          } else if (it.type === 'text') {
+            pg.drawText(it.text, { x: it.x, y: ph - it.y - it.fontSize, size: it.fontSize, color: parseColor(it.textColor) });
+          } else if (it.type === 'image') {
+            var imgBytes = dataUrlToBytes(it.dataUrl);
+            if (imgBytes) {
+              var emb = await pdfDoc2.embedPng(imgBytes);
+              pg.drawImage(emb, { x: it.x, y: ph - it.y - it.h, width: it.w, height: it.h });
+            }
           }
         }
       }
-
       var modBytes = await pdfDoc2.save();
       downloadBlob(modBytes, 'redacted.pdf');
       btnDownload.textContent = '✔ Downloaded!';
       setTimeout(function() { btnDownload.innerHTML = '&#x2B07; Download PDF'; }, 2000);
-    } catch (err) {
-      alert('Error: ' + err.message);
-    }
+    } catch (err) { alert('Error: ' + err.message); }
   });
 
-  function parseColor(hex) {
-    var h = hex.replace('#', '');
-    return PDFLib.rgb(
-      parseInt(h.substring(0, 2), 16) / 255,
-      parseInt(h.substring(2, 4), 16) / 255,
-      parseInt(h.substring(4, 6), 16) / 255
-    );
+  function parseColor(hex) { var h = hex.replace('#', ''); return PDFLib.rgb(parseInt(h.substring(0,2),16)/255, parseInt(h.substring(2,4),16)/255, parseInt(h.substring(4,6),16)/255); }
+  function dataUrlToBytes(dataUrl) {
+    var parts = dataUrl.split(',');
+    if (parts.length !== 2) return null;
+    var binary = atob(parts[1]);
+    var bytes = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes;
   }
-
   function downloadBlob(bytes, name) {
     var blob = new Blob([bytes], { type: 'application/pdf' });
     var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    var a = document.createElement('a'); a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
   }
 
-  // ── Global drag/drop to prevent browser opening PDF ──
   window.addEventListener('dragover', function(e) { e.preventDefault(); });
   window.addEventListener('drop', function(e) { e.preventDefault(); });
-
   updateSwatches();
 })();
 </script>
