@@ -229,12 +229,33 @@
                 <select id="textSize" style="width:100%;">
                   <option value="10">10</option><option value="12" selected>12</option>
                   <option value="14">14</option><option value="18">18</option><option value="24">24</option>
-                  <option value="36">36</option>
+                  <option value="36">36</option><option value="48">48</option><option value="72">72</option>
                 </select>
               </div>
               <div style="flex:1;">
+                <label>Weight</label>
+                <select id="textWeight" style="width:100%;">
+                  <option value="300">Light</option>
+                  <option value="400">Normal</option>
+                  <option value="700" selected>Bold</option>
+                  <option value="900">Black</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+              <div style="flex:1;">
                 <label>Color</label>
                 <input type="color" id="textColorPicker" value="#000000" style="width:100%;height:32px;">
+              </div>
+              <div style="flex:1;">
+                <label>Font</label>
+                <select id="textFont" style="width:100%;">
+                  <option value="Arial">Arial</option>
+                  <option value="Helvetica" selected>Helvetica</option>
+                  <option value="Times New Roman">Times</option>
+                  <option value="Courier New">Courier</option>
+                  <option value="Georgia">Georgia</option>
+                </select>
               </div>
             </div>
           </div>
@@ -321,7 +342,7 @@
   var pdfDoc = null, pdfBytes = null, currentPage = 1, totalPages = 0;
   var mode = 'rect'; // 'rect' | 'image' | 'text'
   var rectColor = '#ffffff';
-  var currentText = '', textSize = 12, textColor = '#000000';
+  var currentText = '', textSize = 12, textColor = '#000000', textWeight = '700', textFont = 'Helvetica';
   var pngDataUrl = null; // loaded PNG as data URL
   var pngImgObj = null; // Image element for the loaded PNG
   var imgPlaceSize = 150; // PNG overlay size in PDF points
@@ -411,7 +432,8 @@
         el.textContent = it.text;
         el.style.fontSize = it.fontSize + 'px';
         el.style.color = it.textColor;
-        el.style.fontWeight = '700';
+        el.style.fontWeight = it.fontWeight || '700';
+        el.style.fontFamily = it.fontFamily || 'Helvetica, Arial, sans-serif';
         el.style.padding = '0';
         el.style.border = 'none';
       }
@@ -486,6 +508,8 @@
   document.getElementById('textContent').addEventListener('input', function() { currentText = this.value; });
   document.getElementById('textSize').addEventListener('change', function() { textSize = parseInt(this.value); });
   document.getElementById('textColorPicker').addEventListener('input', function() { textColor = this.value; });
+  document.getElementById('textWeight').addEventListener('change', function() { textWeight = this.value; });
+  document.getElementById('textFont').addEventListener('change', function() { textFont = this.value; });
 
   // ── PNG upload ──
   pngDropZone.addEventListener('click', function() { pngInput.click(); });
@@ -516,6 +540,9 @@
 
   // ── Mouse interactions ──
   overlay.addEventListener('mousedown', function(e) {
+    // Don't place new items when clicking delete buttons or existing placed items
+    if (e.target.closest('.item-delete') || e.target.closest('.placed-item')) return;
+
     if (mode === 'text') {
       if (!currentText.trim()) { alert('Please enter some text first.'); return; }
       var rect = overlay.getBoundingClientRect();
@@ -523,7 +550,7 @@
       var y = e.clientY - rect.top;
       getItems(currentPage).push({
         type: 'text', x: x, y: y,
-        text: currentText, fontSize: textSize, textColor: textColor
+        text: currentText, fontSize: textSize, textColor: textColor, fontWeight: textWeight
       });
       renderPlacedItems();
       return;
@@ -656,9 +683,11 @@
               width: it.w, height: it.h
             });
           } else if (it.type === 'text') {
+            var font = getPDFFont(it.fontFamily, it.fontWeight);
             pg.drawText(it.text, {
               x: it.x, y: pageH - it.y - it.fontSize,
               size: it.fontSize,
+              font: font,
               color: parseColor(it.textColor)
             });
           }
@@ -673,6 +702,16 @@
       alert('Error: ' + err.message);
     }
   });
+
+  function getPDFFont(family, weight) {
+    var isBold = parseInt(weight) >= 700;
+    var f = family || 'Helvetica';
+    f = f.toLowerCase();
+    if (f.indexOf('times') !== -1) return isBold ? PDFLib.StandardFonts.TimesRomanBold : PDFLib.StandardFonts.TimesRoman;
+    if (f.indexOf('courier') !== -1) return isBold ? PDFLib.StandardFonts.CourierBold : PDFLib.StandardFonts.Courier;
+    // Default: Helvetica / Arial
+    return isBold ? PDFLib.StandardFonts.HelveticaBold : PDFLib.StandardFonts.Helvetica;
+  }
 
   function parseColor(hex) {
     var h = hex.replace('#', '');

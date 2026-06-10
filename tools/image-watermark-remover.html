@@ -242,7 +242,10 @@
   var resultTabs = document.getElementById('resultTabs');
 
   // ── Constants ──
-  var MODEL_URL = 'https://huggingface.co/andraniksargsyan/migan/resolve/main/migan_pipeline_v2.onnx';
+  var MODEL_URLS = [
+    'https://hf-mirror.com/andraniksargsyan/migan/resolve/main/migan_pipeline_v2.onnx',
+    'https://huggingface.co/andraniksargsyan/migan/resolve/main/migan_pipeline_v2.onnx'
+  ];
   var MODEL_SIZE = 28 * 1024 * 1024; // ~28MB
   var INFER_SIZE = 512;
   var DB_NAME = 'toolbox-models';
@@ -285,17 +288,28 @@
       return;
     }
 
-    // Download
+    // Download — try mirrors in order
     modelProgress.style.display = '';
     modelProgressText.textContent = 'Downloading AI model (28 MB) — first time only...';
     setStatus('busy', 'Downloading AI model...');
 
-    var buffer = await downloadWithProgress(MODEL_URL, function(loaded, total) {
-      var pct = Math.round((loaded / total) * 100);
-      modelProgressBar.style.width = pct + '%';
-      modelProgressText.textContent = 'Downloading AI model... ' + pct + '% (' +
-        (loaded / 1048576).toFixed(1) + ' / ' + (total / 1048576).toFixed(1) + ' MB)';
-    });
+    var buffer = null;
+    for (var u = 0; u < MODEL_URLS.length; u++) {
+      try {
+        modelProgressText.textContent = 'Downloading from mirror ' + (u + 1) + '/' + MODEL_URLS.length + '...';
+        buffer = await downloadWithProgress(MODEL_URLS[u], function(loaded, total) {
+          var pct = Math.round((loaded / total) * 100);
+          modelProgressBar.style.width = pct + '%';
+          modelProgressText.textContent = 'Downloading AI model... ' + pct + '% (' +
+            (loaded / 1048576).toFixed(1) + ' / ' + (total / 1048576).toFixed(1) + ' MB)';
+        });
+        break;
+      } catch (e) {
+        modelProgressText.textContent = 'Mirror ' + (u + 1) + ' failed, trying next...';
+        console.warn('Model download failed for ' + MODEL_URLS[u] + ':', e);
+      }
+    }
+    if (!buffer) throw new Error('All download mirrors failed. Check your network.');
 
     // Save to IndexedDB
     modelProgressText.textContent = 'Caching model for future use...';
@@ -621,9 +635,9 @@
     // 3. Apply slight dilation to mask (1px) to ensure complete coverage
     maskData512 = dilateMask(maskData512, INFER_SIZE, INFER_SIZE, 2);
 
-    // 4. Build tensors (NCHW format, normalized to [0,1])
-    var inputTensor = new Float32Array(1 * 3 * INFER_SIZE * INFER_SIZE);
-    var maskTensor = new Float32Array(1 * 1 * INFER_SIZE * INFER_SIZE);
+    // 4. Build tensors (NCHW format, uint8, values [0,255])
+    var inputTensor = new Uint8Array(1 * 3 * INFER_SIZE * INFER_SIZE);
+    var maskTensor = new Uint8Array(1 * 1 * INFER_SIZE * INFER_SIZE);
     var R_OFFSET = 0;
     var G_OFFSET = INFER_SIZE * INFER_SIZE;
     var B_OFFSET = 2 * INFER_SIZE * INFER_SIZE;
@@ -633,42 +647,38 @@
         var srcIdx = (y * INFER_SIZE + x) * 4;
         var dstIdx = y * INFER_SIZE + x;
 
-        inputTensor[R_OFFSET + dstIdx] = imgData512.data[srcIdx] / 255;
-        inputTensor[G_OFFSET + dstIdx] = imgData512.data[srcIdx + 1] / 255;
-        inputTensor[B_OFFSET + dstIdx] = imgData512.data[srcIdx + 2] / 255;
+        inputTensor[R_OFFSET + dstIdx] = imgData512.data[srcIdx];
+        inputTensor[G_OFFSET + dstIdx] = imgData512.data[srcIdx + 1];
+        inputTensor[B_OFFSET + dstIdx] = imgData512.data[srcIdx + 2];
 
-        // Mask: white (>128) = 1 (inpaint area), black = 0 (keep)
-        maskTensor[dstIdx] = maskData512.data[srcIdx] > 128 ? 1 : 0;
+        // Mask: white (>128) = 255 (inpaint area), black = 0 (keep)
+        maskTensor[dstIdx] = maskData512.data[srcIdx] > 128 ? 255 : 0;
       }
     }
 
-    // 5. Run ONNX inference
+    // 5. Run ONNX inference (model expects uint8)
     var feeds = {};
     var inputNames = ortSession.inputNames;
     var outputNames = ortSession.outputNames;
 
-    feeds[inputNames[0]] = new ort.Tensor('float32', inputTensor, [1, 3, INFER_SIZE, INFER_SIZE]);
-    feeds[inputNames[1]] = new ort.Tensor('float32', maskTensor, [1, 1, INFER_SIZE, INFER_SIZE]);
+    feeds[inputNames[0]] = new ort.Tensor('uint8', inputTensor, [1, 3, INFER_SIZE, INFER_SIZE]);
+    feeds[inputNames[1]] = new ort.Tensor('uint8', maskTensor, [1, 1, INFER_SIZE, INFER_SIZE]);
 
     processText.textContent = 'Running AI model...';
     var results = await ortSession.run(feeds);
     var output = results[outputNames[0]];
-    var outputData = output.data; // Float32Array [1, 3, 512, 512]
+    var outputData = output.data; // Uint8Array [1, 3, 512, 512]
 
-    // 6. Postprocess: build result ImageData at 512x512
+    // 6. Postprocess: build result ImageData at 512x512 (values already [0,255])
     var result512 = new Uint8ClampedArray(INFER_SIZE * INFER_SIZE * 4);
     for (var y = 0; y < INFER_SIZE; y++) {
       for (var x = 0; x < INFER_SIZE; x++) {
         var dstIdx = (y * INFER_SIZE + x) * 4;
         var srcIdx = y * INFER_SIZE + x;
 
-        var r = Math.round(Math.max(0, Math.min(1, outputData[R_OFFSET + srcIdx])) * 255);
-        var g = Math.round(Math.max(0, Math.min(1, outputData[G_OFFSET + srcIdx])) * 255);
-        var b = Math.round(Math.max(0, Math.min(1, outputData[B_OFFSET + srcIdx])) * 255);
-
-        result512[dstIdx] = r;
-        result512[dstIdx + 1] = g;
-        result512[dstIdx + 2] = b;
+        result512[dstIdx] = outputData[R_OFFSET + srcIdx];
+        result512[dstIdx + 1] = outputData[G_OFFSET + srcIdx];
+        result512[dstIdx + 2] = outputData[B_OFFSET + srcIdx];
         result512[dstIdx + 3] = 255;
       }
     }
